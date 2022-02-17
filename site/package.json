@@ -15,6 +15,7 @@
   "dependencies": {
     "@react-spring/web": "^9.4.1",
     "@vercel/commerce": "^0.0.1",
+    "@vercel/commerce-bagisto": "^0.0.1",
     "@vercel/commerce-bigcommerce": "^0.0.1",
     "@vercel/commerce-commercejs": "^0.0.1",
     "@vercel/commerce-kibocommerce": "^0.0.1",
