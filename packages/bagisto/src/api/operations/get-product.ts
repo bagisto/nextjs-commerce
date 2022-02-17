@@ -1,4 +1,4 @@
-import type { LocalConfig } from '../index'
+import type { BagistoConfig } from '../index'
 import { Product } from '@vercel/commerce/types/product'
 import { GetProductOperation } from '@vercel/commerce/types/product'
 import data from '../../data.json'
@@ -14,7 +14,7 @@ export default function getProductOperation({
   }: {
     query?: string
     variables?: T['variables']
-    config?: Partial<LocalConfig>
+    config?: Partial<BagistoConfig>
     preview?: boolean
   } = {}): Promise<Product | {} | any> {
     return {

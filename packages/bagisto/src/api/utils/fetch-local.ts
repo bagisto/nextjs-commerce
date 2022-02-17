@@ -1,9 +1,9 @@
 import { FetcherError } from '@vercel/commerce/utils/errors'
 import type { GraphQLFetcher } from '@vercel/commerce/api'
-import type { LocalConfig } from '../index'
+import type { BagistoConfig } from '../index'
 import fetch from './fetch'
 
-const fetchGraphqlApi: (getConfig: () => LocalConfig) => GraphQLFetcher =
+const fetchGraphqlApi: (getConfig: () => BagistoConfig) => GraphQLFetcher =
   (getConfig) =>
   async (query: string, { variables, preview } = {}, fetchOptions) => {
     const config = getConfig()

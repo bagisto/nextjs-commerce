@@ -1,6 +1,6 @@
 import { OperationContext } from '@vercel/commerce/api/operations'
 import { Category } from '@vercel/commerce/types/site'
-import { LocalConfig } from '../index'
+import { BagistoConfig } from '../index'
 
 export type GetSiteInfoResult<
   T extends { categories: any[]; brands: any[] } = {
@@ -17,7 +17,7 @@ export default function getSiteInfoOperation({}: OperationContext<any>) {
   }: {
     query?: string
     variables?: any
-    config?: Partial<LocalConfig>
+    config?: Partial<BagistoConfig>
     preview?: boolean
   } = {}): Promise<GetSiteInfoResult> {
     return Promise.resolve({

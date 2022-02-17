@@ -10,9 +10,9 @@ import getAllProductPaths from './operations/get-all-product-paths'
 import getAllProducts from './operations/get-all-products'
 import getProduct from './operations/get-product'
 
-export interface LocalConfig extends CommerceAPIConfig {}
-const config: LocalConfig = {
-  commerceUrl: '',
+export interface BagistoConfig extends CommerceAPIConfig {}
+const config: BagistoConfig = {
+  commerceUrl: 'http://192.168.15.114/modules/headless-ecommerce/public/',
   apiToken: '',
   cartCookie: '',
   customerCookie: '',
@@ -32,11 +32,12 @@ const operations = {
 
 export const provider = { config, operations }
 
-export type Provider = typeof provider
-export type LocalAPI<P extends Provider = Provider> = CommerceAPI<P | any>
+export type BagistoProvider = typeof provider
+export type BagistoAPI<P extends BagistoProvider = BagistoProvider> =
+  CommerceAPI<P | any>
 
-export function getCommerceApi<P extends Provider>(
+export function getCommerceApi<P extends BagistoProvider>(
   customProvider: P = provider as any
-): LocalAPI<P> {
+): BagistoAPI<P> {
   return commerceApi(customProvider as any)
 }
