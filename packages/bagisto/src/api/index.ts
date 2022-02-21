@@ -1,6 +1,6 @@
 import type { CommerceAPI, CommerceAPIConfig } from '@vercel/commerce/api'
 import { getCommerceApi as commerceApi } from '@vercel/commerce/api'
-import createFetcher from './utils/fetch-local'
+import graphqlFetcher from './utils/graphql-api/fetch'
 
 import getAllPages from './operations/get-all-pages'
 import getPage from './operations/get-page'
@@ -10,14 +10,20 @@ import getAllProductPaths from './operations/get-all-product-paths'
 import getAllProducts from './operations/get-all-products'
 import getProduct from './operations/get-product'
 
-export interface BagistoConfig extends CommerceAPIConfig {}
+export interface BagistoCommerceConfig extends CommerceAPIConfig {
+  currencyCode: string
+}
+
+export interface BagistoConfig extends BagistoCommerceConfig {}
 const config: BagistoConfig = {
-  commerceUrl: 'http://192.168.15.114/modules/headless-ecommerce/public/',
   apiToken: '',
   cartCookie: '',
-  customerCookie: '',
   cartCookieMaxAge: 2592000,
-  fetch: createFetcher(() => getCommerceApi().getConfig()),
+  commerceUrl:
+    'http://192.168.15.114/modules/headless-ecommerce/public/graphql',
+  currencyCode: 'USD',
+  customerCookie: '',
+  fetch: graphqlFetcher(() => getCommerceApi().getConfig()),
 }
 
 const operations = {
