@@ -1,28 +1,41 @@
-import { Fetcher } from '@vercel/commerce/utils/types'
-import { API_URL } from './const'
+import { FetcherError } from '@vercel/commerce/utils/errors'
+import type { Fetcher } from '@vercel/commerce/utils/types'
 
-export const fetcher: Fetcher = async ({
-  url = API_URL,
-  query,
-  method = 'POST',
+async function getText(res: Response) {
+  try {
+    return (await res.text()) || res.statusText
+  } catch (error) {
+    return res.statusText
+  }
+}
+
+async function getError(res: Response) {
+  if (res.headers.get('Content-Type')?.includes('application/json')) {
+    const data = await res.json()
+    return new FetcherError({ errors: data.errors, status: res.status })
+  }
+  return new FetcherError({ message: await getText(res), status: res.status })
+}
+
+const fetcher: Fetcher = async ({
+  url,
+  method = 'GET',
+  variables,
+  body: bodyObj,
 }) => {
-  const res = await fetch(url!, {
-    method,
-    body: JSON.stringify({ query }),
-    headers: {
-      // 'Authorization': `JWT 123`,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  })
-
-  console.log(res)
+  const hasBody = Boolean(variables || bodyObj)
+  const body = hasBody
+    ? JSON.stringify(variables ? { variables } : bodyObj)
+    : undefined
+  const headers = hasBody ? { 'Content-Type': 'application/json' } : undefined
+  const res = await fetch(url!, { method, body, headers })
 
   if (res.ok) {
     const { data } = await res.json()
-
     return data
   }
 
-  throw res
+  throw await getError(res)
 }
+
+export default fetcher

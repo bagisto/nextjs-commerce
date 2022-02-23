@@ -1,49 +1,18 @@
-import { useCallback } from 'react'
 import { MutationHook } from '@vercel/commerce/utils/types'
 import useLogin, { UseLogin } from '@vercel/commerce/auth/use-login'
-import { CommerceError, ValidationError } from '@vercel/commerce/utils/errors'
-import useCustomer from '../customer/use-customer'
 
+import { useCallback } from 'react'
+import { CommerceError } from '@vercel/commerce/utils/errors'
+import type { LoginHook } from '../type/login'
+import useCustomer from '../customer/use-customer'
+import useCart from '../cart/use-cart'
 export default useLogin as UseLogin<typeof handler>
 
-export const handler: MutationHook<any> = {
+export const handler: MutationHook<LoginHook> = {
   fetchOptions: {
-    query: `
-        mutation customerLogin {
-          customerLogin(input: {
-              email: "devansh@example.com"
-              password: "admin123"
-          }) {
-            status
-            success
-            accessToken
-            tokenType
-            expiresIn
-            customer {
-              id
-              firstName
-              lastName
-              name
-              gender
-              dateOfBirth
-              email
-              phone
-              password
-              apiToken
-              customerGroupId
-              subscribedToNewsLetter
-              isVerified
-              token
-              notes
-              status
-              createdAt
-              updatedAt
-            }
-          }
-      }
-    `,
+    url: '/api/login',
+    method: 'POST',
   },
-
   async fetcher({ input: { email, password }, options, fetch }) {
     if (!(email && password)) {
       throw new CommerceError({
@@ -51,25 +20,24 @@ export const handler: MutationHook<any> = {
       })
     }
 
-    const { login } = await fetch({
+    return fetch({
       ...options,
+      body: { email, password },
     })
-
-    return null
   },
-
   useHook:
     ({ fetch }) =>
     () => {
       const { mutate } = useCustomer()
-
+      const { mutate: mutateCart } = useCart()
       return useCallback(
         async function login(input) {
           const data = await fetch({ input })
           await mutate()
+          await mutateCart()
           return data
         },
-        [fetch, mutate]
+        [fetch, mutate, mutateCart]
       )
     },
 }
