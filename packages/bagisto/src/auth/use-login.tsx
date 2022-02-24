@@ -1,11 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback } from 'react'
 
-import useLogin, { UseLogin } from '@vercel/commerce/auth/use-login';
-import { CommerceError } from '@vercel/commerce/utils/errors';
-import { MutationHook } from '@vercel/commerce/utils/types';
+import useLogin, { UseLogin } from '@vercel/commerce/auth/use-login'
+import { CommerceError } from '@vercel/commerce/utils/errors'
+import { MutationHook } from '@vercel/commerce/utils/types'
 
-import useCart from '../cart/use-cart';
-import useCustomer from '../customer/use-customer';
+import useCustomer from '../customer/use-customer'
 
 import type { LoginHook } from '../type/login'
 
@@ -32,15 +31,14 @@ export const handler: MutationHook<LoginHook> = {
     ({ fetch }) =>
     () => {
       const { mutate } = useCustomer()
-      const { mutate: mutateCart } = useCart()
+
       return useCallback(
         async function login(input) {
           const data = await fetch({ input })
           await mutate()
-          await mutateCart()
           return data
         },
-        [fetch, mutate, mutateCart]
+        [fetch, mutate]
       )
     },
 }

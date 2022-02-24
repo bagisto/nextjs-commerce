@@ -8,7 +8,7 @@ import getCustomerWishlist from './operations/get-customer-wishlist';
 import getPage from './operations/get-page';
 import getProduct from './operations/get-product';
 import getSiteInfo from './operations/get-site-info';
-import graphqlFetcher from './utils/fetch/fetch-grapql-api';
+import graphqlFetcher from './utils/fetch/fetch-graphql-api';
 
 import type { CommerceAPI, CommerceAPIConfig } from '@vercel/commerce/api'
 
