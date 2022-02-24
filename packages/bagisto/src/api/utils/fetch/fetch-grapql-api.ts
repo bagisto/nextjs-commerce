@@ -1,7 +1,10 @@
-import { FetcherError } from '@vercel/commerce/utils/errors'
+import { FetcherError } from '@vercel/commerce/utils/errors';
+
+import fetch from './fetch';
+
 import type { GraphQLFetcher } from '@vercel/commerce/api'
-import type { BagistoConfig } from '../../index'
-import fetch from '../fetch'
+
+import type { BagistoConfig } from '../../'
 
 const fetchGraphqlApi: (getConfig: () => BagistoConfig) => GraphQLFetcher =
   (getConfig) =>

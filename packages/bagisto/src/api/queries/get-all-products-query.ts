@@ -1,7 +1,6 @@
-export const getProductQuery = `
-query products {
-  products (input: {id: 1}) {
-    data {
+export const getAllProductsQuery = /* GraphQL */ `
+  query newProducts {
+    newProducts(count: 6) {
       productFlats {
         id
         productId
@@ -17,5 +16,4 @@ query products {
       }
     }
   }
-}
 `

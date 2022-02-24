@@ -1,11 +1,14 @@
-import { MutationHook } from '@vercel/commerce/utils/types'
-import useLogin, { UseLogin } from '@vercel/commerce/auth/use-login'
+import { useCallback } from 'react';
 
-import { useCallback } from 'react'
-import { CommerceError } from '@vercel/commerce/utils/errors'
+import useLogin, { UseLogin } from '@vercel/commerce/auth/use-login';
+import { CommerceError } from '@vercel/commerce/utils/errors';
+import { MutationHook } from '@vercel/commerce/utils/types';
+
+import useCart from '../cart/use-cart';
+import useCustomer from '../customer/use-customer';
+
 import type { LoginHook } from '../type/login'
-import useCustomer from '../customer/use-customer'
-import useCart from '../cart/use-cart'
+
 export default useLogin as UseLogin<typeof handler>
 
 export const handler: MutationHook<LoginHook> = {

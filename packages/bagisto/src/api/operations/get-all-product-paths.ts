@@ -1,5 +1,5 @@
 import { BagistoCommerceConfig } from '../index'
-import { getAllProductsQuery } from '../utils/graphql-api/queries/get-all-products-query'
+import { getAllProductsQuery } from '../queries/get-all-products-query'
 import { normalizeProduct } from '../lib/normalize'
 
 export type GetAllProductPathsResult = {

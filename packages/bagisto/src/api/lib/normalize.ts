@@ -1,3 +1,5 @@
+import type { Customer } from '../../type/customer'
+
 export function normalizeProduct(product: any, config: any): any {
   const productFlat = product.productFlats[0]
 
@@ -18,5 +20,14 @@ export function normalizeProduct(product: any, config: any): any {
     })),
     variants: [],
     options: [],
+  }
+}
+
+export function normalizeCustomer(customer: any): Customer {
+  return {
+    id: customer.id,
+    firstName: customer.firstName,
+    lastName: customer.lastName,
+    email: customer.email,
   }
 }

@@ -1,28 +1,30 @@
-import type { CommerceAPI, CommerceAPIConfig } from '@vercel/commerce/api'
-import { getCommerceApi as commerceApi } from '@vercel/commerce/api'
+import { getCommerceApi as commerceApi } from '@vercel/commerce/api';
 
-import getAllPages from './operations/get-all-pages'
-import getPage from './operations/get-page'
-import getSiteInfo from './operations/get-site-info'
-import getCustomerWishlist from './operations/get-customer-wishlist'
-import getAllProductPaths from './operations/get-all-product-paths'
-import getAllProducts from './operations/get-all-products'
-import getProduct from './operations/get-product'
-import graphqlFetcher from './utils/graphql-api/fetch'
-import { API_URL } from '../const'
+import { API_URL } from '../const';
+import getAllPages from './operations/get-all-pages';
+import getAllProductPaths from './operations/get-all-product-paths';
+import getAllProducts from './operations/get-all-products';
+import getCustomerWishlist from './operations/get-customer-wishlist';
+import getPage from './operations/get-page';
+import getProduct from './operations/get-product';
+import getSiteInfo from './operations/get-site-info';
+import graphqlFetcher from './utils/fetch/fetch-grapql-api';
+
+import type { CommerceAPI, CommerceAPIConfig } from '@vercel/commerce/api'
 
 export interface BagistoCommerceConfig extends CommerceAPIConfig {
   currencyCode: string
 }
 
 export interface BagistoConfig extends BagistoCommerceConfig {}
+
 const config: BagistoConfig = {
   apiToken: '',
   cartCookie: '',
   cartCookieMaxAge: 2592000,
   commerceUrl: API_URL,
   currencyCode: 'USD',
-  customerCookie: '',
+  customerCookie: 'BAGISTO_CUSTOMER_COOKIE',
   fetch: graphqlFetcher(() => getCommerceApi().getConfig()),
 }
 
@@ -39,6 +41,7 @@ const operations = {
 export const provider = { config, operations }
 
 export type BagistoProvider = typeof provider
+
 export type BagistoAPI<P extends BagistoProvider = BagistoProvider> =
   CommerceAPI<P | any>
 
