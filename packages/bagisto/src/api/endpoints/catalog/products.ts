@@ -1,12 +1,14 @@
+import { createEndpoint, GetAPISchema } from '@vercel/commerce/api'
+import productsEndpoint from '@vercel/commerce/api/endpoints/catalog/products'
 import { Product } from '@vercel/commerce/types/product'
-import { ProductsEndpoint } from './'
 import { normalizeProduct } from '../../lib/normalize'
 
-const getProducts: ProductsEndpoint['handlers']['getProducts'] = async ({
+import type { BagistoAPI } from '../../index'
+
+export const getProducts: ProductsEndpoint['handlers']['getProducts'] = async ({
   res,
   body: { search, categoryId, brandId, sort },
   config,
-  commerce,
 }) => {
   const responseData: Product[] = []
 
@@ -19,4 +21,15 @@ const getProducts: ProductsEndpoint['handlers']['getProducts'] = async ({
   res.status(200).json({ data: { products, found } })
 }
 
-export default getProducts
+export type ProductsAPI = GetAPISchema<BagistoAPI, any>
+
+export type ProductsEndpoint = ProductsAPI['endpoint']
+
+export const handlers: ProductsEndpoint['handlers'] = { getProducts }
+
+const productsApi = createEndpoint<ProductsAPI>({
+  handler: productsEndpoint,
+  handlers,
+})
+
+export default productsApi
