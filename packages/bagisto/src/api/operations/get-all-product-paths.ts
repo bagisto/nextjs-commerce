@@ -1,6 +1,6 @@
 import { BagistoCommerceConfig } from '../index'
-import { getAllProductsQuery } from '../queries/get-all-products-query'
 import { normalizeProduct } from '../lib/normalize'
+import { getAllProductsQuery } from '../queries/get-all-products-query'
 
 export type GetAllProductPathsResult = {
   products: Array<{ path: string }>

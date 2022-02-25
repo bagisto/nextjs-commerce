@@ -1,6 +1,8 @@
-export type Page = { url: string }
-export type GetAllPagesResult = { pages: Page[] }
 import type { BagistoConfig } from '../index'
+
+export type Page = { url: string }
+
+export type GetAllPagesResult = { pages: Page[] }
 
 export default function getAllPagesOperation() {
   function getAllPages({

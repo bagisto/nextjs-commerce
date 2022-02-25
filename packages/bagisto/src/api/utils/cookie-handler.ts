@@ -1,5 +1,4 @@
 import { NextApiRequest } from 'next'
-
 import { BagistoAPI } from '../'
 
 export default class CookieHandler {

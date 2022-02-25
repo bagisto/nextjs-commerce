@@ -1,7 +1,6 @@
-import { createEndpoint, GetAPISchema } from '@vercel/commerce/api';
-import customerEndpoint from '@vercel/commerce/api/endpoints/customer';
-
-import getLoggedInCustomer from './customer';
+import { createEndpoint, GetAPISchema } from '@vercel/commerce/api'
+import customerEndpoint from '@vercel/commerce/api/endpoints/customer'
+import getLoggedInCustomer from './customer'
 
 import type { CustomerSchema } from '../../../type/customer'
 import type { BagistoAPI } from '../../'

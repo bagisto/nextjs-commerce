@@ -1,14 +1,14 @@
-import { getCommerceApi as commerceApi } from '@vercel/commerce/api';
-
-import { API_URL } from '../const';
-import getAllPages from './operations/get-all-pages';
-import getAllProductPaths from './operations/get-all-product-paths';
-import getAllProducts from './operations/get-all-products';
-import getCustomerWishlist from './operations/get-customer-wishlist';
-import getPage from './operations/get-page';
-import getProduct from './operations/get-product';
-import getSiteInfo from './operations/get-site-info';
-import graphqlFetcher from './utils/fetch/fetch-graphql-api';
+import { getCommerceApi as commerceApi } from '@vercel/commerce/api'
+import getAllPages from './operations/get-all-pages'
+import getAllProductPaths from './operations/get-all-product-paths'
+import getAllProducts from './operations/get-all-products'
+import getCustomerWishlist from './operations/get-customer-wishlist'
+import getPage from './operations/get-page'
+import getProduct from './operations/get-product'
+import getSiteInfo from './operations/get-site-info'
+import login from './operations/login'
+import graphqlFetcher from './utils/fetch/fetch-graphql-api'
+import { API_URL } from '../const'
 
 import type { CommerceAPI, CommerceAPIConfig } from '@vercel/commerce/api'
 
@@ -29,6 +29,7 @@ const config: BagistoConfig = {
 }
 
 const operations = {
+  login,
   getAllPages,
   getPage,
   getSiteInfo,

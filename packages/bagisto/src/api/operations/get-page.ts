@@ -1,4 +1,5 @@
 export type Page = any
+
 export type GetPageResult = { page?: Page }
 
 export type PageVariables = {

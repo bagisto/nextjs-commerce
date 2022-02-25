@@ -1,8 +1,9 @@
-import { GetAPISchema, createEndpoint } from '@vercel/commerce/api'
+import { createEndpoint, GetAPISchema } from '@vercel/commerce/api'
 import loginEndpoint from '@vercel/commerce/api/endpoints/login'
-import type { LoginSchema } from '../../../type/login'
-import type { BagistoAPI } from '../..'
 import login from './login'
+
+import type { LoginSchema } from '../../../type/login'
+import type { BagistoAPI } from '../../'
 
 export type LoginAPI = GetAPISchema<BagistoAPI, LoginSchema>
 

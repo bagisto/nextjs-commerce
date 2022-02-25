@@ -10,23 +10,27 @@ const getLoggedInCustomer: CustomerEndpoint['handlers']['getLoggedInCustomer'] =
 
     let accessToken = cookieHandler.getAccessToken()
 
-    const { data } = await config.fetch(getCustomerAccountQuery, undefined, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: accessToken,
-      },
-    })
-
-    const customer = normalizeCustomer(data?.accountInfo?.customer)
-
-    if (!customer.id) {
-      return res.status(400).json({
-        data: null,
-        errors: [{ message: 'Customer not found', code: 'not_found' }],
+    if (accessToken) {
+      const { data } = await config.fetch(getCustomerAccountQuery, undefined, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: accessToken,
+        },
       })
+
+      const customer = normalizeCustomer(data?.accountInfo?.customer)
+
+      if (!customer.id) {
+        return res.status(400).json({
+          data: null,
+          errors: [{ message: 'Customer not found', code: 'not_found' }],
+        })
+      }
+
+      return res.status(200).json({ data: { customer } })
     }
 
-    return res.status(200).json({ data: { customer } })
+    return res.status(200).json({ data: null })
   }
 
 export default getLoggedInCustomer

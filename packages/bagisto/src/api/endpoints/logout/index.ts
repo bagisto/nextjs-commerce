@@ -1,6 +1,5 @@
 import { createEndpoint, GetAPISchema } from '@vercel/commerce/api'
 import logoutEndpoint from '@vercel/commerce/api/endpoints/logout'
-
 import logout from './logout'
 
 import type { LogoutSchema } from '../../../type/logout'

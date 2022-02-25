@@ -1,7 +1,5 @@
-import { useCallback } from 'react'
-
 import useLogout, { UseLogout } from '@vercel/commerce/auth/use-logout'
-
+import { useCallback } from 'react'
 import useCustomer from '../customer/use-customer'
 
 import type { MutationHook } from '@vercel/commerce/utils/types'

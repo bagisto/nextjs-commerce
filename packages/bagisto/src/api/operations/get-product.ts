@@ -1,9 +1,10 @@
 import { Product } from '@vercel/commerce/types/product'
 import { GetProductOperation } from '@vercel/commerce/types/product'
+import { normalizeProduct } from '../lib/normalize'
+import { getAllProductsQuery } from '../queries/get-all-products-query'
+
 import type { OperationContext } from '@vercel/commerce/api/operations'
 import type { BagistoCommerceConfig } from '../index'
-import { getAllProductsQuery } from '../queries/get-all-products-query'
-import { normalizeProduct } from '../lib/normalize'
 
 export default function getProductOperation({
   commerce,

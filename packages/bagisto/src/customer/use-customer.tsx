@@ -1,7 +1,7 @@
+import { SWRHook } from '@vercel/commerce/utils/types'
 import useCustomer, {
   UseCustomer,
 } from '@vercel/commerce/customer/use-customer'
-import { SWRHook } from '@vercel/commerce/utils/types'
 
 import type { CustomerHook } from '../type/customer'
 
