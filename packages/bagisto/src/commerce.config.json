@@ -2,8 +2,8 @@
   "provider": "bagisto",
   "features": {
     "wishlist": false,
-    "cart": false,
-    "search": true,
+    "cart": true,
+    "search": false,
     "customerAuth": true,
     "customCheckout": false
   }

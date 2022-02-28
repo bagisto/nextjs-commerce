@@ -31,3 +31,42 @@ export function normalizeCustomer(customer: any): Customer {
     email: customer.email,
   }
 }
+
+export function normalizeCart(data: any): any {
+  return {
+    id: data.id,
+    customerId: data.customerId,
+    email: data?.customerEmail,
+    createdAt: data?.createdAt,
+    currency: {
+      code: 'USD',
+    },
+    lineItems: data.items.map(normalizeLineItem),
+    lineItemsSubtotalPrice: data?.subTotal,
+    subtotalPrice: data?.subTotal,
+    totalPrice: data?.grandTotal,
+  }
+}
+
+function normalizeLineItem(item: any): any {
+  let product = item.product.productFlats[0]
+
+  return {
+    id: item.id,
+    variantId: null,
+    productId: String(product.id),
+    name: product.name,
+    quantity: item.quantity,
+    variant: {
+      id: product.id,
+      sku: product?.sku,
+      name: product.name,
+      image: {
+        url: item?.product?.images[0]?.url,
+      },
+      price: item?.basePrice,
+    },
+    options: [],
+    path: `${product.urlKey}`,
+  }
+}
