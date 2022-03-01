@@ -1,14 +1,12 @@
-import { getCartQuery } from '../../../api/queries/get-cart-query'
-import CookieHandler from '../../../api/utils/cookie-handler'
 import { normalizeCart } from '../../lib/normalize'
-import { removeCartItemMutation } from '../../mutations/remove-cart-item-mutation'
+import CartHandler from '../../utils/cart-handler'
 
 import type { CartEndpoint } from './'
 
 const removeItem: CartEndpoint['handlers']['removeItem'] = async ({
   req,
   res,
-  body: { cartId, itemId },
+  body: { itemId },
   config,
 }) => {
   if (!itemId) {
@@ -18,37 +16,9 @@ const removeItem: CartEndpoint['handlers']['removeItem'] = async ({
     })
   }
 
-  const cookieHandler = new CookieHandler(config, req, res)
+  const cartHandler = new CartHandler(config, req, res)
 
-  const accessToken = cookieHandler.getAccessToken()
-
-  const removeItemResponse = await config.fetch(
-    removeCartItemMutation,
-    {
-      variables: { itemId: itemId },
-    },
-    {
-      headers: {
-        Authorization: accessToken,
-      },
-    }
-  )
-
-  let currentCart = null
-
-  if (removeItemResponse?.data?.removeCartItem?.cart) {
-    let result = await config.fetch(
-      getCartQuery,
-      {},
-      {
-        headers: {
-          Authorization: accessToken,
-        },
-      }
-    )
-
-    currentCart = result?.data?.cartDetail
-  }
+  let currentCart = await cartHandler.removeItem(itemId)
 
   res
     .status(200)
