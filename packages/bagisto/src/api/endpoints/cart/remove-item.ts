@@ -1,5 +1,5 @@
 import { normalizeCart } from '../../lib/normalize'
-import CartHandler from '../../utils/cart-handler'
+import CartHandler from '../../utils/handler/cart-handler'
 
 import type { CartEndpoint } from './'
 

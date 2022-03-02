@@ -1,6 +1,6 @@
 import { normalizeCustomer } from '../../lib/normalize'
 import { getCustomerAccountQuery } from '../../queries/get-customer-account-query'
-import CookieHandler from '../../utils/cookie-handler'
+import CookieHandler from '../../utils/handler/cookie-handler'
 
 import type { CustomerEndpoint } from './'
 
@@ -8,7 +8,7 @@ const getLoggedInCustomer: CustomerEndpoint['handlers']['getLoggedInCustomer'] =
   async ({ req, res, config }) => {
     const cookieHandler = new CookieHandler(config, req, res)
 
-    let accessToken = cookieHandler.getAccessToken()
+    let accessToken = cookieHandler.getCustomerToken()
 
     if (accessToken) {
       const { data } = await config.fetch(getCustomerAccountQuery, undefined, {

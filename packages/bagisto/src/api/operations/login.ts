@@ -9,7 +9,6 @@ import type {
 import type { LoginOperation } from '../../type/login'
 import type { BagistoConfig } from '../'
 
-
 export default function loginOperation({ commerce }: OperationContext<any>) {
   async function login<T extends LoginOperation>(opts: {
     variables: T['variables']

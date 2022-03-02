@@ -14,6 +14,7 @@ import type { CommerceAPI, CommerceAPIConfig } from '@vercel/commerce/api'
 
 export interface BagistoCommerceConfig extends CommerceAPIConfig {
   currencyCode: string
+  guestCookie: string
 }
 
 export interface BagistoConfig extends BagistoCommerceConfig {}
@@ -24,6 +25,7 @@ const config: BagistoConfig = {
   cartCookieMaxAge: 2592000,
   commerceUrl: API_URL,
   currencyCode: 'USD',
+  guestCookie: 'BAGISTO_GUEST_COOKIE',
   customerCookie: 'BAGISTO_CUSTOMER_COOKIE',
   fetch: graphqlFetcher(() => getCommerceApi().getConfig()),
 }
