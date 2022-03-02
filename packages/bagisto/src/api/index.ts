@@ -8,7 +8,7 @@ import getProduct from './operations/get-product'
 import getSiteInfo from './operations/get-site-info'
 import login from './operations/login'
 import graphqlFetcher from './utils/fetch/fetch-graphql-api'
-import { API_URL } from '../const'
+import { API_URL, CURRENCY_CODE, CUSTOMER_COOKIE, GUEST_COOKIE } from '../const'
 
 import type { CommerceAPI, CommerceAPIConfig } from '@vercel/commerce/api'
 
@@ -24,9 +24,9 @@ const config: BagistoConfig = {
   cartCookie: '',
   cartCookieMaxAge: 2592000,
   commerceUrl: API_URL,
-  currencyCode: 'USD',
-  guestCookie: 'BAGISTO_GUEST_COOKIE',
-  customerCookie: 'BAGISTO_CUSTOMER_COOKIE',
+  currencyCode: CURRENCY_CODE,
+  guestCookie: GUEST_COOKIE,
+  customerCookie: CUSTOMER_COOKIE,
   fetch: graphqlFetcher(() => getCommerceApi().getConfig()),
 }
 
