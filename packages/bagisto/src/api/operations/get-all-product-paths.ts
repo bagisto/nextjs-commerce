@@ -14,10 +14,10 @@ export default function getAllProductPathsOperation({ commerce }: any) {
   } = {}): Promise<GetAllProductPathsResult> {
     const bagistoConfig = commerce.getConfig(config)
 
-    const data = await bagistoConfig.fetch(getAllProductsQuery)
+    const result = await bagistoConfig.fetch(getAllProductsQuery)
 
-    const normalizedProducts = data.data.newProducts
-      ? data.data.newProducts.map((item: any) =>
+    const normalizedProducts = result?.data?.products?.data
+      ? result?.data?.products?.data.map((item: any) =>
           normalizeProduct(item, bagistoConfig)
         )
       : []
