@@ -13,19 +13,21 @@ export default class ProductHandler {
   getAllProducts = async () => {
     const result = await this.config.fetch(getAllProductsQuery)
 
-    return result?.data?.getProductListing?.data ?? []
+    return this.normalizeAllProducts(
+      result?.data?.getProductListing?.data ?? []
+    )
   }
 
   getNewProducts = async () => {
     const result = await this.config.fetch(getNewProductsQuery)
 
-    return result?.data?.newProducts ?? []
+    return this.normalizeAllProducts(result?.data?.newProducts ?? [])
   }
 
   getFeaturedProducts = async () => {
     const result = await this.config.fetch(getFeaturedProductsQuery)
 
-    return result?.data?.featuredProducts ?? []
+    return this.normalizeAllProducts(result?.data?.featuredProducts ?? [])
   }
 
   getAllProductsByCategory = async (category: string = 'all') => {

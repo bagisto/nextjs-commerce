@@ -24,12 +24,8 @@ export default function getProductOperation({
 
     const products = await productHandler.getAllProducts()
 
-    const normalizedProducts = productHandler.normalizeAllProducts(products)
-
     return {
-      product: normalizedProducts.find(
-        ({ slug }: any) => slug === variables!.slug
-      ),
+      product: products.find(({ slug }: any) => slug === variables!.slug),
     }
   }
 

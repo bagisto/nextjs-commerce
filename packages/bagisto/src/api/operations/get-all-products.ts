@@ -24,10 +24,8 @@ export default function getAllProductsOperation({
 
     const products = await productHandler.getAllProducts()
 
-    const normalizedProducts = productHandler.normalizeAllProducts(products)
-
     return {
-      products: normalizedProducts,
+      products,
     }
   }
   return getAllProducts

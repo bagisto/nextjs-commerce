@@ -17,10 +17,8 @@ export default function getAllProductPathsOperation({ commerce }: any) {
 
     const products = await productHandler.getAllProducts()
 
-    const normalizedProducts = productHandler.normalizeAllProducts(products)
-
     return Promise.resolve({
-      products: normalizedProducts.map((product: any) => ({
+      products: products.map((product: any) => ({
         path: product.path,
       })),
     })
