@@ -23,8 +23,8 @@ export default function getProductOperation({
 
     const result = await bagistoConfig.fetch(query)
 
-    const normalizedProducts = result?.data?.products?.data
-      ? result?.data?.products?.data.map((item: any) =>
+    const normalizedProducts = result?.data?.getProductListing?.data
+      ? result?.data?.getProductListing?.data.map((item: any) =>
           normalizeProduct(item, bagistoConfig)
         )
       : []

@@ -16,8 +16,8 @@ export default function getAllProductPathsOperation({ commerce }: any) {
 
     const result = await bagistoConfig.fetch(getAllProductsQuery)
 
-    const normalizedProducts = result?.data?.products?.data
-      ? result?.data?.products?.data.map((item: any) =>
+    const normalizedProducts = result?.data?.getProductListing?.data
+      ? result?.data?.getProductListing?.data.map((item: any) =>
           normalizeProduct(item, bagistoConfig)
         )
       : []

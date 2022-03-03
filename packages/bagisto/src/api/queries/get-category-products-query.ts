@@ -1,18 +1,80 @@
 export const getFeaturedProductsQuery = /* GraphQL */ `
   query featuredProducts {
     featuredProducts {
+      id
+      type
+      isInWishlist
+      attributeFamilyId
+      sku
+      parentId
       productFlats {
         id
-        productId
+        sku
+        productNumber
         name
-        urlKey
-        price
         description
+        shortDescription
+        urlKey
+        new
+        featured
+        status
+        visibleIndividually
+        thumbnail
+        price
+        cost
+        specialPrice
+        specialPriceFrom
+        specialPriceTo
+        weight
+        color
+        colorLabel
+        size
+        sizeLabel
+        locale
+        channel
+        productId
+        parentId
+        minPrice
+        maxPrice
+        metaTitle
+        metaKeywords
+        metaDescription
+        width
+        height
+        depth
+        createdAt
+        updatedAt
       }
-      images {
+      cacheBaseImage {
+        smallImageUrl
+        mediumImageUrl
+        largeImageUrl
+        originalImageUrl
+      }
+      cacheGalleryImages {
+        smallImageUrl
+        mediumImageUrl
+        largeImageUrl
+        originalImageUrl
+      }
+      priceHtml {
         id
-        path
-        url
+        type
+        html
+        regular
+        special
+      }
+      reviews {
+        id
+        title
+        rating
+        comment
+        status
+        productId
+        customerId
+        customerName
+        createdAt
+        updatedAt
       }
     }
   }
@@ -21,18 +83,80 @@ export const getFeaturedProductsQuery = /* GraphQL */ `
 export const getNewProductsQuery = /* GraphQL */ `
   query newProducts {
     newProducts {
+      id
+      type
+      isInWishlist
+      attributeFamilyId
+      sku
+      parentId
       productFlats {
         id
-        productId
+        sku
+        productNumber
         name
-        urlKey
-        price
         description
+        shortDescription
+        urlKey
+        new
+        featured
+        status
+        visibleIndividually
+        thumbnail
+        price
+        cost
+        specialPrice
+        specialPriceFrom
+        specialPriceTo
+        weight
+        color
+        colorLabel
+        size
+        sizeLabel
+        locale
+        channel
+        productId
+        parentId
+        minPrice
+        maxPrice
+        metaTitle
+        metaKeywords
+        metaDescription
+        width
+        height
+        depth
+        createdAt
+        updatedAt
       }
-      images {
+      cacheBaseImage {
+        smallImageUrl
+        mediumImageUrl
+        largeImageUrl
+        originalImageUrl
+      }
+      cacheGalleryImages {
+        smallImageUrl
+        mediumImageUrl
+        largeImageUrl
+        originalImageUrl
+      }
+      priceHtml {
         id
-        path
-        url
+        type
+        html
+        regular
+        special
+      }
+      reviews {
+        id
+        title
+        rating
+        comment
+        status
+        productId
+        customerId
+        customerName
+        createdAt
+        updatedAt
       }
     }
   }

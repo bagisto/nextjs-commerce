@@ -1,7 +1,9 @@
 import type { Customer } from '../../type/customer'
 
 export function normalizeProduct(product: any, config: any): any {
-  const productFlat = product.productFlats[0]
+  const productFlat = product.productFlats.find(
+    ({ locale }: any) => locale === 'en'
+  )
 
   return {
     id: productFlat.id,
@@ -14,8 +16,8 @@ export function normalizeProduct(product: any, config: any): any {
       currencyCode: config.currencyCode,
     },
     descriptionHtml: productFlat.description,
-    images: product.images.map((p: any) => ({
-      url: p.url,
+    images: product.cacheGalleryImages.map((p: any) => ({
+      url: p.originalImageUrl,
       altText: 'Random',
     })),
     variants: [],

@@ -13,7 +13,7 @@ import type { BagistoAPI } from '../../index'
 const allProducts = async (config: any) => {
   const result = await config.fetch(getAllProductsQuery)
 
-  return result?.data?.products?.data ?? []
+  return result?.data?.getProductListing?.data ?? []
 }
 
 const newProducts = async (config: any) => {
