@@ -1,7 +1,6 @@
 import { Product } from '@vercel/commerce/types/product'
 import { GetAllProductsOperation } from '@vercel/commerce/types/product'
-import { normalizeProduct } from '../lib/normalize'
-import { getAllProductsQuery } from '../queries/get-all-products-query'
+import ProductHandler from '../utils/handler/product-handler'
 
 import type { OperationContext } from '@vercel/commerce/api/operations'
 import type { BagistoConfig } from '../index'
@@ -10,7 +9,7 @@ export default function getAllProductsOperation({
   commerce,
 }: OperationContext<any>) {
   async function getAllProducts<T extends GetAllProductsOperation>({
-    query = getAllProductsQuery,
+    query,
     variables,
     config,
   }: {
@@ -21,13 +20,11 @@ export default function getAllProductsOperation({
   } = {}): Promise<{ products: Product[] | any[] }> {
     const bagistoConfig = commerce.getConfig(config)
 
-    const result = await bagistoConfig.fetch(query)
+    const productHandler = new ProductHandler(bagistoConfig)
 
-    const normalizedProducts = result?.data?.getProductListing?.data
-      ? result?.data?.getProductListing?.data.map((item: any) =>
-          normalizeProduct(item, bagistoConfig)
-        )
-      : []
+    const products = await productHandler.getAllProducts()
+
+    const normalizedProducts = productHandler.normalizeAllProducts(products)
 
     return {
       products: normalizedProducts,

@@ -1,61 +1,25 @@
 import { createEndpoint, GetAPISchema } from '@vercel/commerce/api'
 import productsEndpoint from '@vercel/commerce/api/endpoints/catalog/products'
 import { Product } from '@vercel/commerce/types/product'
-import { normalizeProduct } from '../../lib/normalize'
-import { getAllProductsQuery } from '../../queries/get-all-products-query'
-import {
-  getFeaturedProductsQuery,
-  getNewProductsQuery,
-} from '../../queries/get-category-products-query'
+import ProductHandler from '../../utils/handler/product-handler'
 
 import type { BagistoAPI } from '../../index'
-
-const allProducts = async (config: any) => {
-  const result = await config.fetch(getAllProductsQuery)
-
-  return result?.data?.getProductListing?.data ?? []
-}
-
-const newProducts = async (config: any) => {
-  const result = await config.fetch(getNewProductsQuery)
-
-  return result?.data?.newProducts ?? []
-}
-
-const featuredProducts = async (config: any) => {
-  const result = await config.fetch(getFeaturedProductsQuery)
-
-  return result?.data?.featuredProducts ?? []
-}
 
 export const getProducts: ProductsEndpoint['handlers']['getProducts'] = async ({
   res,
   body: { search, categoryId, brandId, sort },
   config,
 }) => {
-  let responseData = []
+  const productHandler = new ProductHandler(config)
 
-  switch (categoryId) {
-    case 'featured-products':
-      responseData = await featuredProducts(config)
-      break
+  const products = await productHandler.getAllProductsByCategory(categoryId)
 
-    case 'new-products':
-      responseData = await newProducts(config)
-      break
+  const normalizedProducts: Product[] =
+    productHandler.normalizeAllProducts(products)
 
-    default:
-      responseData = await allProducts(config)
-      break
-  }
+  const found = products.length > 0 ? true : false
 
-  const found = responseData.length > 0 ? true : false
-
-  const products: Product[] = responseData.map((item: any) =>
-    normalizeProduct(item, config)
-  )
-
-  res.status(200).json({ data: { products, found } })
+  res.status(200).json({ data: { products: normalizedProducts, found } })
 }
 
 export type ProductsAPI = GetAPISchema<BagistoAPI, any>

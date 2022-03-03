@@ -1,6 +1,5 @@
 import { BagistoCommerceConfig } from '../index'
-import { normalizeProduct } from '../lib/normalize'
-import { getAllProductsQuery } from '../queries/get-all-products-query'
+import ProductHandler from '../utils/handler/product-handler'
 
 export type GetAllProductPathsResult = {
   products: Array<{ path: string }>
@@ -14,20 +13,16 @@ export default function getAllProductPathsOperation({ commerce }: any) {
   } = {}): Promise<GetAllProductPathsResult> {
     const bagistoConfig = commerce.getConfig(config)
 
-    const result = await bagistoConfig.fetch(getAllProductsQuery)
+    const productHandler = new ProductHandler(bagistoConfig)
 
-    const normalizedProducts = result?.data?.getProductListing?.data
-      ? result?.data?.getProductListing?.data.map((item: any) =>
-          normalizeProduct(item, bagistoConfig)
-        )
-      : []
+    const products = await productHandler.getAllProducts()
 
-    const products = normalizedProducts.map((product: any) => ({
-      path: product.path,
-    }))
+    const normalizedProducts = productHandler.normalizeAllProducts(products)
 
     return Promise.resolve({
-      products: products,
+      products: normalizedProducts.map((product: any) => ({
+        path: product.path,
+      })),
     })
   }
 
