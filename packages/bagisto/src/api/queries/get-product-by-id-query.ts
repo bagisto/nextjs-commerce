@@ -87,7 +87,10 @@ export const getProductById = /* GraphQL */ `
         type
         html
         regular
+        regularWithoutCurrencyCode
         special
+        specialWithoutCurrencyCode
+        currencyCode
       }
       reviews {
         id

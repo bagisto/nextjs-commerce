@@ -80,7 +80,10 @@ export const getNewProductsQuery = /* GraphQL */ `
         type
         html
         regular
+        regularWithoutCurrencyCode
         special
+        specialWithoutCurrencyCode
+        currencyCode
       }
       reviews {
         id

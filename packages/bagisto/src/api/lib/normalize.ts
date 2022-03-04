@@ -13,8 +13,8 @@ export function normalizeProduct(product: any, config: any): any {
     path: `/${productFlat.urlKey}`,
     slug: productFlat.urlKey,
     price: {
-      value: productFlat?.price ?? 0,
-      currencyCode: config.currencyCode,
+      value: parseFloat(product.priceHtml.regularWithoutCurrencyCode ?? 0),
+      currencyCode: product.priceHtml.currencyCode,
     },
     descriptionHtml: productFlat.description,
     images: product.cacheGalleryImages.map((p: any) => ({
