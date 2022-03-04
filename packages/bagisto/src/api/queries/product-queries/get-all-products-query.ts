@@ -1,4 +1,4 @@
-import { productInfoFragment } from '../fragments/product'
+import { productInfoFragment } from '../../fragments/product'
 
 export const getAllProductsQuery = /* GraphQL */ `
   query getProductListing(

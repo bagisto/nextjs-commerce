@@ -1,13 +1,13 @@
 import { NextApiRequest } from 'next'
 import CookieHandler from './cookie-handler'
 import ProductHandler from './product-handler'
-import { removeCartItemMutation } from '../../mutations/remove-cart-item-mutation'
-import { updateCartItemMutation } from '../../mutations/update-cart-item-mutation'
+import { removeCartItemMutation } from '../../mutations/cart-mutations/remove-cart-item-mutation'
+import { updateCartItemMutation } from '../../mutations/cart-mutations/update-cart-item-mutation'
 import { getCartQuery } from '../../queries/get-cart-query'
 import {
   addSimpleProductMutation,
   addConfigurableProductMutation,
-} from '../../mutations/add-to-cart-mutation'
+} from '../../mutations/cart-mutations/add-to-cart-mutation'
 
 export default class CartHandler {
   config: any

@@ -1,8 +1,8 @@
 import { normalizeProduct } from '../../lib/normalize'
-import { getAllProductsQuery } from '../../queries/get-all-products-query'
-import { getFeaturedProductsQuery } from '../../queries/get-featured-products-query'
-import { getNewProductsQuery } from '../../queries/get-new-products-query'
-import { getProductById } from '../../queries/get-product-by-id-query'
+import { getAllProductsQuery } from '../../queries/product-queries/get-all-products-query'
+import { getFeaturedProductsQuery } from '../../queries/product-queries/get-featured-products-query'
+import { getNewProductsQuery } from '../../queries/product-queries/get-new-products-query'
+import { getProductById } from '../../queries/product-queries/get-product-by-id-query'
 
 export default class ProductHandler {
   config: any
