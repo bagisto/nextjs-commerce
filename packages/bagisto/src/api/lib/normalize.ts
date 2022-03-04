@@ -6,7 +6,8 @@ export function normalizeProduct(product: any, config: any): any {
   )
 
   return {
-    id: productFlat.id,
+    id: product.id,
+    type: product.type,
     name: productFlat.name,
     vendor: '',
     path: `/${productFlat.urlKey}`,
@@ -20,9 +21,76 @@ export function normalizeProduct(product: any, config: any): any {
       url: p.originalImageUrl,
       altText: 'Random',
     })),
-    variants: [],
-    options: [],
+    variants:
+      product.type === 'configurable' ? normalizeProductVariant(product) : [],
+    options:
+      product.type === 'configurable' ? normalizeProductOption(product) : [],
   }
+}
+
+export function normalizeProductVariant(product: any) {
+  const findAttributeLabel = (attributeId: any) => {
+    let attribute = product.configutableData.attributes.find(
+      (attribute: any) => attribute.id == attributeId
+    )
+
+    return attribute.label
+  }
+
+  const findAttributeOptionLabel = (attributeOptionId: any) => {
+    let attributeOption = product.configutableData.attributes
+      .map((attribute: any) => {
+        let attributeOption = attribute.options.find(
+          (option: any) => option.id == attributeOptionId
+        )
+
+        return attributeOption ? attributeOption.label : null
+      })
+      .filter((attributeOption: any) => attributeOption != null)
+      .pop()
+
+    return attributeOption
+  }
+
+  return product.configutableData.index.map((variant: any) => {
+    return {
+      id: variant.id,
+      options: variant.attributeOptionIds.map((attributeOptionId: any) => {
+        return {
+          __typename: 'MultipleChoiceOption',
+          id: attributeOptionId.attributeId,
+          displayName: findAttributeLabel(attributeOptionId.attributeId),
+          values: [
+            {
+              id: attributeOptionId.attributeOptionId,
+              label: findAttributeOptionLabel(
+                attributeOptionId.attributeOptionId
+              ),
+              hexColors: [''],
+            },
+          ],
+        }
+      }),
+    }
+  })
+}
+
+export function normalizeProductOption(product: any) {
+  const attributes = product.configutableData.attributes ?? []
+
+  return attributes.map((attribute: any) => {
+    return {
+      id: attribute.id,
+      displayName: attribute.label,
+      values: attribute.options.map((option: any) => {
+        return {
+          id: option.id,
+          label: option.label,
+          hexColors: [''],
+        }
+      }),
+    }
+  })
 }
 
 export function normalizeCustomer(customer: any): Customer {

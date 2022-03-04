@@ -18,6 +18,31 @@ export const getAllProductsQuery = /* GraphQL */ `
         attributeFamilyId
         sku
         parentId
+        superAttributes {
+          id
+          code
+          adminName
+          type
+          position
+        }
+        configutableData {
+          index {
+            id
+            attributeOptionIds {
+              attributeId
+              attributeOptionId
+            }
+          }
+          attributes {
+            id
+            code
+            label
+            options {
+              id
+              label
+            }
+          }
+        }
         productFlats {
           id
           sku

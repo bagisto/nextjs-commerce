@@ -1,12 +1,19 @@
-export const getNewProductsQuery = /* GraphQL */ `
-  query newProducts {
-    newProducts {
+export const getProductById = /* GraphQL */ `
+  query product($id: ID!) {
+    product(id: $id) {
       id
       type
       isInWishlist
       attributeFamilyId
       sku
       parentId
+      superAttributes {
+        id
+        code
+        adminName
+        type
+        position
+      }
       configutableData {
         index {
           id

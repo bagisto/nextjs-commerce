@@ -7,6 +7,24 @@ export const getFeaturedProductsQuery = /* GraphQL */ `
       attributeFamilyId
       sku
       parentId
+      configutableData {
+        index {
+          id
+          attributeOptionIds {
+            attributeId
+            attributeOptionId
+          }
+        }
+        attributes {
+          id
+          code
+          label
+          options {
+            id
+            label
+          }
+        }
+      }
       productFlats {
         id
         sku

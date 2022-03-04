@@ -1,9 +1,13 @@
 import { NextApiRequest } from 'next'
 import CookieHandler from './cookie-handler'
-import { addToCartMutation } from '../../mutations/add-to-cart-mutation'
+import ProductHandler from './product-handler'
 import { removeCartItemMutation } from '../../mutations/remove-cart-item-mutation'
 import { updateCartItemMutation } from '../../mutations/update-cart-item-mutation'
 import { getCartQuery } from '../../queries/get-cart-query'
+import {
+  addSimpleProductMutation,
+  addConfigurableProductMutation,
+} from '../../mutations/add-to-cart-mutation'
 
 export default class CartHandler {
   config: any
@@ -81,11 +85,20 @@ export default class CartHandler {
   }
 
   async addItem(item: any) {
-    const result = await this.config.fetch(
-      addToCartMutation,
-      { variables: { productId: item.productId, quantity: item.quantity } },
-      this.getFetchOptions()
-    )
+    const productHandler = new ProductHandler(this.config)
+
+    item['product'] = await productHandler.getProductById(item.productId)
+
+    let result
+    switch (item['product'].type) {
+      case 'configurable':
+        result = await this.addConfigurableProduct(item)
+        break
+
+      default:
+        result = await this.addSimpleProduct(item)
+        break
+    }
 
     if (result?.data?.addItemToCart?.cart) {
       return await this.getCart()
@@ -124,5 +137,39 @@ export default class CartHandler {
     }
 
     return null
+  }
+
+  async addSimpleProduct(item: any) {
+    return await this.config.fetch(
+      addSimpleProductMutation,
+      { variables: { productId: item.productId, quantity: item.quantity } },
+      this.getFetchOptions()
+    )
+  }
+
+  async addConfigurableProduct(item: any) {
+    let selectedVariant = item.product.variants.find(
+      (variant: any) => variant.id == item.variantId
+    )
+
+    return await this.config.fetch(
+      addConfigurableProductMutation,
+      {
+        variables: {
+          input: {
+            productId: item.productId,
+            quantity: item.quantity,
+            selectedConfigurableOption: parseInt(item.variantId),
+            superAttribute: selectedVariant.options.map((option: any) => {
+              return {
+                attributeId: parseInt(option.id),
+                attributeOptionId: parseInt(option.values.pop().id),
+              }
+            }),
+          },
+        },
+      },
+      this.getFetchOptions()
+    )
   }
 }
