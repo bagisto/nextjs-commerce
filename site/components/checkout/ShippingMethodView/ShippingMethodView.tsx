@@ -6,13 +6,13 @@ import { Button, Text } from '@components/ui'
 import { useUI } from '@components/ui/context'
 import SidebarLayout from '@components/common/SidebarLayout'
 
-import s from './PaymentMethodView.module.css'
+import s from './ShippingMethodView.module.css'
 
 interface Form extends HTMLFormElement {
-  paymentMethod: HTMLInputElement
+  shippingMethod: HTMLInputElement
 }
 
-const PaymentMethodView: FC = () => {
+const ShippingMethodView: FC = () => {
   const { setSidebarView } = useUI()
   // const addCard = useAddCard()
 
@@ -20,11 +20,11 @@ const PaymentMethodView: FC = () => {
     event.preventDefault()
 
     console.log({
-      paymentMethod: event.target.paymentMethod.value,
+      shippingMethod: event.target.shippingMethod.value,
     })
 
     // await addCard({
-    //   paymentMethod: event.target.paymentMethod.value,
+    //   shippingMethod: event.target.shippingMethod.value,
     // })
 
     // setSidebarView('CHECKOUT_VIEW')
@@ -38,12 +38,12 @@ const PaymentMethodView: FC = () => {
           <div>
             <div className="flex flex-row my-3 items-center">
               <input
-                name="paymentMethod"
-                value="cod"
+                name="shippingMethod"
+                value="free_free"
                 className={s.radio}
                 type="radio"
               />
-              <span className="ml-3 text-sm">Cash On Delivery</span>
+              <span className="ml-3 text-sm">Free Shipping</span>
             </div>
           </div>
         </div>
@@ -57,4 +57,4 @@ const PaymentMethodView: FC = () => {
   )
 }
 
-export default PaymentMethodView
+export default ShippingMethodView

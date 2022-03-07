@@ -7,10 +7,12 @@ import { useUI } from '@components/ui/context'
 import type { Page } from '@commerce/types/page'
 import { Navbar, Footer } from '@components/common'
 import type { Category } from '@commerce/types/site'
+import BillingView from '@components/checkout/BillingView'
 import ShippingView from '@components/checkout/ShippingView'
 import CartSidebarView from '@components/cart/CartSidebarView'
 import { useAcceptCookies } from '@lib/hooks/useAcceptCookies'
 import { Sidebar, Button, LoadingDots } from '@components/ui'
+import ShippingMethodView from '@components/checkout/ShippingMethodView'
 import PaymentMethodView from '@components/checkout/PaymentMethodView'
 import CheckoutSidebarView from '@components/checkout/CheckoutSidebarView'
 import { CheckoutProvider } from '@components/checkout/context'
@@ -29,34 +31,25 @@ const dynamicProps = {
   loading: Loading,
 }
 
-const SignUpView = dynamic(
-  () => import('@components/auth/SignUpView'),
-  {
-    ...dynamicProps
-  }
-)
+const SignUpView = dynamic(() => import('@components/auth/SignUpView'), {
+  ...dynamicProps,
+})
 
 const ForgotPassword = dynamic(
   () => import('@components/auth/ForgotPassword'),
   {
-    ...dynamicProps
-  }
-)
-
-const FeatureBar = dynamic(
-  () => import('@components/common/FeatureBar'),
-  {
-    ...dynamicProps
-  }
-)
-
-const Modal = dynamic(
-  () => import('@components/ui/Modal'),
-  {
     ...dynamicProps,
-    ssr: false
   }
 )
+
+const FeatureBar = dynamic(() => import('@components/common/FeatureBar'), {
+  ...dynamicProps,
+})
+
+const Modal = dynamic(() => import('@components/ui/Modal'), {
+  ...dynamicProps,
+  ssr: false,
+})
 
 interface Props {
   pageProps: {
@@ -95,8 +88,10 @@ const SidebarView: FC<{
       {sidebarView === 'MOBILEMENU_VIEW' && <MenuSidebarView links={links} />}
       {sidebarView === 'CART_VIEW' && <CartSidebarView />}
       {sidebarView === 'CHECKOUT_VIEW' && <CheckoutSidebarView />}
-      {sidebarView === 'PAYMENT_VIEW' && <PaymentMethodView />}
+      {sidebarView === 'BILLING_VIEW' && <BillingView />}
       {sidebarView === 'SHIPPING_VIEW' && <ShippingView />}
+      {sidebarView === 'SHIPPING_METHOD_VIEW' && <ShippingMethodView />}
+      {sidebarView === 'PAYMENT_METHOD_VIEW' && <PaymentMethodView />}
     </Sidebar>
   )
 }

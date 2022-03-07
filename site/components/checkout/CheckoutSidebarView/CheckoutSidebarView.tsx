@@ -1,16 +1,18 @@
 import Link from 'next/link'
 import { FC, useState } from 'react'
 import CartItem from '@components/cart/CartItem'
+import SidebarLayout from '@components/common/SidebarLayout'
 import { Button, Text } from '@components/ui'
 import { useUI } from '@components/ui/context'
-import SidebarLayout from '@components/common/SidebarLayout'
 import useCart from '@framework/cart/use-cart'
-import usePrice from '@framework/product/use-price'
 import useCheckout from '@framework/checkout/use-checkout'
-import ShippingWidget from '../ShippingWidget'
-import PaymentWidget from '../PaymentWidget'
+import usePrice from '@framework/product/use-price'
 import s from './CheckoutSidebarView.module.css'
+import BillingWidget from '../BillingWidget'
+import ShippingWidget from '../ShippingWidget'
 import { useCheckoutContext } from '../context'
+import ShippingMethodWidget from '../ShippingMethodWidget'
+import PaymentMethodWidget from '../PaymentMethodWidget'
 
 const CheckoutSidebarView: FC = () => {
   const [loadingSubmit, setLoadingSubmit] = useState(false)
@@ -60,13 +62,24 @@ const CheckoutSidebarView: FC = () => {
           </a>
         </Link>
 
-        <PaymentWidget
-          isValid={checkoutData?.hasPayment}
-          onClick={() => setSidebarView('PAYMENT_VIEW')}
+        <BillingWidget
+          isValid={false}
+          onClick={() => setSidebarView('BILLING_VIEW')}
         />
+
         <ShippingWidget
           isValid={checkoutData?.hasShipping}
           onClick={() => setSidebarView('SHIPPING_VIEW')}
+        />
+
+        <ShippingMethodWidget
+          isValid={checkoutData?.hasPayment}
+          onClick={() => setSidebarView('SHIPPING_METHOD_VIEW')}
+        />
+
+        <PaymentMethodWidget
+          isValid={checkoutData?.hasPayment}
+          onClick={() => setSidebarView('PAYMENT_METHOD_VIEW')}
         />
 
         <ul className={s.lineItemsList}>
