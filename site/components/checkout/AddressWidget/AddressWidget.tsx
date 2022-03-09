@@ -1,6 +1,6 @@
 import { FC } from 'react'
-import s from './BillingWidget.module.css'
-import { ChevronRight, CreditCard, Check, MapPin } from '@components/icons'
+import { Check, ChevronRight, CreditCard, MapPin } from '@components/icons'
+import s from './AddressWidget.module.css'
 
 interface ComponentProps {
   onClick?: () => any
@@ -13,7 +13,7 @@ const AddressWidget: FC<ComponentProps> = ({ onClick, isValid }) => {
       <div className="flex flex-1 items-center">
         <MapPin className="w-5 flex" />
         <span className="ml-5 text-sm text-center font-medium">
-          Add Billing Address
+          Add Checkout Addresses
         </span>
       </div>
       <div>{isValid ? <Check /> : <ChevronRight />}</div>

@@ -2,24 +2,27 @@ import cn from 'clsx'
 import React, { FC } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+
 import { CommerceProvider } from '@framework'
-import { useUI } from '@components/ui/context'
-import type { Page } from '@commerce/types/page'
-import { Navbar, Footer } from '@components/common'
-import type { Category } from '@commerce/types/site'
-import BillingView from '@components/checkout/BillingView'
-import ShippingView from '@components/checkout/ShippingView'
-import CartSidebarView from '@components/cart/CartSidebarView'
-import { useAcceptCookies } from '@lib/hooks/useAcceptCookies'
-import { Sidebar, Button, LoadingDots } from '@components/ui'
-import ShippingMethodView from '@components/checkout/ShippingMethodView'
-import PaymentMethodView from '@components/checkout/PaymentMethodView'
-import CheckoutSidebarView from '@components/checkout/CheckoutSidebarView'
 import { CheckoutProvider } from '@components/checkout/context'
-import MenuSidebarView, { Link } from '../UserNav/MenuSidebarView'
+
+import { Navbar, Footer } from '@components/common'
+import { Sidebar, Button, LoadingDots } from '@components/ui'
+import { useUI } from '@components/ui/context'
+import { useAcceptCookies } from '@lib/hooks/useAcceptCookies'
 
 import LoginView from '@components/auth/LoginView'
+import MenuSidebarView, { Link } from '../UserNav/MenuSidebarView'
+import CartSidebarView from '@components/cart/CartSidebarView'
+import CheckoutSidebarView from '@components/checkout/CheckoutSidebarView'
+import AddressView from '@components/checkout/AddressView'
+import ShippingMethodView from '@components/checkout/ShippingMethodView'
+import PaymentMethodView from '@components/checkout/PaymentMethodView'
+
 import s from './Layout.module.css'
+
+import type { Page } from '@commerce/types/page'
+import type { Category } from '@commerce/types/site'
 
 const Loading = () => (
   <div className="w-80 h-80 flex items-center text-center justify-center p-3">
@@ -88,8 +91,7 @@ const SidebarView: FC<{
       {sidebarView === 'MOBILEMENU_VIEW' && <MenuSidebarView links={links} />}
       {sidebarView === 'CART_VIEW' && <CartSidebarView />}
       {sidebarView === 'CHECKOUT_VIEW' && <CheckoutSidebarView />}
-      {sidebarView === 'BILLING_VIEW' && <BillingView />}
-      {sidebarView === 'SHIPPING_VIEW' && <ShippingView />}
+      {sidebarView === 'ADDRESS_VIEW' && <AddressView />}
       {sidebarView === 'SHIPPING_METHOD_VIEW' && <ShippingMethodView />}
       {sidebarView === 'PAYMENT_METHOD_VIEW' && <PaymentMethodView />}
     </Sidebar>

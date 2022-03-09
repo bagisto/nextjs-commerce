@@ -1,18 +1,23 @@
 import Link from 'next/link'
 import { FC, useState } from 'react'
-import CartItem from '@components/cart/CartItem'
-import SidebarLayout from '@components/common/SidebarLayout'
+
 import { Button, Text } from '@components/ui'
 import { useUI } from '@components/ui/context'
+
+import { useCheckoutContext } from '../context'
+import SidebarLayout from '@components/common/SidebarLayout'
+
+import CartItem from '@components/cart/CartItem'
+
 import useCart from '@framework/cart/use-cart'
 import useCheckout from '@framework/checkout/use-checkout'
 import usePrice from '@framework/product/use-price'
-import s from './CheckoutSidebarView.module.css'
-import BillingWidget from '../BillingWidget'
-import ShippingWidget from '../ShippingWidget'
-import { useCheckoutContext } from '../context'
+
+import AddressWidget from '../AddressWidget'
 import ShippingMethodWidget from '../ShippingMethodWidget'
 import PaymentMethodWidget from '../PaymentMethodWidget'
+
+import s from './CheckoutSidebarView.module.css'
 
 const CheckoutSidebarView: FC = () => {
   const [loadingSubmit, setLoadingSubmit] = useState(false)
@@ -62,14 +67,9 @@ const CheckoutSidebarView: FC = () => {
           </a>
         </Link>
 
-        <BillingWidget
+        <AddressWidget
           isValid={false}
-          onClick={() => setSidebarView('BILLING_VIEW')}
-        />
-
-        <ShippingWidget
-          isValid={checkoutData?.hasShipping}
-          onClick={() => setSidebarView('SHIPPING_VIEW')}
+          onClick={() => setSidebarView('ADDRESS_VIEW')}
         />
 
         <ShippingMethodWidget
