@@ -4,15 +4,34 @@ export interface Address {
 }
 
 export interface AddressFields {
-  type: string
-  firstName: string
-  lastName: string
-  company: string
-  streetNumber: string
-  apartments: string
-  zipCode: string
-  city: string
-  country: string
+  /**
+   * Billing.
+   */
+  billingCompany: string
+  billingFirstName: string
+  billingLastName: string
+  billingEmail: string
+  billingStreetAddress: string
+  billingCity: string
+  billingCountry: string
+  billingState: string
+  billingZipCode: string
+  billingPhone: string
+  billingUseForShipping: string
+
+  /**
+   * Shipping.
+   */
+  shippingCompany: string
+  shippingFirstName: string
+  shippingLastName: string
+  shippingEmail: string
+  shippingStreetAddress: string
+  shippingCity: string
+  shippingCountry: string
+  shippingState: string
+  shippingZipCode: string
+  shippingPhone: string
 }
 
 export type CustomerAddressTypes = {

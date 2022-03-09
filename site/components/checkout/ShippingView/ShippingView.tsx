@@ -65,17 +65,6 @@ const ShippingView: FC = () => {
             Shipping Address
           </h2>
           <div>
-            <div className="flex flex-row my-3 items-center">
-              <input name="type" value="same" className={s.radio} type="radio" />
-              <span className="ml-3 text-sm">Same as billing address</span>
-            </div>
-            <div className="flex flex-row my-3 items-center">
-              <input name="type" value="different" className={s.radio} type="radio" />
-              <span className="ml-3 text-sm">
-                Use a different shipping address
-              </span>
-            </div>
-            <hr className="border-accent-2 my-6" />
             <div>
               <div className={s.fieldset}>
                 <label className={s.label}>Company (Optional)</label>

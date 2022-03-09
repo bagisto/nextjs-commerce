@@ -1,13 +1,18 @@
 import { NextApiRequest } from 'next'
+
 import CookieHandler from './cookie-handler'
 import ProductHandler from './product-handler'
-import { removeCartItemMutation } from '../../mutations/cart-mutations/remove-cart-item-mutation'
-import { updateCartItemMutation } from '../../mutations/cart-mutations/update-cart-item-mutation'
+
 import { getCartQuery } from '../../queries/get-cart-query'
 import {
   addSimpleProductMutation,
   addConfigurableProductMutation,
 } from '../../mutations/cart-mutations/add-to-cart-mutation'
+import { updateCartItemMutation } from '../../mutations/cart-mutations/update-cart-item-mutation'
+import { removeCartItemMutation } from '../../mutations/cart-mutations/remove-cart-item-mutation'
+import { saveAddressMutation } from '../../mutations/cart-mutations/save-address-mutation'
+
+import type { AddressFields } from '@vercel/commerce/types/customer/address'
 
 export default class CartHandler {
   config: any
@@ -166,6 +171,57 @@ export default class CartHandler {
                 attributeOptionId: parseInt(option.values.pop().id),
               }
             }),
+          },
+        },
+      },
+      this.getFetchOptions()
+    )
+  }
+
+  async saveAddress(address: AddressFields) {
+    const billingAddress = {
+      companyName: address.billingCompany,
+      firstName: address.billingFirstName,
+      lastName: address.billingLastName,
+      email: address.billingEmail,
+      address1: address.billingStreetAddress,
+      address2: '',
+      city: address.billingCity,
+      country: address.billingCountry,
+      state: address.billingState,
+      postcode: address.billingZipCode,
+      phone: address.billingPhone,
+      useForShipping: address.billingUseForShipping == 'true' ? true : false,
+      saveAsAddress: false,
+    }
+
+    const shippingAddress = billingAddress.useForShipping
+      ? billingAddress
+      : {
+          companyName: address.shippingCompany,
+          firstName: address.shippingFirstName,
+          lastName: address.shippingLastName,
+          email: address.shippingEmail,
+          address1: address.shippingStreetAddress,
+          address2: '',
+          city: address.shippingCity,
+          country: address.shippingCountry,
+          state: address.shippingState,
+          postcode: address.shippingZipCode,
+          phone: address.shippingPhone,
+          saveAsAddress: false,
+        }
+
+    return await this.config.fetch(
+      saveAddressMutation,
+      {
+        variables: {
+          input: {
+            billingAddressId: 0,
+            shippingAddressId: 0,
+            billing: billingAddress,
+            shipping: shippingAddress,
+            type: 'shipping',
           },
         },
       },
