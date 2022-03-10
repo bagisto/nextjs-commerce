@@ -11,6 +11,7 @@ import { handler as useRemoveItem } from './cart/use-remove-item'
 
 import { handler as useCheckout } from './checkout/use-checkout'
 import { handler as useAddShippingMethod } from './checkout/use-add-shipping-method'
+import { handler as useAddPaymentMethod } from './checkout/use-add-payment-method'
 import { handler as useSubmitCheckout } from './checkout/use-submit-checkout'
 
 import { handler as useCustomer } from './customer/use-customer'
@@ -24,7 +25,12 @@ export const bagistoProvider = {
   cartCookie: 'session',
   fetcher: fetcher,
   cart: { useCart, useAddItem, useUpdateItem, useRemoveItem },
-  checkout: { useCheckout, useAddShippingMethod, useSubmitCheckout },
+  checkout: {
+    useCheckout,
+    useAddShippingMethod,
+    useAddPaymentMethod,
+    useSubmitCheckout,
+  },
   customer: {
     useCustomer,
     address: {

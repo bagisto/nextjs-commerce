@@ -1,11 +1,10 @@
 import { FC } from 'react'
-import cn from 'clsx'
 
-import useAddCard from '@framework/customer/card/use-add-item'
 import { Button, Text } from '@components/ui'
 import { useUI } from '@components/ui/context'
 import SidebarLayout from '@components/common/SidebarLayout'
 
+import useAddPaymentMethod from '@framework/checkout/use-add-payment-method'
 import s from './PaymentMethodView.module.css'
 
 interface Form extends HTMLFormElement {
@@ -14,20 +13,16 @@ interface Form extends HTMLFormElement {
 
 const PaymentMethodView: FC = () => {
   const { setSidebarView } = useUI()
-  // const addCard = useAddCard()
+  const addPaymentMethod = useAddPaymentMethod()
 
   async function handleSubmit(event: React.ChangeEvent<Form>) {
     event.preventDefault()
 
-    console.log({
+    await addPaymentMethod({
       paymentMethod: event.target.paymentMethod.value,
     })
 
-    // await addCard({
-    //   paymentMethod: event.target.paymentMethod.value,
-    // })
-
-    // setSidebarView('CHECKOUT_VIEW')
+    setSidebarView('CHECKOUT_VIEW')
   }
 
   return (
@@ -39,7 +34,7 @@ const PaymentMethodView: FC = () => {
             <div className="flex flex-row my-3 items-center">
               <input
                 name="paymentMethod"
-                value="cod"
+                value="cashondelivery"
                 className={s.radio}
                 type="radio"
               />

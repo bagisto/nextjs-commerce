@@ -18,15 +18,11 @@ const ShippingMethodView: FC = () => {
   async function handleSubmit(event: React.ChangeEvent<Form>) {
     event.preventDefault()
 
-    console.log({
-      shippingMethod: event.target.shippingMethod.value,
-    })
-
     await addShippingMethod({
       shippingMethod: event.target.shippingMethod.value,
     })
 
-    // setSidebarView('CHECKOUT_VIEW')
+    setSidebarView('CHECKOUT_VIEW')
   }
 
   return (

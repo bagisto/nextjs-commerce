@@ -12,6 +12,7 @@ import { updateCartItemMutation } from '../../mutations/cart-mutations/update-ca
 import { removeCartItemMutation } from '../../mutations/cart-mutations/remove-cart-item-mutation'
 import { saveAddressMutation } from '../../mutations/cart-mutations/save-address-mutation'
 import { saveShippingMethodMutation } from '../../mutations/cart-mutations/save-shipping-method-mutation'
+import { savePaymentMethodMutation } from '../../mutations/cart-mutations/save-payment-method-mutation'
 
 import type { AddressFields } from '@vercel/commerce/types/customer/address'
 
@@ -236,6 +237,18 @@ export default class CartHandler {
       {
         variables: {
           shippingMethod,
+        },
+      },
+      this.getFetchOptions()
+    )
+  }
+
+  async savePaymentMethod(paymentMethod: string) {
+    return await this.config.fetch(
+      savePaymentMethodMutation,
+      {
+        variables: {
+          paymentMethod,
         },
       },
       this.getFetchOptions()

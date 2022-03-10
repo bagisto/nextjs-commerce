@@ -12,7 +12,7 @@ export type CheckoutTypes = {
   hasShipping?: boolean
 }
 
-export type SubmitCheckoutHook<T extends CheckoutTypes = CheckoutTypes> = {
+export type AddShippingMethodHook<T extends CheckoutTypes = CheckoutTypes> = {
   data: T
   input?: T
   fetcherInput: T
@@ -20,7 +20,7 @@ export type SubmitCheckoutHook<T extends CheckoutTypes = CheckoutTypes> = {
   actionInput: T
 }
 
-export type AddShippingMethodHook<T extends CheckoutTypes = CheckoutTypes> = {
+export type AddPaymentMethodHook<T extends CheckoutTypes = CheckoutTypes> = {
   data: T
   input?: T
   fetcherInput: T
@@ -36,7 +36,17 @@ export type GetCheckoutHook<T extends CheckoutTypes = CheckoutTypes> = {
   mutations: { submit: UseSubmitCheckout }
 }
 
+export type SubmitCheckoutHook<T extends CheckoutTypes = CheckoutTypes> = {
+  data: T
+  input?: T
+  fetcherInput: T
+  body: { item: T }
+  actionInput: T
+}
+
 export type CheckoutHooks<T extends CheckoutTypes = CheckoutTypes> = {
+  addShippingMethod?: AddShippingMethodHook<T>
+  addPaymentMethod?: AddPaymentMethodHook<T>
   submitCheckout?: SubmitCheckoutHook<T>
   getCheckout: GetCheckoutHook<T>
 }
@@ -54,6 +64,14 @@ export type AddShippingMethodHandler<T extends CheckoutTypes = CheckoutTypes> =
     }
   }
 
+export type AddPaymentMethodHandler<T extends CheckoutTypes = CheckoutTypes> =
+  AddPaymentMethodHook<T> & {
+    body: {
+      cartId: string
+      paymentMethod: string
+    }
+  }
+
 export type SubmitCheckoutHandler<T extends CheckoutTypes = CheckoutTypes> =
   SubmitCheckoutHook<T> & {
     body: { cartId: string }
@@ -62,6 +80,7 @@ export type SubmitCheckoutHandler<T extends CheckoutTypes = CheckoutTypes> =
 export type CheckoutHandlers<T extends CheckoutTypes = CheckoutTypes> = {
   getCheckout: GetCheckoutHandler<T>
   addShippingMethod: AddShippingMethodHandler<T>
+  addPaymentMethod: AddPaymentMethodHandler<T>
   submitCheckout?: SubmitCheckoutHandler<T>
 }
 
