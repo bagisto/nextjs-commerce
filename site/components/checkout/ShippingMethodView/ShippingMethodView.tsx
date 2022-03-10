@@ -1,11 +1,10 @@
 import { FC } from 'react'
-import cn from 'clsx'
 
-import useAddCard from '@framework/customer/card/use-add-item'
 import { Button, Text } from '@components/ui'
 import { useUI } from '@components/ui/context'
 import SidebarLayout from '@components/common/SidebarLayout'
 
+import useAddShippingMethod from '@framework/checkout/use-add-shipping-method'
 import s from './ShippingMethodView.module.css'
 
 interface Form extends HTMLFormElement {
@@ -14,7 +13,7 @@ interface Form extends HTMLFormElement {
 
 const ShippingMethodView: FC = () => {
   const { setSidebarView } = useUI()
-  // const addCard = useAddCard()
+  const addShippingMethod = useAddShippingMethod()
 
   async function handleSubmit(event: React.ChangeEvent<Form>) {
     event.preventDefault()
@@ -23,9 +22,9 @@ const ShippingMethodView: FC = () => {
       shippingMethod: event.target.shippingMethod.value,
     })
 
-    // await addCard({
-    //   shippingMethod: event.target.shippingMethod.value,
-    // })
+    await addShippingMethod({
+      shippingMethod: event.target.shippingMethod.value,
+    })
 
     // setSidebarView('CHECKOUT_VIEW')
   }

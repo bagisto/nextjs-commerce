@@ -23,7 +23,13 @@ const checkoutEndpoint: GetAPISchema<
   const cartId = cookies[config.cartCookie]
 
   try {
-    // Create checkout
+    // Add shipping method
+    if (req.url === '/api/checkout/add-shipping-method') {
+      const body = { ...req.body, cartId }
+      return await handlers['addShippingMethod']({ ...ctx, body })
+    }
+
+    // Get checkout
     if (req.method === 'GET') {
       const body = { ...req.body, cartId }
       return await handlers['getCheckout']({ ...ctx, body })

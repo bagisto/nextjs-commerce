@@ -2,7 +2,6 @@ import type { UseSubmitCheckout } from '../checkout/use-submit-checkout'
 import type { Address, AddressFields } from './customer/address'
 import type { Card, CardFields } from './customer/card'
 
-// Index
 export type Checkout = any
 
 export type CheckoutTypes = {
@@ -14,6 +13,14 @@ export type CheckoutTypes = {
 }
 
 export type SubmitCheckoutHook<T extends CheckoutTypes = CheckoutTypes> = {
+  data: T
+  input?: T
+  fetcherInput: T
+  body: { item: T }
+  actionInput: T
+}
+
+export type AddShippingMethodHook<T extends CheckoutTypes = CheckoutTypes> = {
   data: T
   input?: T
   fetcherInput: T
@@ -39,6 +46,14 @@ export type GetCheckoutHandler<T extends CheckoutTypes = CheckoutTypes> =
     body: { cartId: string }
   }
 
+export type AddShippingMethodHandler<T extends CheckoutTypes = CheckoutTypes> =
+  AddShippingMethodHook<T> & {
+    body: {
+      cartId: string
+      shippingMethod: string
+    }
+  }
+
 export type SubmitCheckoutHandler<T extends CheckoutTypes = CheckoutTypes> =
   SubmitCheckoutHook<T> & {
     body: { cartId: string }
@@ -46,6 +61,7 @@ export type SubmitCheckoutHandler<T extends CheckoutTypes = CheckoutTypes> =
 
 export type CheckoutHandlers<T extends CheckoutTypes = CheckoutTypes> = {
   getCheckout: GetCheckoutHandler<T>
+  addShippingMethod: AddShippingMethodHandler<T>
   submitCheckout?: SubmitCheckoutHandler<T>
 }
 
