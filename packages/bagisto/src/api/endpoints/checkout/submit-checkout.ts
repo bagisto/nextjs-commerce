@@ -1,3 +1,5 @@
+import CartHandler from '../../utils/handler/cart-handler'
+
 import type { CheckoutEndpoint } from './'
 
 const submitCheckout: CheckoutEndpoint['handlers']['submitCheckout'] = async ({
@@ -6,7 +8,9 @@ const submitCheckout: CheckoutEndpoint['handlers']['submitCheckout'] = async ({
   body,
   config,
 }) => {
-  console.log('submitCheckout')
+  const cartHandler = new CartHandler(config, req, res)
+
+  await cartHandler.placeOrder()
 
   res.status(200).json({ data: null, errors: [] })
 }

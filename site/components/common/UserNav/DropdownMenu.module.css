@@ -5,7 +5,7 @@
 }
 
 .dropdownMenu {
-  @apply fixed right-0 mt-2 origin-top-right outline-none bg-primary z-40 w-full h-full;
+  @apply fixed right-0 mt-2 origin-top-right outline-none bg-primary z-40;
 }
 
 .link {

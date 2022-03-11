@@ -13,6 +13,7 @@ import { removeCartItemMutation } from '../../mutations/cart-mutations/remove-ca
 import { saveAddressMutation } from '../../mutations/cart-mutations/save-address-mutation'
 import { saveShippingMethodMutation } from '../../mutations/cart-mutations/save-shipping-method-mutation'
 import { savePaymentMethodMutation } from '../../mutations/cart-mutations/save-payment-method-mutation'
+import { placeOrderMutation } from '../../mutations/cart-mutations/place-order-mutation'
 
 import type { AddressFields } from '@vercel/commerce/types/customer/address'
 
@@ -182,35 +183,35 @@ export default class CartHandler {
 
   async saveAddress(address: AddressFields) {
     const billingAddress = {
-      companyName: address.billingCompany,
-      firstName: address.billingFirstName,
-      lastName: address.billingLastName,
-      email: address.billingEmail,
-      address1: address.billingStreetAddress,
+      companyName: address.billing.company,
+      firstName: address.billing.firstName,
+      lastName: address.billing.lastName,
+      email: address.billing.email,
+      address1: address.billing.streetAddress,
       address2: '',
-      city: address.billingCity,
-      country: address.billingCountry,
-      state: address.billingState,
-      postcode: address.billingZipCode,
-      phone: address.billingPhone,
-      useForShipping: address.billingUseForShipping == 'true' ? true : false,
+      city: address.billing.city,
+      country: address.billing.country,
+      state: address.billing.state,
+      postcode: address.billing.zipCode,
+      phone: address.billing.phone,
+      useForShipping: address.billing.useForShipping,
       saveAsAddress: false,
     }
 
     const shippingAddress = billingAddress.useForShipping
       ? billingAddress
       : {
-          companyName: address.shippingCompany,
-          firstName: address.shippingFirstName,
-          lastName: address.shippingLastName,
-          email: address.shippingEmail,
-          address1: address.shippingStreetAddress,
+          companyName: address.shipping.company,
+          firstName: address.shipping.firstName,
+          lastName: address.shipping.lastName,
+          email: address.shipping.email,
+          address1: address.shipping.streetAddress,
           address2: '',
-          city: address.shippingCity,
-          country: address.shippingCountry,
-          state: address.shippingState,
-          postcode: address.shippingZipCode,
-          phone: address.shippingPhone,
+          city: address.shipping.city,
+          country: address.shipping.country,
+          state: address.shipping.state,
+          postcode: address.shipping.zipCode,
+          phone: address.shipping.phone,
           saveAsAddress: false,
         }
 
@@ -251,6 +252,14 @@ export default class CartHandler {
           paymentMethod,
         },
       },
+      this.getFetchOptions()
+    )
+  }
+
+  async placeOrder() {
+    return await this.config.fetch(
+      placeOrderMutation,
+      {},
       this.getFetchOptions()
     )
   }

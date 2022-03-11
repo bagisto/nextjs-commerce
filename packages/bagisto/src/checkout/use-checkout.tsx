@@ -14,9 +14,15 @@ export const handler: SWRHook<GetCheckoutHook> = {
     url: '/api/checkout',
     method: 'GET',
   },
+
+  async fetcher({ options, fetch }) {
+    return await fetch({ ...options })
+  },
+
   useHook: ({ useData }) =>
     function useHook(input) {
       const submit = useSubmitCheckout()
+      
       const response = useData({
         swrOptions: { revalidateOnFocus: false, ...input?.swrOptions },
       })

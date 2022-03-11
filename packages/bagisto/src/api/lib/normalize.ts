@@ -115,6 +115,7 @@ export function normalizeCart(data: any): any {
     lineItemsSubtotalPrice: data?.subTotal,
     subtotalPrice: data?.subTotal,
     totalPrice: data?.grandTotal,
+    addresses: normalizeCartAddresses(data?.addresses),
   }
 }
 
@@ -138,5 +139,60 @@ function normalizeLineItem(item: any): any {
     },
     options: [],
     path: `${product.urlKey}`,
+  }
+}
+
+function normalizeCartAddresses(addresses: any) {
+  const addressDefaultValues = {
+    company: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    streetAddress: '',
+    city: '',
+    country: 'IN',
+    state: 'DL',
+    zipCode: '',
+    phone: '',
+  }
+
+  let billingAddress = addresses.find(
+    (address: any) => address.addressType === 'cart_billing'
+  )
+
+  let shippingAddress = addresses.find(
+    (address: any) => address.addressType === 'cart_shipping'
+  )
+
+  return {
+    billing: billingAddress
+      ? {
+          company: billingAddress.companyName,
+          firstName: billingAddress.firstName,
+          lastName: billingAddress.lastName,
+          email: billingAddress.email,
+          streetAddress: billingAddress.address1,
+          city: billingAddress.city,
+          country: billingAddress.country,
+          state: billingAddress.state,
+          zipCode: billingAddress.postcode,
+          phone: billingAddress.phone,
+          useForShipping: false,
+        }
+      : { ...addressDefaultValues, useForShipping: true },
+    shipping: shippingAddress
+      ? {
+          company: shippingAddress.companyName,
+          firstName: shippingAddress.firstName,
+          lastName: shippingAddress.lastName,
+          email: shippingAddress.email,
+          streetAddress: shippingAddress.address1,
+          city: shippingAddress.city,
+          country: shippingAddress.country,
+          state: shippingAddress.state,
+          zipCode: shippingAddress.postcode,
+          phone: shippingAddress.phone,
+        }
+      : { ...addressDefaultValues },
   }
 }

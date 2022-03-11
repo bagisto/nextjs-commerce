@@ -26,13 +26,13 @@ const checkoutEndpoint: GetAPISchema<
     // Add shipping method
     if (req.url === '/api/checkout/add-shipping-method') {
       const body = { ...req.body, cartId }
-      return await handlers['addShippingMethod']({ ...ctx, body })
+      return await handlers['addShippingMethod']!({ ...ctx, body })
     }
 
     // Add payment method
     if (req.url === '/api/checkout/add-payment-method') {
       const body = { ...req.body, cartId }
-      return await handlers['addPaymentMethod']({ ...ctx, body })
+      return await handlers['addPaymentMethod']!({ ...ctx, body })
     }
 
     // Get checkout

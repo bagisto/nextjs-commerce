@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { FC, useState } from 'react'
+import { FC, useState, useEffect } from 'react'
 
 import { Button, Text } from '@components/ui'
 import { useUI } from '@components/ui/context'
@@ -37,7 +37,6 @@ const CheckoutSidebarView: FC = () => {
       refreshCart()
       closeSidebar()
     } catch {
-      // TODO - handle error UI here.
       setLoadingSubmit(false)
     }
   }
@@ -68,12 +67,12 @@ const CheckoutSidebarView: FC = () => {
         </Link>
 
         <AddressWidget
-          isValid={false}
+          isValid={checkoutData?.hasAddresses}
           onClick={() => setSidebarView('ADDRESS_VIEW')}
         />
 
         <ShippingMethodWidget
-          isValid={checkoutData?.hasPayment}
+          isValid={checkoutData?.hasShipping}
           onClick={() => setSidebarView('SHIPPING_METHOD_VIEW')}
         />
 
@@ -117,11 +116,14 @@ const CheckoutSidebarView: FC = () => {
           <span>{total}</span>
         </div>
         <div>
-          {/* Once data is correctly filled */}
           <Button
             type="submit"
             width="100%"
-            disabled={!checkoutData?.hasPayment || !checkoutData?.hasShipping}
+            disabled={
+              !checkoutData?.hasAddresses ||
+              !checkoutData?.hasShipping ||
+              !checkoutData?.hasPayment
+            }
             loading={loadingSubmit}
           >
             Confirm Purchase

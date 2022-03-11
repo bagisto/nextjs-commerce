@@ -47,6 +47,11 @@ export default function Cart() {
     setSidebarView('CHECKOUT_VIEW')
   }
 
+  const goToSideBarView = (viewName: string) => {
+    openSidebar()
+    setSidebarView(viewName)
+  }
+
   return (
     <div className="grid lg:grid-cols-12 w-full max-w-7xl mx-auto">
       <div className="lg:col-span-8">
@@ -113,35 +118,6 @@ export default function Cart() {
       </div>
       <div className="lg:col-span-4">
         <div className="flex-shrink-0 px-4 py-24 sm:px-6">
-          {process.env.COMMERCE_CUSTOMCHECKOUT_ENABLED && (
-            <>
-              {/* Shipping Address */}
-              {/* Only available with customCheckout set to true - Meaning that the provider does offer checkout functionality. */}
-              <div className="rounded-md border border-accent-2 px-6 py-6 mb-4 text-center flex items-center justify-center cursor-pointer hover:border-accent-4">
-                <div className="mr-5">
-                  <MapPin />
-                </div>
-                <div className="text-sm text-center font-medium">
-                  <span className="uppercase">+ Add Shipping Address</span>
-                  {/* <span>
-                    1046 Kearny Street.<br/>
-                    San Franssisco, California
-                  </span> */}
-                </div>
-              </div>
-              {/* Payment Method */}
-              {/* Only available with customCheckout set to true - Meaning that the provider does offer checkout functionality. */}
-              <div className="rounded-md border border-accent-2 px-6 py-6 mb-4 text-center flex items-center justify-center cursor-pointer hover:border-accent-4">
-                <div className="mr-5">
-                  <CreditCard />
-                </div>
-                <div className="text-sm text-center font-medium">
-                  <span className="uppercase">+ Add Payment Method</span>
-                  {/* <span>VISA #### #### #### 2345</span> */}
-                </div>
-              </div>
-            </>
-          )}
           <div className="border-t border-accent-2">
             <ul className="py-3">
               <li className="flex justify-between py-1">

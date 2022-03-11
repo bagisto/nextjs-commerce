@@ -15,6 +15,43 @@ export const cartInfoFragment = /* GraphQL */ `
     customerId
     createdAt
     updatedAt
+    addresses {
+      id
+      cartId
+      addressType
+      customerId
+      firstName
+      lastName
+      gender
+      companyName
+      address1
+      address2
+      postcode
+      city
+      state
+      country
+      email
+      phone
+      defaultAddress
+      vatId
+    }
+    selectedShippingRate {
+      id
+      carrier
+      carrierTitle
+      method
+      methodTitle
+      methodDescription
+      price
+      basePrice
+      discountAmount
+      baseDiscountAmount
+    }
+    payment {
+      id
+      method
+      methodTitle
+    }
     items {
       id
       quantity

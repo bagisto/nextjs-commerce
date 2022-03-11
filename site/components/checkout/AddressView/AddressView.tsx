@@ -1,9 +1,11 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import cn from 'clsx'
 
 import Button from '@components/ui/Button'
 import { useUI } from '@components/ui/context'
 import SidebarLayout from '@components/common/SidebarLayout'
+
+import useCart from '@framework/cart/use-cart'
 import useAddAddress from '@framework/customer/address/use-add-item'
 
 import s from './AddressView.module.css'
@@ -39,205 +41,365 @@ interface Form extends HTMLFormElement {
   shippingPhone: HTMLInputElement
 }
 
+const addressDefaultValues = {
+  company: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  streetAddress: '',
+  city: '',
+  country: 'IN',
+  state: 'DL',
+  zipCode: '',
+  phone: '',
+}
+
 const AddressView: FC = () => {
   const { setSidebarView } = useUI()
 
-  const [useForShipping, setUseForShipping] = useState('true')
+  const { data: cartData, mutate: refreshCart } = useCart()
+
+  const [checkoutAddresses, setCheckoutAddresses] = useState({
+    billing: {
+      ...addressDefaultValues,
+      useForShipping: true,
+    },
+    shipping: {
+      ...addressDefaultValues,
+    },
+  })
 
   const addAddress = useAddAddress()
+
+  useEffect(() => {
+    setCheckoutAddresses(cartData.addresses)
+  }, [])
+
+  function updateCheckoutAddressField(
+    event: any,
+    addressType: string,
+    key: string
+  ) {
+    let updatedCheckoutAddresses: any = { ...checkoutAddresses }
+
+    if (key === 'useForShipping') {
+      updatedCheckoutAddresses[addressType][key] =
+        event.target.value === 'true' ? true : false
+    } else {
+      updatedCheckoutAddresses[addressType][key] = event.target.value
+    }
+
+    setCheckoutAddresses(updatedCheckoutAddresses)
+  }
 
   async function handleSubmit(event: React.ChangeEvent<Form>) {
     event.preventDefault()
 
-    await addAddress({
-      /**
-       * Billing.
-       */
-      billingCompany: event.target.billingCompany.value,
-      billingFirstName: event.target.billingFirstName.value,
-      billingLastName: event.target.billingLastName.value,
-      billingEmail: event.target.billingEmail.value,
-      billingStreetAddress: event.target.billingStreetAddress.value,
-      billingCity: event.target.billingCity.value,
-      billingCountry: event.target.billingCountry.value,
-      billingState: event.target.billingState.value,
-      billingZipCode: event.target.billingZipCode.value,
-      billingPhone: event.target.billingPhone.value,
-      billingUseForShipping: event.target.billingUseForShipping.value,
-
-      /**
-       * Shipping.
-       */
-      shippingCompany: event.target.shippingCompany?.value ?? '',
-      shippingFirstName: event.target.shippingFirstName?.value ?? '',
-      shippingLastName: event.target.shippingLastName?.value ?? '',
-      shippingEmail: event.target.shippingEmail?.value ?? '',
-      shippingStreetAddress: event.target.shippingStreetAddress?.value ?? '',
-      shippingCity: event.target.shippingCity?.value ?? '',
-      shippingCountry: event.target.shippingCountry?.value ?? '',
-      shippingState: event.target.shippingState?.value ?? '',
-      shippingZipCode: event.target.shippingZipCode?.value ?? '',
-      shippingPhone: event.target.shippingPhone?.value ?? '',
-    })
+    await addAddress(checkoutAddresses)
 
     setSidebarView('CHECKOUT_VIEW')
-  }
-
-  function BillingAddress() {
-    return (
-      <div className="px-4 sm:px-6 flex-1">
-        <h2 className="pt-1 pb-8 text-2xl font-semibold tracking-wide cursor-pointer inline-block">
-          Billing Address
-        </h2>
-        <div>
-          <div className={s.fieldset}>
-            <label className={s.label}>Company (Optional)</label>
-            <input name="billingCompany" className={s.input} />
-          </div>
-          <div className="grid gap-3 grid-flow-row grid-cols-12">
-            <div className={cn(s.fieldset, 'col-span-6')}>
-              <label className={s.label}>First Name</label>
-              <input name="billingFirstName" className={s.input} />
-            </div>
-            <div className={cn(s.fieldset, 'col-span-6')}>
-              <label className={s.label}>Last Name</label>
-              <input name="billingLastName" className={s.input} />
-            </div>
-          </div>
-          <div className={s.fieldset}>
-            <label className={s.label}>Email</label>
-            <input name="billingEmail" className={s.input} />
-          </div>
-          <div className={s.fieldset}>
-            <label className={s.label}>Street Address</label>
-            <input name="billingStreetAddress" className={s.input} />
-          </div>
-          <div className={s.fieldset}>
-            <label className={s.label}>City</label>
-            <input name="billingCity" className={s.input} />
-          </div>
-          <div className={s.fieldset}>
-            <label className={s.label}>Country</label>
-            <select name="billingCountry" className={s.select}>
-              <option value="IN">India</option>
-            </select>
-          </div>
-          <div className="grid gap-3 grid-flow-row grid-cols-12">
-            <div className={cn(s.fieldset, 'col-span-6')}>
-              <label className={s.label}>State</label>
-              <input name="billingState" className={s.input} />
-            </div>
-            <div className={cn(s.fieldset, 'col-span-6')}>
-              <label className={s.label}>Zip Code</label>
-              <input name="billingZipCode" className={s.input} />
-            </div>
-          </div>
-          <div className={s.fieldset}>
-            <label className={s.label}>Phone</label>
-            <input name="billingPhone" className={s.input} />
-          </div>
-          <div className="flex flex-row my-3 items-center">
-            <input
-              name="billingUseForShipping"
-              value="true"
-              className={s.radio}
-              type="radio"
-              checked={useForShipping === 'true'}
-              onChange={() => setUseForShipping('true')}
-            />
-            <span className="ml-3 text-sm">Ship to this address</span>
-          </div>
-          <div className="flex flex-row my-3 items-center">
-            <input
-              name="billingUseForShipping"
-              value="false"
-              className={s.radio}
-              type="radio"
-              checked={useForShipping === 'false'}
-              onChange={() => setUseForShipping('false')}
-            />
-            <span className="ml-3 text-sm">
-              Use a different shipping address
-            </span>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  function ShippingAddress() {
-    if (useForShipping === 'false') {
-      return (
-        <>
-          <hr className="border-accent-2 my-6" />
-          <div className="px-4 sm:px-6 flex-1">
-            <h2 className="pt-1 pb-8 text-2xl font-semibold tracking-wide cursor-pointer inline-block">
-              Shipping Address
-            </h2>
-            <div>
-              <div>
-                <div className={s.fieldset}>
-                  <label className={s.label}>Company (Optional)</label>
-                  <input name="shippingCompany" className={s.input} />
-                </div>
-                <div className="grid gap-3 grid-flow-row grid-cols-12">
-                  <div className={cn(s.fieldset, 'col-span-6')}>
-                    <label className={s.label}>First Name</label>
-                    <input name="shippingFirstName" className={s.input} />
-                  </div>
-                  <div className={cn(s.fieldset, 'col-span-6')}>
-                    <label className={s.label}>Last Name</label>
-                    <input name="shippingLastName" className={s.input} />
-                  </div>
-                </div>
-                <div className={s.fieldset}>
-                  <label className={s.label}>Email</label>
-                  <input name="shippingEmail" className={s.input} />
-                </div>
-                <div className={s.fieldset}>
-                  <label className={s.label}>Street Address</label>
-                  <input name="shippingStreetAddress" className={s.input} />
-                </div>
-                <div className={s.fieldset}>
-                  <label className={s.label}>City</label>
-                  <input name="shippingCity" className={s.input} />
-                </div>
-                <div className={s.fieldset}>
-                  <label className={s.label}>Country</label>
-                  <select name="shippingCountry" className={s.select}>
-                    <option>India</option>
-                  </select>
-                </div>
-                <div className="grid gap-3 grid-flow-row grid-cols-12">
-                  <div className={cn(s.fieldset, 'col-span-6')}>
-                    <label className={s.label}>State</label>
-                    <input name="shippingState" className={s.input} />
-                  </div>
-                  <div className={cn(s.fieldset, 'col-span-6')}>
-                    <label className={s.label}>Zip Code</label>
-                    <input name="shippingZipCode" className={s.input} />
-                  </div>
-                </div>
-                <div className={s.fieldset}>
-                  <label className={s.label}>Phone</label>
-                  <input name="shippingPhone" className={s.input} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </>
-      )
-    }
-
-    return <></>
   }
 
   return (
     <form className="h-full" onSubmit={handleSubmit}>
       <SidebarLayout handleBack={() => setSidebarView('CHECKOUT_VIEW')}>
-        <BillingAddress />
+        <div className="px-4 sm:px-6 flex-1">
+          <h2 className="pt-1 pb-8 text-2xl font-semibold tracking-wide cursor-pointer inline-block">
+            Billing Address
+          </h2>
+          <div>
+            <div className={s.fieldset}>
+              <label className={s.label}>Company (Optional)</label>
+              <input
+                name="billingCompany"
+                value={checkoutAddresses.billing.company}
+                className={s.input}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'company')
+                }
+              />
+            </div>
+            <div className="grid gap-3 grid-flow-row grid-cols-12">
+              <div className={cn(s.fieldset, 'col-span-6')}>
+                <label className={s.label}>First Name</label>
+                <input
+                  name="billingFirstName"
+                  value={checkoutAddresses.billing.firstName}
+                  className={s.input}
+                  onChange={(event) =>
+                    updateCheckoutAddressField(event, 'billing', 'firstName')
+                  }
+                />
+              </div>
+              <div className={cn(s.fieldset, 'col-span-6')}>
+                <label className={s.label}>Last Name</label>
+                <input
+                  name="billingLastName"
+                  value={checkoutAddresses.billing.lastName}
+                  className={s.input}
+                  onChange={(event) =>
+                    updateCheckoutAddressField(event, 'billing', 'lastName')
+                  }
+                />
+              </div>
+            </div>
+            <div className={s.fieldset}>
+              <label className={s.label}>Email</label>
+              <input
+                name="billingEmail"
+                value={checkoutAddresses.billing.email}
+                className={s.input}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'email')
+                }
+              />
+            </div>
+            <div className={s.fieldset}>
+              <label className={s.label}>Street Address</label>
+              <input
+                name="billingStreetAddress"
+                value={checkoutAddresses.billing.streetAddress}
+                className={s.input}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'streetAddress')
+                }
+              />
+            </div>
+            <div className={s.fieldset}>
+              <label className={s.label}>City</label>
+              <input
+                name="billingCity"
+                value={checkoutAddresses.billing.city}
+                className={s.input}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'city')
+                }
+              />
+            </div>
+            <div className={s.fieldset}>
+              <label className={s.label}>Country</label>
+              <select
+                name="billingCountry"
+                className={s.select}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'country')
+                }
+              >
+                <option value="IN">India</option>
+              </select>
+            </div>
+            <div className="grid gap-3 grid-flow-row grid-cols-12">
+              <div className={cn(s.fieldset, 'col-span-6')}>
+                <label className={s.label}>State</label>
+                <input
+                  name="billingState"
+                  value={checkoutAddresses.billing.state}
+                  className={s.input}
+                  onChange={(event) =>
+                    updateCheckoutAddressField(event, 'billing', 'state')
+                  }
+                />
+              </div>
+              <div className={cn(s.fieldset, 'col-span-6')}>
+                <label className={s.label}>Zip Code</label>
+                <input
+                  name="billingZipCode"
+                  value={checkoutAddresses.billing.zipCode}
+                  className={s.input}
+                  onChange={(event) =>
+                    updateCheckoutAddressField(event, 'billing', 'zipCode')
+                  }
+                />
+              </div>
+            </div>
+            <div className={s.fieldset}>
+              <label className={s.label}>Phone</label>
+              <input
+                name="billingPhone"
+                value={checkoutAddresses.billing.phone}
+                className={s.input}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'phone')
+                }
+              />
+            </div>
+            <div className="flex flex-row my-3 items-center">
+              <input
+                name="billingUseForShipping"
+                value="true"
+                className={s.radio}
+                type="radio"
+                checked={checkoutAddresses.billing.useForShipping}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'useForShipping')
+                }
+              />
+              <span className="ml-3 text-sm">Ship to this address</span>
+            </div>
+            <div className="flex flex-row my-3 items-center">
+              <input
+                name="billingUseForShipping"
+                value="false"
+                className={s.radio}
+                type="radio"
+                checked={!checkoutAddresses.billing.useForShipping}
+                onChange={(event) =>
+                  updateCheckoutAddressField(event, 'billing', 'useForShipping')
+                }
+              />
+              <span className="ml-3 text-sm">
+                Use a different shipping address
+              </span>
+            </div>
+          </div>
+        </div>
 
-        <ShippingAddress />
+        {!checkoutAddresses.billing.useForShipping && (
+          <>
+            <hr className="border-accent-2 my-6" />
+
+            <div className="px-4 sm:px-6 flex-1">
+              <h2 className="pt-1 pb-8 text-2xl font-semibold tracking-wide cursor-pointer inline-block">
+                Shipping Address
+              </h2>
+              <div>
+                <div>
+                  <div className={s.fieldset}>
+                    <label className={s.label}>Company (Optional)</label>
+                    <input
+                      name="shippingCompany"
+                      value={checkoutAddresses.shipping.company}
+                      className={s.input}
+                      onChange={(event) =>
+                        updateCheckoutAddressField(event, 'shipping', 'company')
+                      }
+                    />
+                  </div>
+                  <div className="grid gap-3 grid-flow-row grid-cols-12">
+                    <div className={cn(s.fieldset, 'col-span-6')}>
+                      <label className={s.label}>First Name</label>
+                      <input
+                        name="shippingFirstName"
+                        value={checkoutAddresses.shipping.firstName}
+                        className={s.input}
+                        onChange={(event) =>
+                          updateCheckoutAddressField(
+                            event,
+                            'shipping',
+                            'firstName'
+                          )
+                        }
+                      />
+                    </div>
+                    <div className={cn(s.fieldset, 'col-span-6')}>
+                      <label className={s.label}>Last Name</label>
+                      <input
+                        name="shippingLastName"
+                        value={checkoutAddresses.shipping.lastName}
+                        className={s.input}
+                        onChange={(event) =>
+                          updateCheckoutAddressField(
+                            event,
+                            'shipping',
+                            'lastName'
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className={s.fieldset}>
+                    <label className={s.label}>Email</label>
+                    <input
+                      name="shippingEmail"
+                      value={checkoutAddresses.shipping.email}
+                      className={s.input}
+                      onChange={(event) =>
+                        updateCheckoutAddressField(event, 'shipping', 'email')
+                      }
+                    />
+                  </div>
+                  <div className={s.fieldset}>
+                    <label className={s.label}>Street Address</label>
+                    <input
+                      name="shippingStreetAddress"
+                      value={checkoutAddresses.shipping.streetAddress}
+                      className={s.input}
+                      onChange={(event) =>
+                        updateCheckoutAddressField(
+                          event,
+                          'shipping',
+                          'streetAddress'
+                        )
+                      }
+                    />
+                  </div>
+                  <div className={s.fieldset}>
+                    <label className={s.label}>City</label>
+                    <input
+                      name="shippingCity"
+                      value={checkoutAddresses.shipping.city}
+                      className={s.input}
+                      onChange={(event) =>
+                        updateCheckoutAddressField(event, 'shipping', 'city')
+                      }
+                    />
+                  </div>
+                  <div className={s.fieldset}>
+                    <label className={s.label}>Country</label>
+                    <select
+                      name="shippingCountry"
+                      className={s.select}
+                      onChange={(event) =>
+                        updateCheckoutAddressField(event, 'shipping', 'country')
+                      }
+                    >
+                      <option>India</option>
+                    </select>
+                  </div>
+                  <div className="grid gap-3 grid-flow-row grid-cols-12">
+                    <div className={cn(s.fieldset, 'col-span-6')}>
+                      <label className={s.label}>State</label>
+                      <input
+                        name="shippingState"
+                        value={checkoutAddresses.shipping.state}
+                        className={s.input}
+                        onChange={(event) =>
+                          updateCheckoutAddressField(event, 'shipping', 'state')
+                        }
+                      />
+                    </div>
+                    <div className={cn(s.fieldset, 'col-span-6')}>
+                      <label className={s.label}>Zip Code</label>
+                      <input
+                        name="shippingZipCode"
+                        value={checkoutAddresses.shipping.zipCode}
+                        className={s.input}
+                        onChange={(event) =>
+                          updateCheckoutAddressField(
+                            event,
+                            'shipping',
+                            'zipCode'
+                          )
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className={s.fieldset}>
+                    <label className={s.label}>Phone</label>
+                    <input
+                      name="shippingPhone"
+                      value={checkoutAddresses.shipping.phone}
+                      className={s.input}
+                      onChange={(event) =>
+                        updateCheckoutAddressField(event, 'shipping', 'phone')
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="sticky z-20 bottom-0 w-full right-0 left-0 py-12 bg-accent-0 border-t border-accent-2 px-6">
           <Button type="submit" width="100%" variant="ghost">

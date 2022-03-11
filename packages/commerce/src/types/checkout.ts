@@ -79,8 +79,8 @@ export type SubmitCheckoutHandler<T extends CheckoutTypes = CheckoutTypes> =
 
 export type CheckoutHandlers<T extends CheckoutTypes = CheckoutTypes> = {
   getCheckout: GetCheckoutHandler<T>
-  addShippingMethod: AddShippingMethodHandler<T>
-  addPaymentMethod: AddPaymentMethodHandler<T>
+  addShippingMethod?: AddShippingMethodHandler<T>
+  addPaymentMethod?: AddPaymentMethodHandler<T>
   submitCheckout?: SubmitCheckoutHandler<T>
 }
 
