@@ -32,6 +32,7 @@ export type Provider = CommerceConfig & {
   }
   checkout?: {
     useCheckout?: SWRHook<Checkout.GetCheckoutHook>
+    useAddAddresses?: MutationHook<Checkout.AddAddressesHook>
     useAddShippingMethod?: MutationHook<Checkout.AddShippingMethodHook>
     useAddPaymentMethod?: MutationHook<Checkout.AddPaymentMethodHook>
     useSubmitCheckout?: MutationHook<Checkout.SubmitCheckoutHook>

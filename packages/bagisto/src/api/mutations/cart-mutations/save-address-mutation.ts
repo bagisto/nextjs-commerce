@@ -1,4 +1,4 @@
-export const saveAddressMutation = /* GraphQL */ `
+export const saveAddressesMutation = /* GraphQL */ `
   mutation saveCheckoutAddresses($input: SaveShippingAddressInput!) {
     saveCheckoutAddresses(input: $input) {
       success

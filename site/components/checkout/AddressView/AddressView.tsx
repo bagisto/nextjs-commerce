@@ -6,7 +6,7 @@ import { useUI } from '@components/ui/context'
 import SidebarLayout from '@components/common/SidebarLayout'
 
 import useCart from '@framework/cart/use-cart'
-import useAddAddress from '@framework/customer/address/use-add-item'
+import useAddAddresses from '@framework/checkout/use-add-addresses'
 
 import s from './AddressView.module.css'
 
@@ -69,7 +69,7 @@ const AddressView: FC = () => {
     },
   })
 
-  const addAddress = useAddAddress()
+  const addAddress = useAddAddresses()
 
   useEffect(() => {
     setCheckoutAddresses(cartData.addresses)
@@ -95,7 +95,9 @@ const AddressView: FC = () => {
   async function handleSubmit(event: React.ChangeEvent<Form>) {
     event.preventDefault()
 
-    await addAddress(checkoutAddresses)
+    await addAddress({
+      addresses: checkoutAddresses,
+    })
 
     setSidebarView('CHECKOUT_VIEW')
   }

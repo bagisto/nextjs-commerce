@@ -10,7 +10,7 @@ import {
 } from '../../mutations/cart-mutations/add-to-cart-mutation'
 import { updateCartItemMutation } from '../../mutations/cart-mutations/update-cart-item-mutation'
 import { removeCartItemMutation } from '../../mutations/cart-mutations/remove-cart-item-mutation'
-import { saveAddressMutation } from '../../mutations/cart-mutations/save-address-mutation'
+import { saveAddressesMutation } from '../../mutations/cart-mutations/save-address-mutation'
 import { saveShippingMethodMutation } from '../../mutations/cart-mutations/save-shipping-method-mutation'
 import { savePaymentMethodMutation } from '../../mutations/cart-mutations/save-payment-method-mutation'
 import { placeOrderMutation } from '../../mutations/cart-mutations/place-order-mutation'
@@ -181,42 +181,42 @@ export default class CartHandler {
     )
   }
 
-  async saveAddress(address: AddressFields) {
+  async saveAddresses(addresses: AddressFields) {
     const billingAddress = {
-      companyName: address.billing.company,
-      firstName: address.billing.firstName,
-      lastName: address.billing.lastName,
-      email: address.billing.email,
-      address1: address.billing.streetAddress,
+      companyName: addresses.billing.company,
+      firstName: addresses.billing.firstName,
+      lastName: addresses.billing.lastName,
+      email: addresses.billing.email,
+      address1: addresses.billing.streetAddress,
       address2: '',
-      city: address.billing.city,
-      country: address.billing.country,
-      state: address.billing.state,
-      postcode: address.billing.zipCode,
-      phone: address.billing.phone,
-      useForShipping: address.billing.useForShipping,
+      city: addresses.billing.city,
+      country: addresses.billing.country,
+      state: addresses.billing.state,
+      postcode: addresses.billing.zipCode,
+      phone: addresses.billing.phone,
+      useForShipping: addresses.billing.useForShipping,
       saveAsAddress: false,
     }
 
     const shippingAddress = billingAddress.useForShipping
       ? billingAddress
       : {
-          companyName: address.shipping.company,
-          firstName: address.shipping.firstName,
-          lastName: address.shipping.lastName,
-          email: address.shipping.email,
-          address1: address.shipping.streetAddress,
+          companyName: addresses.shipping.company,
+          firstName: addresses.shipping.firstName,
+          lastName: addresses.shipping.lastName,
+          email: addresses.shipping.email,
+          address1: addresses.shipping.streetAddress,
           address2: '',
-          city: address.shipping.city,
-          country: address.shipping.country,
-          state: address.shipping.state,
-          postcode: address.shipping.zipCode,
-          phone: address.shipping.phone,
+          city: addresses.shipping.city,
+          country: addresses.shipping.country,
+          state: addresses.shipping.state,
+          postcode: addresses.shipping.zipCode,
+          phone: addresses.shipping.phone,
           saveAsAddress: false,
         }
 
     return await this.config.fetch(
-      saveAddressMutation,
+      saveAddressesMutation,
       {
         variables: {
           input: {
