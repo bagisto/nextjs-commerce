@@ -1,3 +1,4 @@
+import { normalizeCartAddresses } from '../../lib/normalize'
 import CartHandler from '../../utils/handler/cart-handler'
 
 import type { CheckoutEndpoint } from './'
@@ -10,13 +11,39 @@ const getCheckout: CheckoutEndpoint['handlers']['getCheckout'] = async ({
 }) => {
   const cartHandler = new CartHandler(config, req, res)
 
-  const response = await cartHandler.getCart()
+  const cart = await cartHandler.getCart()
+
+  let cartAddresses = null
+  let cartShippingMethods = null
+  if (cart?.addresses.length === 2) {
+    cartAddresses = normalizeCartAddresses(cart.addresses)
+
+    cartShippingMethods = await cartHandler.saveAddresses(cartAddresses)
+
+    cartShippingMethods =
+      cartShippingMethods?.data?.saveCheckoutAddresses?.shippingMethods ?? []
+  }
+
+  let cartPaymentMethods
+  if (Boolean(cart?.selectedShippingRate?.id)) {
+    cartPaymentMethods = await cartHandler.saveShippingMethod(
+      cart?.selectedShippingRate?.method
+    )
+
+    cartPaymentMethods =
+      cartPaymentMethods?.data?.paymentMethods?.paymentMethods ?? []
+  }
 
   res.status(200).json({
     data: {
-      hasAddresses: response?.addresses.length === 2,
-      hasShipping: Boolean(response?.selectedShippingRate?.id),
-      hasPayment: Boolean(response?.payment?.id),
+      addresses: cartAddresses,
+      shippingMethods: cartShippingMethods,
+      paymentMethods: cartPaymentMethods,
+      selectedShippingMethod: cart?.selectedShippingRate ?? null,
+      selectedPaymentMethod: cart?.payment ?? null,
+      hasAddresses: cart?.addresses.length === 2,
+      hasShipping: Boolean(cart?.selectedShippingRate?.id),
+      hasPayment: Boolean(cart?.payment?.id),
     },
     errors: [],
   })

@@ -47,9 +47,17 @@ const CheckoutSidebarView: FC = () => {
       currencyCode: cartData.currency.code,
     }
   )
+
   const { price: total } = usePrice(
     cartData && {
       amount: Number(cartData.totalPrice),
+      currencyCode: cartData.currency.code,
+    }
+  )
+
+  const { price: shippingCharges } = usePrice(
+    cartData && {
+      amount: Number(cartData.shippingCharges ?? 0),
       currencyCode: cartData.currency.code,
     }
   )
@@ -73,12 +81,20 @@ const CheckoutSidebarView: FC = () => {
 
         <ShippingMethodWidget
           isValid={checkoutData?.hasShipping}
-          onClick={() => setSidebarView('SHIPPING_METHOD_VIEW')}
+          onClick={() => {
+            checkoutData?.hasAddresses
+              ? setSidebarView('SHIPPING_METHOD_VIEW')
+              : alert('Please fill up the checkout addresses.')
+          }}
         />
 
         <PaymentMethodWidget
           isValid={checkoutData?.hasPayment}
-          onClick={() => setSidebarView('PAYMENT_METHOD_VIEW')}
+          onClick={() => {
+            checkoutData?.hasAddresses
+              ? setSidebarView('PAYMENT_METHOD_VIEW')
+              : alert('Please select the shipping method.')
+          }}
         />
 
         <ul className={s.lineItemsList}>
@@ -108,7 +124,7 @@ const CheckoutSidebarView: FC = () => {
           </li>
           <li className="flex justify-between py-1">
             <span>Shipping</span>
-            <span className="font-bold tracking-wide">FREE</span>
+            <span className="font-bold tracking-wide">{shippingCharges}</span>
           </li>
         </ul>
         <div className="flex justify-between border-t border-accent-2 py-3 font-bold mb-2">

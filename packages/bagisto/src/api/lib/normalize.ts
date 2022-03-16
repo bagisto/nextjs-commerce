@@ -115,11 +115,12 @@ export function normalizeCart(data: any): any {
     lineItemsSubtotalPrice: data?.subTotal,
     subtotalPrice: data?.subTotal,
     totalPrice: data?.grandTotal,
+    shippingCharges: data?.selectedShippingRate?.price ?? 0,
     addresses: normalizeCartAddresses(data?.addresses),
   }
 }
 
-function normalizeLineItem(item: any): any {
+export function normalizeLineItem(item: any): any {
   let product = item.product.productFlats[0]
 
   return {
@@ -142,7 +143,7 @@ function normalizeLineItem(item: any): any {
   }
 }
 
-function normalizeCartAddresses(addresses: any) {
+export function normalizeCartAddresses(addresses: any) {
   const addressDefaultValues = {
     company: '',
     firstName: '',

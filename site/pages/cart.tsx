@@ -130,7 +130,7 @@ export default function Cart() {
               </li>
               <li className="flex justify-between py-1">
                 <span>Estimated Shipping</span>
-                <span className="font-bold tracking-wide">FREE</span>
+                <span>Calculated at checkout</span>
               </li>
             </ul>
             <div className="flex justify-between border-t border-accent-2 py-3 font-bold mb-10">
