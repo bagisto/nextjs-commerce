@@ -1,24 +1,11 @@
 import { useCallback } from 'react'
-import { useHook, useMutationHook } from '@vercel/commerce/utils/use-hook'
-import { mutationFetcher } from '@vercel/commerce/utils/default-fetcher'
+import useAddShippingMethod, {
+  UseAddShippingMethod,
+} from '@vercel/commerce/checkout/use-add-shipping-method'
 
 import useCheckout from './use-checkout'
 
-import type { Provider } from '@vercel/commerce'
-import type { HookFetcherFn, MutationHook } from '@vercel/commerce/utils/types'
-
-export type UseAddShippingMethod<
-  H extends MutationHook<any> = MutationHook<any>
-> = ReturnType<H['useHook']>
-
-export const fetcher: HookFetcherFn<any> = mutationFetcher
-
-const fn = (provider: Provider) => provider.checkout?.useAddShippingMethod!
-
-const useAddShippingMethod: UseAddShippingMethod = (...args) => {
-  const hook = useHook(fn)
-  return useMutationHook({ fetcher, ...hook })(...args)
-}
+import type { MutationHook } from '@vercel/commerce/utils/types'
 
 export default useAddShippingMethod as UseAddShippingMethod<typeof handler>
 
