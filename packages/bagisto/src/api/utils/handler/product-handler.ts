@@ -3,6 +3,7 @@ import { getAllProductsQuery } from '../../queries/product-queries/get-all-produ
 import { getFeaturedProductsQuery } from '../../queries/product-queries/get-featured-products-query'
 import { getNewProductsQuery } from '../../queries/product-queries/get-new-products-query'
 import { getProductById } from '../../queries/product-queries/get-product-by-id-query'
+import { getProductBySlug } from '../../queries/product-queries/get-product-by-slug-query'
 
 export default class ProductHandler {
   config: any
@@ -50,6 +51,14 @@ export default class ProductHandler {
     })
 
     return this.normalizeProduct(result?.data?.product)
+  }
+
+  getProductBySlug = async (slug: any) => {
+    const result = await this.config.fetch(getProductBySlug, {
+      variables: { slug },
+    })
+
+    return this.normalizeProduct(result?.data?.productBySlug?.product)
   }
 
   normalizeProduct = (product: any) => {

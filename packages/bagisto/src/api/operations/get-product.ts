@@ -22,10 +22,10 @@ export default function getProductOperation({
 
     const productHandler = new ProductHandler(bagistoConfig)
 
-    const products = await productHandler.getAllProducts()
+    const product = await productHandler.getProductBySlug(variables!.slug!)
 
     return {
-      product: products.find(({ slug }: any) => slug === variables!.slug),
+      product,
     }
   }
 

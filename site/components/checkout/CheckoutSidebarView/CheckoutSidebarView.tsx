@@ -36,6 +36,8 @@ const CheckoutSidebarView: FC = () => {
       setLoadingSubmit(false)
       refreshCart()
       closeSidebar()
+
+      alert('Your order has been placed successfully!')
     } catch {
       setLoadingSubmit(false)
     }
@@ -91,7 +93,7 @@ const CheckoutSidebarView: FC = () => {
         <PaymentMethodWidget
           isValid={checkoutData?.hasPayment}
           onClick={() => {
-            checkoutData?.hasAddresses
+            checkoutData?.hasShipping
               ? setSidebarView('PAYMENT_METHOD_VIEW')
               : alert('Please select the shipping method.')
           }}
