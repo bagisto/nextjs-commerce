@@ -41,9 +41,6 @@ const getCheckout: CheckoutEndpoint['handlers']['getCheckout'] = async ({
       paymentMethods: cartPaymentMethods,
       selectedShippingMethod: cart?.selectedShippingRate ?? null,
       selectedPaymentMethod: cart?.payment ?? null,
-      hasAddresses: cart?.addresses.length === 2,
-      hasShipping: Boolean(cart?.selectedShippingRate?.id),
-      hasPayment: Boolean(cart?.payment?.id),
     },
     errors: [],
   })

@@ -10,10 +10,13 @@ const addAddresses: CheckoutEndpoint['handlers']['addAddresses'] = async ({
 }) => {
   const cartHandler = new CartHandler(config, req, res)
 
-  await cartHandler.saveAddresses(addresses)
+  const response = await cartHandler.saveAddresses(addresses)
 
   res.status(200).json({
-    data: {},
+    data: {
+      shippingMethods:
+        response?.data?.saveCheckoutAddresses?.shippingMethods ?? [],
+    },
     errors: [],
   })
 }

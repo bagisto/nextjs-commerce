@@ -117,6 +117,9 @@ export function normalizeCart(data: any): any {
     totalPrice: data?.grandTotal,
     shippingCharges: data?.selectedShippingRate?.price ?? 0,
     addresses: normalizeCartAddresses(data?.addresses),
+    hasAddresses: data?.addresses.length === 2,
+    hasShipping: Boolean(data?.selectedShippingRate?.id),
+    hasPayment: Boolean(data?.payment?.id),
   }
 }
 

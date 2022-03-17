@@ -7,6 +7,8 @@ export type Checkout = any
 export type CheckoutTypes = {
   card?: Card | CardFields
   address?: Address | AddressFields
+  shippingMethods?: any
+  paymentMethods?: any
   checkout?: Checkout
   hasPayment?: boolean
   hasShipping?: boolean

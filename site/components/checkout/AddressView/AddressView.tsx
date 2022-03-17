@@ -95,7 +95,7 @@ const AddressView: FC = () => {
   async function handleSubmit(event: React.ChangeEvent<Form>) {
     event.preventDefault()
 
-    await addAddress({
+    const response = await addAddress({
       addresses: checkoutAddresses,
     })
 

@@ -31,7 +31,7 @@ const ShippingMethodView: FC = () => {
   async function handleSubmit(event: React.ChangeEvent<Form>) {
     event.preventDefault()
 
-    await addShippingMethod({
+    const response = await addShippingMethod({
       shippingMethod: selectedShippingMethod,
     })
 

@@ -77,23 +77,23 @@ const CheckoutSidebarView: FC = () => {
         </Link>
 
         <AddressWidget
-          isValid={checkoutData?.hasAddresses}
+          isValid={cartData?.hasAddresses}
           onClick={() => setSidebarView('ADDRESS_VIEW')}
         />
 
         <ShippingMethodWidget
-          isValid={checkoutData?.hasShipping}
+          isValid={cartData?.hasShipping}
           onClick={() => {
-            checkoutData?.hasAddresses
+            cartData?.hasAddresses
               ? setSidebarView('SHIPPING_METHOD_VIEW')
               : alert('Please fill up the checkout addresses.')
           }}
         />
 
         <PaymentMethodWidget
-          isValid={checkoutData?.hasPayment}
+          isValid={cartData?.hasPayment}
           onClick={() => {
-            checkoutData?.hasShipping
+            cartData?.hasShipping
               ? setSidebarView('PAYMENT_METHOD_VIEW')
               : alert('Please select the shipping method.')
           }}
@@ -138,9 +138,9 @@ const CheckoutSidebarView: FC = () => {
             type="submit"
             width="100%"
             disabled={
-              !checkoutData?.hasAddresses ||
-              !checkoutData?.hasShipping ||
-              !checkoutData?.hasPayment
+              !cartData?.hasAddresses ||
+              !cartData?.hasShipping ||
+              !cartData?.hasPayment
             }
             loading={loadingSubmit}
           >
