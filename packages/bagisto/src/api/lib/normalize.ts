@@ -200,3 +200,15 @@ export function normalizeCartAddresses(addresses: any) {
       : { ...addressDefaultValues },
   }
 }
+
+export function normalizeOrders(orders: []) {
+  return orders.map((order: any) => {
+    return {
+      id: order.id,
+      date: order.createdAt,
+      total: order.grandTotal,
+      status: order.status,
+      orderCurrencyCode: order.orderCurrencyCode,
+    }
+  })
+}
