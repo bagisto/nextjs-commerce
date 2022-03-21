@@ -23,6 +23,7 @@ export const OPERATIONS = [
   'getAllProductPaths',
   'getAllProducts',
   'getProduct',
+  'getOrder',
 ] as const
 
 export const defaultOperations = OPERATIONS.reduce((ops, k) => {
@@ -153,6 +154,22 @@ export type Operations<P extends APIProvider> = {
         preview?: boolean
       } & OperationOptions
     ): Promise<T['data']>
+  }
+
+  getOrder: {
+    (opts: {
+      variables: any
+      config?: P['config']
+      preview?: boolean
+    }): Promise<any>
+
+    (
+      opts: {
+        variables: any
+        config?: P['config']
+        preview?: boolean
+      } & OperationOptions
+    ): Promise<any>
   }
 }
 

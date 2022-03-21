@@ -1,19 +1,10 @@
 import Link from 'next/link'
 import { Bag, Eye } from '@components/icons'
-
 import useOrders from '@framework/order/use-orders'
+import { getFormattedPrice } from '@lib/price-helper'
 
 const Orders = () => {
   const { data: orders = [] } = useOrders()
-
-  function getFormattedPrice(amount: number, currency: string) {
-    const formatCurrency = new Intl.NumberFormat('en', {
-      style: 'currency',
-      currency: currency,
-    })
-
-    return formatCurrency.format(amount)
-  }
 
   if (!(orders.length > 0)) {
     return (

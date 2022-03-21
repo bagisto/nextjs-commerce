@@ -5,6 +5,7 @@ import getAllProducts from './operations/get-all-products'
 import getCustomerWishlist from './operations/get-customer-wishlist'
 import getPage from './operations/get-page'
 import getProduct from './operations/get-product'
+import getOrder from './operations/get-order'
 import getSiteInfo from './operations/get-site-info'
 import login from './operations/login'
 import graphqlFetcher from './utils/fetch/fetch-graphql-api'
@@ -39,6 +40,7 @@ const operations = {
   getAllProductPaths,
   getAllProducts,
   getProduct,
+  getOrder,
 }
 
 export const provider = { config, operations }
