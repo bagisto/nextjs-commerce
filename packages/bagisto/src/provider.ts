@@ -15,6 +15,8 @@ import { handler as useAddShippingMethod } from './checkout/use-add-shipping-met
 import { handler as useAddPaymentMethod } from './checkout/use-add-payment-method'
 import { handler as useSubmitCheckout } from './checkout/use-submit-checkout'
 
+import { handler as useOrders } from './order/use-orders'
+
 import { handler as useCustomer } from './customer/use-customer'
 import { handler as useAddAddressItem } from './customer/address/use-add-item'
 
@@ -31,6 +33,9 @@ export const bagistoProvider = {
     useAddShippingMethod,
     useAddPaymentMethod,
     useSubmitCheckout,
+  },
+  order: {
+    useOrders,
   },
   customer: {
     useCustomer,

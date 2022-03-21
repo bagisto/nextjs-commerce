@@ -37,6 +37,9 @@ export type Provider = CommerceConfig & {
     useAddPaymentMethod?: MutationHook<Checkout.AddPaymentMethodHook>
     useSubmitCheckout?: MutationHook<Checkout.SubmitCheckoutHook>
   }
+  order?: {
+    useOrders?: SWRHook<any>
+  }
   wishlist?: {
     useWishlist?: SWRHook<Wishlist.GetWishlistHook>
     useAddItem?: MutationHook<Wishlist.AddItemHook>
