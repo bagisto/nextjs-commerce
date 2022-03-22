@@ -253,6 +253,56 @@ export const getAllOrdersQuery = /* GraphQL */ `
             parentId
           }
         }
+        invoices {
+          id
+          incrementId
+          state
+          emailSent
+          totalQty
+          baseCurrencyCode
+          channelCurrencyCode
+          orderCurrencyCode
+          subTotal
+          baseSubTotal
+          grandTotal
+          baseGrandTotal
+          shippingAmount
+          baseShippingAmount
+          taxAmount
+          baseTaxAmount
+          discountAmount
+          baseDiscountAmount
+          orderId
+          orderAddressId
+          createdAt
+          updatedAt
+          transactionId
+          items {
+            id
+            sku
+            type
+            name
+            description
+            qty
+            price
+            basePrice
+            total
+            baseTotal
+            taxAmount
+            baseTaxAmount
+            productId
+            productType
+            orderItemId
+            invoiceId
+            parentId
+            additional
+            discountPercent
+            discountAmount
+            baseDiscountAmount
+            createdAt
+            updatedAt
+          }
+        }
         shipments {
           id
           status
@@ -268,6 +318,71 @@ export const getAllOrdersQuery = /* GraphQL */ `
           orderAddressId
           createdAt
           updatedAt
+          items {
+            id
+            name
+            description
+            sku
+            qty
+            weight
+            price
+            basePrice
+            total
+            baseTotal
+            productId
+            productType
+            orderItemId
+            shipmentId
+          }
+        }
+        refunds {
+          id
+          incrementId
+          state
+          emailSent
+          totalQty
+          baseCurrencyCode
+          channelCurrencyCode
+          orderCurrencyCode
+          adjustmentRefund
+          baseAdjustmentRefund
+          adjustmentFee
+          baseAdjustmentFee
+          subTotal
+          baseSubTotal
+          grandTotal
+          baseGrandTotal
+          shippingAmount
+          baseShippingAmount
+          taxAmount
+          baseTaxAmount
+          discountPercent
+          discountAmount
+          baseDiscountAmount
+          orderId
+          createdAt
+          updatedAt
+          items {
+            id
+            name
+            description
+            sku
+            qty
+            price
+            basePrice
+            total
+            baseTotal
+            taxAmount
+            baseTaxAmount
+            discountPercent
+            discountAmount
+            baseDiscountAmount
+            productId
+            productType
+            orderItemId
+            refundId
+            parentId
+          }
         }
       }
     }
