@@ -1,8 +1,7 @@
 import commerce from '@lib/api/commerce'
 import { Layout } from '@components/common'
-import { Container, Text } from '@components/ui'
 
-import { getFormattedPrice } from '@lib/price-helper'
+import OrderComponent from '@components/order/Orders/Order'
 
 import type {
   GetStaticPathsContext,
@@ -43,29 +42,7 @@ export async function getStaticPaths({ locales }: GetStaticPathsContext) {
 }
 
 export default function Order({ order }: any) {
-  return (
-    <Container>
-      <Text variant="pageHeading">Order #{order.id}</Text>
-      <div className="grid lg:grid-cols-12">
-        <div className="lg:col-span-8 pr-4">
-          <div>
-            <Text variant="sectionHeading">Total Amount</Text>
-            <span>
-              {getFormattedPrice(order.grandTotal, order.orderCurrencyCode)}
-            </span>
-          </div>
-          <div className="mt-5">
-            <Text variant="sectionHeading">Shipping Method</Text>
-            <span>{order.shippingTitle}</span>
-          </div>
-          <div className="mt-5">
-            <Text variant="sectionHeading">Payment Method</Text>
-            <span>{order.payment.methodTitle}</span>
-          </div>
-        </div>
-      </div>
-    </Container>
-  )
+  return <OrderComponent order={order}></OrderComponent>
 }
 
 Order.Layout = Layout
