@@ -9,10 +9,10 @@ export const handler: SWRHook<any> = {
     url: '/api/orders',
   },
 
-  async fetcher({ input: { orderId }, options, fetch }) {
+  async fetcher({ input: { orderId, page }, options, fetch }) {
     return fetch({
       ...options,
-      body: { orderId },
+      body: { orderId, page },
     })
   },
 
@@ -20,7 +20,10 @@ export const handler: SWRHook<any> = {
     ({ useData }) =>
     (input) => {
       return useData({
-        input: [['orderId', input?.orderId]],
+        input: [
+          ['orderId', input?.orderId],
+          ['page', input?.page],
+        ],
         swrOptions: {
           revalidateOnFocus: false,
           ...input?.swrOptions,

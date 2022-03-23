@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Bag, Eye } from '@components/icons'
 import { Button } from '@components/ui'
@@ -5,10 +6,33 @@ import useOrders from '@framework/order/use-orders'
 import { getFormattedPrice } from '@lib/price-helper'
 
 const Orders = () => {
-  const { data: orders = [] } = useOrders()
+  const [isEmpty, setIsEmpty] = useState(false)
 
-  function loadMoreData() {
-    alert('load more')
+  const [page, setPage] = useState(1)
+
+  const [orders, setOrders] = useState<any>([])
+
+  const { mutate } = useOrders({ page })
+
+  useEffect(() => nextOrders(), [])
+
+  async function loadOrders() {
+    let nextOrders = await mutate()
+
+    if (!(nextOrders.length > 0)) {
+      setIsEmpty(true)
+      return
+    }
+
+    let updatedOrders = [...orders, ...nextOrders]
+
+    setOrders(updatedOrders)
+  }
+
+  function nextOrders() {
+    setPage(page + 1)
+
+    loadOrders()
   }
 
   if (!(orders.length > 0)) {
@@ -146,14 +170,18 @@ const Orders = () => {
         </div>
       </div>
 
-      {/* <div
-        className="overflow-x-auto sm:-mx-6 lg:-mx-8"
-        style={{ margin: '0 auto' }}
-      >
-        <Button className="mx-5" onClick={() => loadMoreData()}>
-          Load More
-        </Button>
-      </div> */}
+      {!isEmpty ? (
+        <div
+          className="overflow-x-auto sm:-mx-6 lg:-mx-8"
+          style={{ margin: '0 auto' }}
+        >
+          <Button className="mx-5" onClick={() => nextOrders()}>
+            Load More
+          </Button>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   )
 }
