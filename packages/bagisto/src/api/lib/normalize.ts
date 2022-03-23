@@ -204,6 +204,7 @@ export function normalizeCartAddresses(addresses: any) {
 export function normalizeOrders(orders: []) {
   return orders.map((order: any) => {
     return {
+      ...order,
       id: order.id,
       date: order.createdAt,
       total: order.grandTotal,

@@ -12,9 +12,9 @@ export const fetcher: HookFetcherFn<any> = SWRFetcher
 
 const fn = (provider: Provider) => provider.order?.useOrders!
 
-const useOrders: UseOrders = (input) => {
+const useOrders: UseOrders = (...args) => {
   const hook = useHook(fn)
-  return useSWRHook({ fetcher, ...hook })(input)
+  return useSWRHook({ fetcher, ...hook })(...args)
 }
 
 export default useOrders

@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Bag } from '@components/icons'
 import { Container, Text } from '@components/ui'
+
+import useOrders from '@framework/order/use-orders'
 
 import OrderAddress from './OrderAddress'
 import OrderInformation from './OrderInformation'
@@ -7,8 +10,25 @@ import Invoices from './Invoices'
 import Shipments from './Shipments'
 import Refunds from './Refunds'
 
-const Order = ({ order }: any) => {
+const Order = ({ orderId }: any) => {
   const [view, setView] = useState('INFO_VIEW')
+
+  const { data: orders = [] } = useOrders({ orderId })
+
+  if (!(orders.length > 0)) {
+    return (
+      <div className="flex-1 p-24 flex flex-col justify-center items-center ">
+        <span className="border border-dashed border-secondary rounded-full flex items-center justify-center w-16 h-16 p-12 bg-primary text-primary">
+          <Bag className="absolute" />
+        </span>
+        <h2 className="pt-6 text-2xl font-bold tracking-wide text-center">
+          Please Wait!
+        </h2>
+      </div>
+    )
+  }
+
+  const order = orders[0]
 
   const Tabs = () => {
     const selectedClass =

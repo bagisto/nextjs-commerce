@@ -2,7 +2,7 @@ import { normalizeOrders } from '../../lib/normalize'
 import { getAllOrdersQuery } from '../../queries/order-queries/get-all-orders-query'
 import CookieHandler from '../../utils/handler/cookie-handler'
 
-const getOrders = async ({ req, res, config }: any) => {
+const getOrders = async ({ req, body: { orderId }, res, config }: any) => {
   const cookieHandler = new CookieHandler(config, req, res)
 
   const customerToken = cookieHandler.getCustomerToken()
@@ -11,9 +11,20 @@ const getOrders = async ({ req, res, config }: any) => {
     ? { Authorization: customerToken }
     : {}
 
+  let variables = {}
+  if (orderId) {
+    variables = {
+      input: {
+        id: orderId,
+      },
+    }
+  }
+
   const result = await config.fetch(
     getAllOrdersQuery,
-    {},
+    {
+      variables,
+    },
     {
       headers: { ...authorizationHeader },
     }

@@ -1,13 +1,8 @@
-import commerce from '@lib/api/commerce'
+import type { GetStaticPathsContext, GetStaticPropsContext } from 'next'
 import { Layout } from '@components/common'
+import commerce from '@lib/api/commerce'
 
 import OrderComponent from '@components/order/Orders/Order'
-
-import type {
-  GetStaticPathsContext,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
-} from 'next'
 
 export async function getStaticProps({
   params,
@@ -19,18 +14,12 @@ export async function getStaticProps({
 
   const pagesPromise = commerce.getAllPages({ config, preview })
   const siteInfoPromise = commerce.getSiteInfo({ config, preview })
-  const orderPromise = commerce.getOrder({
-    config,
-    preview,
-    variables: { input: { id: parseInt(params!.orderId) } },
-  })
 
   const { pages } = await pagesPromise
   const { categories } = await siteInfoPromise
-  const { order } = await orderPromise
 
   return {
-    props: { pages, categories, order },
+    props: { pages, categories, orderId: parseInt(params!.orderId) },
   }
 }
 
@@ -41,8 +30,8 @@ export async function getStaticPaths({ locales }: GetStaticPathsContext) {
   }
 }
 
-export default function Order({ order }: any) {
-  return <OrderComponent order={order}></OrderComponent>
+export default function Order({ orderId }: any) {
+  return <OrderComponent orderId={orderId}></OrderComponent>
 }
 
 Order.Layout = Layout

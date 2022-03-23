@@ -5,18 +5,22 @@ export default useOrders as UseOrders<typeof handler>
 
 export const handler: SWRHook<any> = {
   fetchOptions: {
-    method: 'GET',
+    method: 'POST',
     url: '/api/orders',
   },
 
-  async fetcher({ options, fetch }) {
-    return await fetch({ ...options })
+  async fetcher({ input: { orderId }, options, fetch }) {
+    return fetch({
+      ...options,
+      body: { orderId },
+    })
   },
 
   useHook:
     ({ useData }) =>
     (input) => {
       return useData({
+        input: [['orderId', input?.orderId]],
         swrOptions: {
           revalidateOnFocus: false,
           ...input?.swrOptions,
