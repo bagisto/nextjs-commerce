@@ -1,7 +1,5 @@
 import { normalizeProduct } from '../../lib/normalize'
 import { getAllProductsQuery } from '../../queries/product-queries/get-all-products-query'
-import { getFeaturedProductsQuery } from '../../queries/product-queries/get-featured-products-query'
-import { getNewProductsQuery } from '../../queries/product-queries/get-new-products-query'
 import { getProductById } from '../../queries/product-queries/get-product-by-id-query'
 import { getProductBySlug } from '../../queries/product-queries/get-product-by-slug-query'
 
@@ -12,29 +10,12 @@ export default class ProductHandler {
     this.config = config
   }
 
-  getAllProductsByCategory = async (category: string = 'all') => {
-    switch (category) {
-      case 'featured-products':
-        return await this.getFeaturedProducts()
+  getAllFilteredProducts = async (variables: any) => {
+    const result = await this.config.fetch(getAllProductsQuery, { variables })
 
-      case 'new-products':
-        return await this.getNewProducts()
-
-      default:
-        return await this.getAllProducts()
-    }
-  }
-
-  getFeaturedProducts = async () => {
-    const result = await this.config.fetch(getFeaturedProductsQuery)
-
-    return this.normalizeAllProducts(result?.data?.featuredProducts ?? [])
-  }
-
-  getNewProducts = async () => {
-    const result = await this.config.fetch(getNewProductsQuery)
-
-    return this.normalizeAllProducts(result?.data?.newProducts ?? [])
+    return this.normalizeAllProducts(
+      result?.data?.getProductListing?.data ?? []
+    )
   }
 
   getAllProducts = async () => {

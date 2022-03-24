@@ -1,6 +1,8 @@
 import { OperationContext } from '@vercel/commerce/api/operations'
 import { Category } from '@vercel/commerce/types/site'
 import { BagistoConfig } from '../index'
+import { normalizeCategories } from '../lib/normalize'
+import { getCategoriesQuery } from '../queries/get-categories-query'
 
 export type GetSiteInfoResult<
   T extends { categories: any[]; brands: any[] } = {
@@ -9,8 +11,10 @@ export type GetSiteInfoResult<
   }
 > = T
 
-export default function getSiteInfoOperation({}: OperationContext<any>) {
-  function getSiteInfo({
+export default function getSiteInfoOperation({
+  commerce,
+}: OperationContext<any>) {
+  async function getSiteInfo({
     query,
     variables,
     config: cfg,
@@ -20,6 +24,12 @@ export default function getSiteInfoOperation({}: OperationContext<any>) {
     config?: Partial<BagistoConfig>
     preview?: boolean
   } = {}): Promise<GetSiteInfoResult> {
+    const bagistoConfig = commerce.getConfig(cfg)
+
+    const response = await bagistoConfig.fetch(getCategoriesQuery)
+
+    const categories = normalizeCategories(response?.data?.homeCategories ?? [])
+
     return Promise.resolve({
       categories: [
         {
@@ -34,6 +44,7 @@ export default function getSiteInfoOperation({}: OperationContext<any>) {
           slug: 'featured',
           path: '/featured',
         },
+        ...categories,
       ],
       brands: [],
     })

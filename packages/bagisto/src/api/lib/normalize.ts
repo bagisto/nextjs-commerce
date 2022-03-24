@@ -1,5 +1,16 @@
 import type { Customer } from '../../type/customer'
 
+export function normalizeCategories(categories: []) {
+  return categories.map((category: any) => {
+    return {
+      id: category.slug,
+      name: category.name,
+      slug: category.slug,
+      path: `/${category.slug}`,
+    }
+  })
+}
+
 export function normalizeProduct(product: any, config: any): any {
   const productFlat = product.productFlats.find(
     ({ locale }: any) => locale === 'en'
