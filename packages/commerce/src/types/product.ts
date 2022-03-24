@@ -36,6 +36,7 @@ export type Product = {
   name: string
   description: string
   descriptionHtml?: string
+  longDescription?: string
   sku?: string
   slug?: string
   path?: string

@@ -17,6 +17,7 @@ export function normalizeProduct(product: any, config: any): any {
   )
 
   return {
+    ...product,
     id: product.id,
     type: product.type,
     name: productFlat.name,
@@ -27,7 +28,8 @@ export function normalizeProduct(product: any, config: any): any {
       value: parseFloat(product.priceHtml.regularWithoutCurrencyCode ?? 0),
       currencyCode: product.priceHtml.currencyCode,
     },
-    descriptionHtml: productFlat.description,
+    longDescription: productFlat.description,
+    descriptionHtml: productFlat.shortDescription,
     images: product.cacheGalleryImages.map((p: any) => ({
       url: p.originalImageUrl,
       altText: 'Random',

@@ -10,7 +10,7 @@ export default class ProductHandler {
     this.config = config
   }
 
-  getAllFilteredProducts = async (variables: any) => {
+  getAllFilteredProducts = async (variables: any = {}) => {
     const result = await this.config.fetch(getAllProductsQuery, { variables })
 
     return this.normalizeAllProducts(
