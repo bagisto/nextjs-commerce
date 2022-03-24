@@ -19,11 +19,7 @@ export default class ProductHandler {
   }
 
   getAllProducts = async () => {
-    const result = await this.config.fetch(getAllProductsQuery)
-
-    return this.normalizeAllProducts(
-      result?.data?.getProductListing?.data ?? []
-    )
+    return await this.getAllFilteredProducts({ input: {} })
   }
 
   getProductById = async (id: string) => {
