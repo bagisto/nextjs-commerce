@@ -21,7 +21,7 @@ const countItem = (count: number, item: LineItem) => count + item.quantity
 const UserNav: FC<Props> = ({ className }) => {
   const { data } = useCart()
   const { data: customer } = useCustomer()
-  const { toggleSidebar, closeSidebarIfPresent, openModal, setSidebarView } =
+  const { toggleSidebar, closeSidebarIfPresent, openModal, setModalView, setSidebarView } =
     useUI()
   const itemsCount = data?.lineItems.reduce(countItem, 0) ?? 0
 
@@ -63,7 +63,11 @@ const UserNav: FC<Props> = ({ className }) => {
               <button
                 className={s.avatarButton}
                 aria-label="Menu"
-                onClick={() => openModal()}
+                onClick={() => {
+                  setModalView('LOGIN_VIEW')
+
+                  openModal()
+                }}
               >
                 <Avatar />
               </button>

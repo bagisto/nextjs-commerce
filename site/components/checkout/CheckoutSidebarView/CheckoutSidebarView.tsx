@@ -22,6 +22,7 @@ import s from './CheckoutSidebarView.module.css'
 const CheckoutSidebarView: FC = () => {
   const [loadingSubmit, setLoadingSubmit] = useState(false)
   const { setSidebarView, closeSidebar } = useUI()
+  const { openModal, setModalView } = useUI()
   const { data: cartData, mutate: refreshCart } = useCart()
   const { data: checkoutData, submit: onCheckout } = useCheckout()
   const { clearCheckoutFields } = useCheckoutContext()
@@ -37,7 +38,8 @@ const CheckoutSidebarView: FC = () => {
       refreshCart()
       closeSidebar()
 
-      alert('Your order has been placed successfully!')
+      setModalView('ORDER_SUCCESS_VIEW')
+      openModal()
     } catch {
       setLoadingSubmit(false)
     }

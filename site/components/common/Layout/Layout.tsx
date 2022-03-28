@@ -18,6 +18,7 @@ import CheckoutSidebarView from '@components/checkout/CheckoutSidebarView'
 import AddressView from '@components/checkout/AddressView'
 import ShippingMethodView from '@components/checkout/ShippingMethodView'
 import PaymentMethodView from '@components/checkout/PaymentMethodView'
+import OrderSuccessView from '@components/checkout/OrderSuccessView'
 
 import s from './Layout.module.css'
 
@@ -70,6 +71,7 @@ const ModalView: FC<{ modalView: string; closeModal(): any }> = ({
       {modalView === 'LOGIN_VIEW' && <LoginView />}
       {modalView === 'SIGNUP_VIEW' && <SignUpView />}
       {modalView === 'FORGOT_VIEW' && <ForgotPassword />}
+      {modalView === 'ORDER_SUCCESS_VIEW' && <OrderSuccessView />}
     </Modal>
   )
 }
