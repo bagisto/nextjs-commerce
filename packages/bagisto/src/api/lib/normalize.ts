@@ -1,3 +1,5 @@
+import { CURRENCY_CODE } from '../../const'
+
 import type { Customer } from '../../type/customer'
 
 export function normalizeCategories(categories: []) {
@@ -122,7 +124,7 @@ export function normalizeCart(data: any): any {
     email: data?.customerEmail,
     createdAt: data?.createdAt,
     currency: {
-      code: 'USD',
+      code: CURRENCY_CODE,
     },
     lineItems: data.items.map(normalizeLineItem),
     lineItemsSubtotalPrice: data?.subTotal,

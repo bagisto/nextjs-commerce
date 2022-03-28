@@ -1,6 +1,6 @@
-export const API_URL = 'http://192.168.15.114/modules/headless-ecommerce/public/graphql'
+export const API_URL = process.env.BAGISTO_STORE_ENDPOINT || ''
 
-export const CURRENCY_CODE = 'USD'
+export const CURRENCY_CODE = process.env.BAGISTO_CURRENCY_CODE || ''
 
 export const GUEST_COOKIE = 'BAGISTO_GUEST_COOKIE'
 
