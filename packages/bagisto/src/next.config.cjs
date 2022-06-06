@@ -3,6 +3,6 @@ const commerce = require('./commerce.config.json')
 module.exports = {
   commerce,
   images: {
-    domains: ['localhost', '192.168.15.114', 'bagistotest.tk'],
+    domains: ['demo.bagisto.com'],
   },
 }
