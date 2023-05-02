@@ -8,11 +8,15 @@ const isSaleor = provider === '@vercel/commerce-saleor'
 const isSwell = provider === '@vercel/commerce-swell'
 const isVendure = provider === '@vercel/commerce-vendure'
 
+
 module.exports = withCommerceConfig({
   commerce,
   i18n: {
     locales: ['en-US', 'es'],
     defaultLocale: 'en-US',
+  },
+  images: {
+    domains: ['192.168.15.250'],
   },
   rewrites() {
     return [
