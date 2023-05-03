@@ -18,15 +18,18 @@ const Orders = () => {
 
   async function loadOrders() {
     let nextOrders = await mutate()
-
-    if (!(nextOrders.length > 0)) {
+    /**
+     * handle the case when nextOrder response undefined or getOrders api got broke
+     */
+    if (nextOrders && !(nextOrders.length > 0)) {
       setIsEmpty(true)
       return
     }
 
-    let updatedOrders = [...orders, ...nextOrders]
-
-    setOrders(updatedOrders)
+    if (nextOrders && nextOrders.length > 0) {
+      let updatedOrders = [...orders, ...nextOrders]
+      setOrders(updatedOrders)
+    }
   }
 
   function nextOrders() {
