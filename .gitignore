@@ -5,6 +5,7 @@ node_modules
 .pnp
 .pnp.js
 
+
 # testing
 coverage
 
@@ -35,6 +36,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+yarn.lock
 
 # Turborepo
 .turbo
