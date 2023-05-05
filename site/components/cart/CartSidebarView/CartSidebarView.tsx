@@ -113,7 +113,6 @@ const CartSidebarView: FC = () => {
             <div>
               {process.env.COMMERCE_CUSTOMCHECKOUT_ENABLED ? (
                 <Button Component="a" width="100%" onClick={goToCheckout}
-                 disabled = {data?.email && data?.customerId  ? false : true}
                 >
                   Proceed to Checkout ({total})
                 </Button>
