@@ -19,10 +19,7 @@ export default class ProductHandler {
   }
 
   getAllProducts = async () => {
-    return await this.getAllFilteredProducts({ input: {
-      order: "desc",
-      sort: "createdAt",
-    } })
+    return await this.getAllFilteredProducts({ input: {} })
   }
 
   getProductById = async (id: string) => {
