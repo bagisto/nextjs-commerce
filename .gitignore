@@ -5,6 +5,7 @@ node_modules
 .pnp
 .pnp.js
 yarn.lock
+pnpm-lock
 
 # testing
 coverage
