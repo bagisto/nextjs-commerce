@@ -6,7 +6,7 @@ import type { BagistoConfig } from '../../'
 
 const fetchGraphqlApi: (getConfig: () => BagistoConfig) => GraphQLFetcher =
   (getConfig) =>
-  async (query: string, { variables } = {}, fetchOptions) => {
+  async (query: string, { variables } = {}, fetchOptions): Promise<any> => {
     const config = getConfig()
     const res = await fetch(config.commerceUrl, {
       ...fetchOptions,
