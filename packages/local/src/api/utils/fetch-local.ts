@@ -5,7 +5,11 @@ import fetch from './fetch'
 
 const fetchGraphqlApi: (getConfig: () => LocalConfig) => GraphQLFetcher =
   (getConfig) =>
-  async (query: string, { variables, preview } = {}, fetchOptions) => {
+  async (
+    query: string,
+    { variables, preview } = {},
+    fetchOptions
+  ): Promise<any> => {
     const config = getConfig()
     const res = await fetch(config.commerceUrl, {
       ...fetchOptions,
