@@ -387,7 +387,6 @@ export async function getCollectionProducts({
     }
   });
   if (!res.body.data?.allProducts) {
-    console.log(`No collection found for \`${collection}\``);
     return [];
   }
 
