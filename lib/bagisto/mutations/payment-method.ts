@@ -1,0 +1,123 @@
+export const savePaymentMutation = /* GraphQL */ `
+  mutation savePayment($input: SavePaymentMethodInput!) {
+    savePayment(input: $input) {
+      cart {
+        id
+        customerEmail
+        customerFirstName
+        customerLastName
+        shippingMethod
+        itemsCount
+        itemsQty
+        globalCurrencyCode
+        baseCurrencyCode
+        channelCurrencyCode
+        cartCurrencyCode
+        grandTotal
+        baseGrandTotal
+        subTotal
+        baseSubTotal
+        taxTotal
+        baseTaxTotal
+        discountAmount
+        baseDiscountAmount
+        checkoutMethod
+        isGuest
+        isActive
+        conversionTime
+        customerId
+        channelId
+        appliedCartRuleIds
+        createdAt
+        updatedAt
+        formattedPrice {
+          grandTotal
+          baseGrandTotal
+          subTotal
+          baseSubTotal
+          taxTotal
+          baseTaxTotal
+          discount
+          baseDiscount
+          discountedSubTotal
+          baseDiscountedSubTotal
+        }
+        shippingAddress {
+          id
+          addressType
+          customerId
+          cartId
+          orderId
+          firstName
+          lastName
+          gender
+          companyName
+          address1
+          address2
+          postcode
+          city
+          state
+          country
+          email
+          phone
+          defaultAddress
+          vatId
+          additional
+          createdAt
+          updatedAt
+        }
+        billingAddress {
+          id
+          addressType
+          customerId
+          cartId
+          orderId
+          firstName
+          lastName
+          gender
+          companyName
+          address1
+          address2
+          postcode
+          city
+          state
+          country
+          email
+          phone
+          defaultAddress
+          vatId
+          additional
+          createdAt
+          updatedAt
+        }
+        selectedShippingRate {
+          id
+          carrier
+          carrierTitle
+          method
+          methodTitle
+          methodDescription
+          price
+          basePrice
+          discountAmount
+          baseDiscountAmount
+          cartAddressId
+          createdAt
+          updatedAt
+          formattedPrice {
+            price
+            basePrice
+          }
+        }
+        payment {
+          id
+          method
+          methodTitle
+          cartId
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`;
