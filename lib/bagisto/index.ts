@@ -57,7 +57,7 @@ import {
 } from './types';
 
 const domain = process.env.BAGISTO_STORE_DOMAIN
-  ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, 'http://')
+  ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, 'https://')
   : '';
 const endpoint = `${domain}${BAGISTO_GRAPHQL_API_ENDPOINT}`;
 // const key = process.env.BAGISTO_STOREFRONT_ACCESS_TOKEN!;
@@ -333,7 +333,6 @@ export async function getCart(cartId?: string): Promise<Cart | undefined> {
     tags: [TAGS.cart],
     cache: 'no-store'
   });
-  console.warn(cartId);
 
   // Old carts becomes `null` when you checkout.
   if (!res.body.data.cartDetail) {
@@ -387,6 +386,7 @@ export async function getCollectionProducts({
     }
   });
   if (!res.body.data?.allProducts) {
+    // console.log(`No collection found for \`${collection}\``);
     return [];
   }
 
@@ -458,12 +458,16 @@ export async function getMenu(handle: string): Promise<Menu[]> {
       handle
     }
   });
+
   return (
     res.body?.data?.homeCategories?.map(
       (item: { name: string; slug: string; categoryId: string }) => ({
         id: item.categoryId,
         title: item.name,
-        path: item.slug.replace(domain, '').replace('/collections', '/search').replace('/pages', '')
+        path: `/search/${item.slug
+          .replace(domain, '')
+          .replace('/collections', '/search')
+          .replace('/pages', '/search')}`
       })
     ) || []
   );

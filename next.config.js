@@ -18,8 +18,8 @@ module.exports = {
         pathname: '/s/files/**'
       },
       {
-        protocol: 'http',
-        hostname: '192.168.15.204',
+        protocol: 'https',
+        hostname: 'nextjsv2.bagisto.com',
         pathname: '/**'
       }
     ]

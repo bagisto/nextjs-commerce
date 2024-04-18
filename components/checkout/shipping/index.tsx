@@ -49,7 +49,7 @@ export default function ShippingMethod({
                 <td className=" py-4">Contact</td>
                 <th
                   scope="row"
-                  className="break-words px-6 py-4 font-medium text-gray-900 dark:text-white"
+                  className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
                 >
                   {shippingAddress?.email}
                 </th>
@@ -114,7 +114,7 @@ export default function ShippingMethod({
               </Link>
             </button>
             <div className="w-full sm:w-2/5 ">
-              <ProceedToCheckout buttonName="Continiue to payment" />
+              <ProceedToCheckout buttonName="Continue to payment" />
             </div>
           </div>
         </form>

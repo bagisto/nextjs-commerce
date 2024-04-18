@@ -11,7 +11,7 @@ const { SITE_NAME } = process.env;
 
 export default async function Navbar() {
   const menu = await getMenu('next-js-frontend-header-menu');
-  const menuData = [{ id: '', path: '', title: 'All' }, ...menu];
+  const menuData = [{ id: '', path: '/search', title: 'All' }, ...menu];
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -29,10 +29,10 @@ export default async function Navbar() {
           </Link>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menuData.map((item: Menu) => (
+              {menuData.slice(0, 3).map((item: Menu) => (
                 <li key={item.title}>
                   <Link
-                    href={`/search/${item.path}`}
+                    href={`${item.path}`}
                     className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
                   >
                     {item.title}

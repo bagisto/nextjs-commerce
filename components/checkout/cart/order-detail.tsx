@@ -7,7 +7,7 @@ export default function OrderDetail() {
   const order = searchParams.get('order');
   const getOrder = getLocalStorage('reviewOrder', true);
   return (
-    getOrder?.id == order && (
+    getOrder?.id === order && (
       <div>
         <h1 className="my-2 text-center text-2xl font-bold">Your order number:{getOrder?.id}</h1>
       </div>

@@ -11,7 +11,6 @@ export async function generateMetadata({
   params: { page: string };
 }): Promise<Metadata> {
   const page = await getPage({ urlKey: params.page });
-
   if (!page?.data?.length) return notFound();
 
   const pageData = page?.data?.[0]?.translations?.[0];
@@ -34,9 +33,11 @@ export default async function Page({ params }: { params: { page: string } }) {
   const pageData = page?.data?.[0]?.translations?.[0];
   return (
     <>
-      <h1 className="mb-8 text-5xl font-bold">{pageData?.pageTitle}</h1>
+      <h1 className="mx-auto my-8 px-5 lg:px-0 max-w-6xl text-5xl font-bold leading-7 text-black">
+        {pageData?.pageTitle}
+      </h1>
       <Prose className="mb-8" html={pageData?.htmlContent as string} />
-      <p className="text-sm italic">
+      <p className="text-sm max-w-6xl px-5 lg:px-0 mx-auto mb-8 italic">
         {`This document was last updated on ${new Intl.DateTimeFormat(undefined, {
           year: 'numeric',
           month: 'long',

@@ -2,10 +2,9 @@ import clsx from 'clsx';
 import { getMenu } from 'lib/bagisto';
 import { Suspense } from 'react';
 import FilterList from './filter';
-
 async function CollectionList() {
   const collections = await getMenu('header-menu');
-  const menuData = [{ path: '', title: 'All' }, ...collections];
+  const menuData = [{ path: '/search', title: 'All' }, ...collections];
   return <FilterList list={menuData} title="Collections" />;
 }
 

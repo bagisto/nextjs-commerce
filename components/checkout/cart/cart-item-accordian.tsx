@@ -32,9 +32,9 @@ export default function CartItemAccordian({ cartItem }: { cartItem: Cart | undef
                     <div className="flex gap-2">
                       <ShoppingCartIcon />
                       {open ? (
-                        <p className="text-base">Hide order summery</p>
+                        <p className="text-base">Hide order summary</p>
                       ) : (
-                        <p className="text-base">Show order summery</p>
+                        <p className="text-base">Show order summary</p>
                       )}
                     </div>
 

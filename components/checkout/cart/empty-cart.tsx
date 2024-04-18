@@ -17,7 +17,7 @@ const EmptyCartPage = () => {
         <BasketCartIcon className="h-48 w-48" />
         <OrderDetail />
         <h1 className="my-2 text-center text-4xl font-bold">Your cart is empty.</h1>
-        <EventButton buttonName="continue shopping" redirect="/" />
+        <EventButton buttonName="Continue shopping" redirect="/" />
       </div>
     </div>
   );

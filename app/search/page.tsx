@@ -4,7 +4,6 @@ import { getProducts } from 'lib/bagisto';
 import { defaultSort, sorting } from 'lib/constants';
 
 export const runtime = 'edge';
-
 export const metadata = {
   title: 'Search',
   description: 'Search for products in the store.'
