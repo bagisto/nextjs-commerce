@@ -4,6 +4,7 @@ import Cart from 'components/checkout/cart/cart';
 import Loading from 'components/checkout/loading';
 import NextBreadcrumb from 'components/checkout/next-breadcrumb';
 import FormPlaceHolder from 'components/checkout/place-holder';
+import LogoSquare from 'components/logo-square';
 import { Suspense } from 'react';
 const skeleton = 'mb-3 h-4 w-5/6 animate-pulse rounded';
 const activeAndTitles = 'bg-neutral-400 dark:bg-neutral-300';
@@ -12,7 +13,7 @@ export default async function CheckoutLayout({ children }: React.PropsWithChildr
   return (
     <div className="mx-auto max-w-6xl">
       <section className="flex min-h-[100dvh] flex-col-reverse justify-between lg:flex-row">
-        <div className="flex-2 mx-auto w-full max-w-2xl flex-initial flex-shrink-0 flex-grow-0 gap-0 overflow-auto border-0 border-neutral-200 px-4 py-10 dark:border-gray-700 md:px-0 lg:basis-[55.5%] lg:border-r-[1px] lg:px-6">
+        <div className="flex-2 mx-auto w-full max-w-2xl flex-initial flex-shrink-0 flex-grow-0 gap-0 overflow-auto border-0 border-neutral-200 px-4 py-10 md:px-0 lg:basis-[55.5%] lg:border-r-[1px] lg:px-6 dark:border-gray-700">
           <div className="min-h-[100dvh] lg:min-h-[85dvh]">
             <Suspense
               fallback={
@@ -24,7 +25,12 @@ export default async function CheckoutLayout({ children }: React.PropsWithChildr
                 </div>
               }
             >
-              <NextBreadcrumb />
+              <header className="flex flex-col gap-4">
+                <div className="hidden w-full flex-col gap-6 lg:flex">
+                  <LogoSquare />
+                </div>
+                <NextBreadcrumb />
+              </header>
             </Suspense>
             <Suspense fallback={<FormPlaceHolder />}>{children}</Suspense>
           </div>

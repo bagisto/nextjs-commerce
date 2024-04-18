@@ -62,6 +62,27 @@ export type selectedPaymentMethodType = {
   cartId: string;
 };
 
+export type ChannelType = {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  theme: string;
+  hostname: string;
+  defaultLocaleId: number;
+  baseCurrencyId: number;
+  rootCategoryId: number;
+  logoUrl: string;
+  faviconUrl: string;
+  success: string;
+};
+
+export type BagistoChannelOperation = {
+  data: {
+    getDefaultChannel: ChannelType;
+  };
+};
+
 export type CartItem = {
   id: string;
   type: string;

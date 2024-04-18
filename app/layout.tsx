@@ -1,4 +1,5 @@
 import { GeistSans } from 'geist/font';
+import { getChennel } from 'lib/bagisto';
 import { ensureStartsWith } from 'lib/utils';
 import { ReactNode, Suspense } from 'react';
 import { GlobalContextProvider } from './context/store';
@@ -33,8 +34,13 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  const storeConfig = await getChennel();
+
   return (
     <html lang="en" className={GeistSans.variable}>
+      <head>
+        <link rel="icon" href={storeConfig?.faviconUrl} sizes="any" />
+      </head>
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
         <Suspense>
           <main>

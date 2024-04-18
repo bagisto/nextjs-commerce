@@ -15,6 +15,7 @@ import { savePlaceOrder } from './mutations/place-order';
 import { addShippingAddressMutation } from './mutations/shipping-address';
 import { addShippingMethodMutation } from './mutations/shipping-method';
 import { getCartQuery } from './queries/cart';
+import { getChannelQuery } from './queries/channel';
 import { getCollectionProductsQuery, getCollectionsQuery } from './queries/collection';
 import { getMenuQuery } from './queries/menu';
 import {
@@ -28,6 +29,7 @@ import {
   BagistoAddToCartOperation,
   BagistoCart,
   BagistoCartOperation,
+  BagistoChannelOperation,
   BagistoCheckoutOperation,
   BagistoCollection,
   BagistoCollectionOperation,
@@ -44,6 +46,7 @@ import {
   BagistoThemeCustomization,
   BagistoUpdateCartOperation,
   Cart,
+  ChannelType,
   Collection,
   CountryArrayDataType,
   FilterCmsPageTranslationInput,
@@ -242,6 +245,14 @@ export async function createCart(): Promise<Cart> {
   });
 
   return reshapeCart(res.body.data.cartCreate.cart);
+}
+
+export async function getChennel(): Promise<ChannelType> {
+  const res = await bagistoFetch<BagistoChannelOperation>({
+    query: getChannelQuery,
+    cache: 'no-store'
+  });
+  return res.body.data.getDefaultChannel;
 }
 
 export async function addToCart(input: {

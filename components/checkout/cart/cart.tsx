@@ -1,3 +1,4 @@
+import LogoSquare from 'components/logo-square';
 import Price from 'components/price';
 import { getCart } from 'lib/bagisto';
 import { DEFAULT_OPTION } from 'lib/constants';
@@ -19,8 +20,13 @@ export default async function Cart() {
   }
   return (
     <>
-      <CartItemAccordian cartItem={cart} />
-      <div className="mt-2 hidden max-h-[95dvh] w-full flex-col overflow-hidden bg-transparent px-6 text-sm text-black backdrop-blur-xl dark:text-white lg:flex">
+      <div className="flex w-full flex-col gap-6 lg:hidden">
+        <div className="mx-auto mt-8 flex items-center px-2 lg:hidden">
+          <LogoSquare />
+        </div>
+        <CartItemAccordian cartItem={cart} />
+      </div>
+      <div className="mt-2 hidden max-h-[95dvh] w-full flex-col overflow-hidden bg-transparent px-6 text-sm text-black backdrop-blur-xl lg:flex dark:text-white">
         <ul className="flex-grow overflow-auto py-4">
           {cart?.items?.map((item, i) => {
             const merchandiseSearchParams = {} as MerchandiseSearchParams;
@@ -32,7 +38,7 @@ export default async function Cart() {
               <li key={i} className="flex w-full flex-col">
                 <div className="relative flex w-full flex-row justify-between py-4">
                   <div className="absolute z-40 -mt-2 ml-[52px] flex h-5 w-5 items-center justify-center rounded-full bg-primary dark:bg-white/80">
-                    <span className="text-sm font-semibold text-white/60 dark:text-black ">
+                    <span className="text-sm font-semibold text-white/60 dark:text-black">
                       {item.quantity}
                     </span>
                   </div>
@@ -68,7 +74,7 @@ export default async function Cart() {
           })}
         </ul>
         <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
-          <div className="mb-3 flex items-center justify-between pb-1 ">
+          <div className="mb-3 flex items-center justify-between pb-1">
             <p>Subtotal</p>
             <Price
               className="text-right text-base text-black dark:text-white"
@@ -76,7 +82,7 @@ export default async function Cart() {
               currencyCode={'USD'}
             />
           </div>
-          <div className="mb-3 flex items-center justify-between  pb-1 pt-1">
+          <div className="mb-3 flex items-center justify-between pb-1 pt-1">
             <p>Shipping</p>
             {isObject(cart?.selectedShippingRate) ? (
               <Price
@@ -96,11 +102,6 @@ export default async function Cart() {
               currencyCode={'USD'}
             />
           </div>
-          {/* {isObject(cart?.payment) && (
-            <form action={placeOrder}>
-              <ProceedToCheckout buttonName="Place Order" />
-            </form>
-          )} */}
         </div>
       </div>
     </>
