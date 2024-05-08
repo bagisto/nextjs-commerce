@@ -529,6 +529,7 @@ export async function getProducts({
   if (query) {
     input = [{ key: 'name', value: query }, ...input];
   }
+
   const res = await bagistoFetch<BagistoCollectionProductsOperation>({
     query: getCollectionProductsQuery,
     tags: [TAGS.products],

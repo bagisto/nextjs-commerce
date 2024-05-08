@@ -33,11 +33,11 @@ export default async function Page({ params }: { params: { page: string } }) {
   const pageData = page?.data?.[0]?.translations?.[0];
   return (
     <>
-      <h1 className="mx-auto my-8 px-5 lg:px-0 max-w-6xl text-5xl font-bold leading-7 text-black">
+      <h1 className="mx-auto my-8 max-w-6xl px-5 text-5xl font-bold leading-7 text-black lg:px-0">
         {pageData?.pageTitle}
       </h1>
       <Prose className="mb-8" html={pageData?.htmlContent as string} />
-      <p className="text-sm max-w-6xl px-5 lg:px-0 mx-auto mb-8 italic">
+      <p className="mx-auto mb-8 max-w-6xl px-5 text-sm italic lg:px-0">
         {`This document was last updated on ${new Intl.DateTimeFormat(undefined, {
           year: 'numeric',
           month: 'long',

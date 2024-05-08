@@ -37,8 +37,7 @@ export default async function CategoryPage({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const collections = await getMenu('header-menu');
-  const categoryItem = collections.filter((item) => item.path == params.collection);
-
+  const categoryItem = collections.filter((item) => item.path == `/search/${params.collection}`);
   const { sort } = searchParams as { [key: string]: string };
   const { sortKey, reverse } = sorting.find((item) => item.slug === sort) || defaultSort;
   const products = await getCollectionProducts({

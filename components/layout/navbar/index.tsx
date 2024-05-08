@@ -25,7 +25,7 @@ export default async function Navbar() {
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
               {menuData.slice(0, 3).map((item: Menu) => (
-                <li key={item.title}>
+                <li key={item?.id + item.title}>
                   <Link
                     href={`${item.path}`}
                     className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
