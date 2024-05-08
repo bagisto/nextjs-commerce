@@ -1,5 +1,5 @@
 import { BAGISTO_GRAPHQL_API_ENDPOINT, CHECKOUT, HIDDEN_PRODUCT_TAG, TAGS } from 'lib/constants';
-import { isBagistoError, isObject } from 'lib/type-guards';
+import { isArray, isBagistoError, isObject } from 'lib/type-guards';
 import { ensureStartsWith } from 'lib/utils';
 import { revalidateTag } from 'next/cache';
 import { cookies, headers } from 'next/headers';
@@ -143,7 +143,7 @@ const reshapeCart = (cart: BagistoCart): Cart => {
 
   return {
     ...cart,
-    lines: removeEdgesAndNodes(cart?.items)
+    lines: isArray(cart?.items) && removeEdgesAndNodes(cart?.items)
   };
 };
 
