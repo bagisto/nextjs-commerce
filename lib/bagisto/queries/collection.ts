@@ -38,7 +38,7 @@ export const getCollectionsQuery = /* GraphQL */ `
 import { productInfoFragment } from '../fragments/product';
 
 export const getCollectionProductsQuery = /* GraphQL */ `
-  query allProducts($input: [FilterAllProductsInput], $first: Int = 48, $page: Int = 1) {
+  query allProducts($input: [FilterAllProductsInput], $first: Int = 50, $page: Int = 1) {
     allProducts(input: $input, first: $first, page: $page) {
       paginatorInfo {
         count

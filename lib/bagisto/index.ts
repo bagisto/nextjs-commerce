@@ -63,7 +63,6 @@ const domain = process.env.BAGISTO_STORE_DOMAIN
   ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, 'https://')
   : '';
 const endpoint = `${domain}${BAGISTO_GRAPHQL_API_ENDPOINT}`;
-// const key = process.env.BAGISTO_STOREFRONT_ACCESS_TOKEN!;
 
 type ExtractVariables<T> = T extends { variables: object } ? T['variables'] : never;
 export async function bagistoFetch<T>({
