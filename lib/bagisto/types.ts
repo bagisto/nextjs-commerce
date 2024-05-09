@@ -394,6 +394,7 @@ export type BagistoProductInfo = {
   priceHtml: {
     regularPrice: string;
     currencyCode: string;
+    finalPrice: string;
   };
   variants: Array<ProductVariant>;
   featuredImage: Image;
@@ -439,6 +440,7 @@ export type RelatedProducts = {
   priceHtml: {
     regularPrice: string;
     currencyCode: string;
+    finalPrice: string;
   };
   images?: RealatedImageArray[];
 };
