@@ -18,7 +18,7 @@ export function ProductDescription({ product }: { product: BagistoProductInfo[] 
         <h1 className="mb-2 text-5xl font-medium">{data?.name}</h1>
         <div className="mr-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white">
           <Price
-            amount={data?.priceHtml?.regularPrice || ''}
+            amount={data?.priceHtml?.finalPrice || '0'}
             currencyCode={data?.priceHtml?.currencyCode || ''}
           />
         </div>

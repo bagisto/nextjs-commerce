@@ -11,7 +11,7 @@ export async function Carousel() {
   const carouselProducts = [...products, ...products, ...products];
 
   return (
-    <div className=" w-full overflow-x-auto hiddenScrollBar pb-6 pt-1">
+    <div className="hiddenScrollBar w-full overflow-x-auto pb-6 pt-1">
       <ul className="flex animate-carousel gap-4">
         {carouselProducts.map((product, i) => (
           <li
@@ -23,7 +23,7 @@ export async function Carousel() {
                 alt={product?.name || ''}
                 label={{
                   title: product?.name || '',
-                  amount: product.priceHtml?.regularPrice,
+                  amount: product.priceHtml?.finalPrice || '0',
                   currencyCode: product.priceHtml?.currencyCode
                 }}
                 src={product.images?.[0]?.url || ''}
