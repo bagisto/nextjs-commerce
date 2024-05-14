@@ -8,7 +8,7 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import CartItemAccordian from './cart-item-accordian';
-
+const { SITE_NAME } = process.env;
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
@@ -22,7 +22,10 @@ export default async function Cart() {
     <>
       <div className="flex w-full flex-col gap-6 lg:hidden">
         <div className="mx-auto mt-8 flex items-center px-2 lg:hidden">
-          <LogoSquare />
+          <Link className="flex items-center gap-2 text-black md:pt-1 dark:text-white" href="/">
+            <LogoSquare />
+            <span className="uppercase">{SITE_NAME}</span>
+          </Link>
         </div>
         <CartItemAccordian cartItem={cart} />
       </div>

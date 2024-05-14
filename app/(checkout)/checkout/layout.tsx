@@ -5,10 +5,12 @@ import Loading from 'components/checkout/loading';
 import NextBreadcrumb from 'components/checkout/next-breadcrumb';
 import FormPlaceHolder from 'components/checkout/place-holder';
 import LogoSquare from 'components/logo-square';
+import Link from 'next/link';
 import { Suspense } from 'react';
 const skeleton = 'mb-3 h-4 w-5/6 animate-pulse rounded';
 const activeAndTitles = 'bg-neutral-400 dark:bg-neutral-300';
 const items = 'bg-neutral-400 dark:bg-neutral-700';
+const { SITE_NAME } = process.env;
 export default async function CheckoutLayout({ children }: React.PropsWithChildren) {
   return (
     <div className="mx-auto max-w-6xl">
@@ -27,7 +29,15 @@ export default async function CheckoutLayout({ children }: React.PropsWithChildr
             >
               <header className="flex flex-col gap-4">
                 <div className="hidden w-full flex-col gap-6 lg:flex">
-                  <LogoSquare />
+                  <div>
+                    <Link
+                      className="flex items-center gap-2 text-black md:pt-1 dark:text-white"
+                      href="/"
+                    >
+                      <LogoSquare />
+                      <span className="uppercase">{SITE_NAME}</span>
+                    </Link>
+                  </div>
                 </div>
                 <NextBreadcrumb />
               </header>
