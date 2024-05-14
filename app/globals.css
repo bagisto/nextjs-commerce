@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*::-webkit-scrollbar-track {
+  -webkit-box-shadow: none;
+  @apply border-opacity-100 bg-gray-100;
+}
+
+*::-webkit-scrollbar {
+  @apply my-5 w-2 bg-gray-300;
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply my-5 rounded-full bg-gray-300;
+}
+
+.hiddenScrollBar {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+}
+.hiddenScrollBar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
+
+@supports (font: -apple-system-body) and (-webkit-appearance: none) {
+  img[loading='lazy'] {
+    clip-path: inset(0.6px);
+  }
+}
+
+a,
+.input,
+button {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-900;
+}

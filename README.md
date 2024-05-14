@@ -1,21 +1,20 @@
-# Bagisto Next.js Commerce
 
-The all-in-one starter kit for high-performance e-commerce sites. With a few clicks, Next.js developers can clone, deploy and fully customize their own store.
-Start right now at [nextjs.org/commerce](https://nextjs.org/commerce)
+# Next.js Commerce Bagisto
 
-Demo live at: [Bagisto Store](https://bagisto-commerce.vercel.app/)
+A Next.js 14 and App Router-ready ecommerce template featuring:
 
-## Features
+- Next.js App Router
+- Optimized for SEO using Next.js's Metadata
+- React Server Components (RSCs) and Suspense
+- Server Actions for mutations
+- Edge Runtime
+- New fetching and caching paradigms
+- Dynamic OG images
+- Styling with Tailwind CSS
+- Checkout and payments with Bagisto
+- Automatic light/dark mode based on system settings
 
-- Performant by default
-- SEO Ready
-- Internationalization
-- Responsive
-- UI Components
-- Theming
-- Standardized Data Hooks
-- Integrations - Integrate seamlessly with the most common ecommerce platforms.
-- Dark Mode Support
+<h3 id="v1-note"></h3>
 
 ## Configuration
 
@@ -26,21 +25,22 @@ Demo live at: [Bagisto Store](https://bagisto-commerce.vercel.app/)
 - Now you need to host the full application so that you have store endpoint and if you are in development mode then you can use Ngrok also.
 - After that you can proceed with setting up Next.js commerce.
 
-### Setup Vercel Commerce Provider
+## Running locally
 
-Open `site/.env.local` and change the value of `COMMERCE_PROVIDER` to `@vercel/commerce-bagisto`, then set the environment variables for the Bagisto provider (use `site/.env.template` as the base).
+You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js Commerce. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables) for this, but a `.env` file is all that is necessary.
 
-The setup for Bagisto would look like this for example:
+> Note: You should not commit your `.env` file or it will expose secrets that will allow others to control your Bagisto store.
 
+1. Install Vercel CLI: `npm i -g vercel`
+2. Link local instance with Vercel and GitHub accounts (creates `.vercel` directory): `vercel link`
+3. Download your environment variables: `vercel env pull`
+
+```bash
+pnpm install
+pnpm dev
 ```
-COMMERCE_PROVIDER=@vercel/commerce-bagisto
-BAGISTO_CURRENCY_CODE=INR
-BAGISTO_STORE_ENDPOINT=https://example.bagisto.com/graphql
-```
 
-### Features
-
-Bagisto provider defines the features that it supports under `packages/bagisto/src/commerce.config.json`
+Your app should now be running on [localhost:3000](http://localhost:3000/).
 
 #### Features Available
 
@@ -51,20 +51,3 @@ For example: Turning `cart` off will disable Cart capabilities.
 - search
 - customerAuth
 - customCheckout
-
-#### How to turn Features on and off
-
-> NOTE: The selected provider should support the feature that you are toggling. (This means that you can't turn wishlist on if the provider doesn't support this functionality out the box)
-
-- Open `site/commerce.config.json`
-- You'll see a config file like this:
-  ```json
-  {
-    "features": {
-      "wishlist": false,
-      "customCheckout": true
-    }
-  }
-  ```
-- Turn `wishlist` on by setting `wishlist` to `true`.
-- Run the app and the wishlist functionality should be back on.
