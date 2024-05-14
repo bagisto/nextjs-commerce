@@ -13,10 +13,10 @@ export default function ProductGridItems({ products }: { products: Product[] }) 
               alt={product.name || ''}
               label={{
                 title: product.name || '',
-                amount: product.priceHtml?.finalPrice || '0',
+                amount: product.priceHtml?.finalPrice || product.priceHtml?.regularPrice || '0',
                 currencyCode: product.priceHtml?.currencyCode
               }}
-              src={product.images?.[0]?.url || ''}
+              src={product.images?.[0]?.url || '/image/placeholder.webp'}
               fill
               sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
             />

@@ -49,7 +49,7 @@ export default async function Cart() {
                         width={64}
                         height={64}
                         alt={item.product.images?.[0]?.path || item.product.name}
-                        src={item.product.images?.[0]?.url || ''}
+                        src={item.product.images?.[0]?.url || '/image/placeholder.webp'}
                       />
                     </div>
                     <div className="flex flex-1 flex-col text-base">

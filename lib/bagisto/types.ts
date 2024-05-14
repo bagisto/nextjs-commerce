@@ -394,7 +394,9 @@ export type BagistoProductInfo = {
   priceHtml: {
     regularPrice: string;
     currencyCode: string;
+    formattedRegularPrice: string;
     finalPrice: string;
+    formattedFinalPrice: string;
   };
   variants: Array<ProductVariant>;
   featuredImage: Image;

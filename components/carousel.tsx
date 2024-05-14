@@ -23,7 +23,7 @@ export async function Carousel() {
                 alt={product?.name || ''}
                 label={{
                   title: product?.name || '',
-                  amount: product.priceHtml?.finalPrice || '0',
+                  amount: product.priceHtml.finalPrice || product.priceHtml.regularPrice || '0',
                   currencyCode: product.priceHtml?.currencyCode
                 }}
                 src={product.images?.[0]?.url || ''}

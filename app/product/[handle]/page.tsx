@@ -3,6 +3,7 @@ import { Gallery } from 'components/product/gallery';
 import { ProductDescription } from 'components/product/product-description';
 import { getCollectionProducts } from 'lib/bagisto';
 import type { ImageInfo, RelatedProducts } from 'lib/bagisto/types';
+import { isArray } from 'lib/type-guards';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -88,14 +89,25 @@ export default async function ProductPage({ params }: { params: { handle: string
                 <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden" />
               }
             >
-              <Gallery
-                images={
-                  data?.images?.map((image: ImageInfo) => ({
-                    src: image?.url || '',
-                    altText: image?.path || ''
-                  })) || []
-                }
-              />
+              {isArray(data?.images) ? (
+                <Gallery
+                  images={
+                    data?.images?.map((image: ImageInfo) => ({
+                      src: image?.url || '',
+                      altText: image?.path || ''
+                    })) || []
+                  }
+                />
+              ) : (
+                <Gallery
+                  images={[
+                    {
+                      src: '/image/placeholder.webp',
+                      altText: 'product image'
+                    }
+                  ]}
+                />
+              )}
             </Suspense>
           </div>
 
@@ -128,7 +140,7 @@ async function RelatedProducts({ relatedProduct }: { relatedProduct: RelatedProd
                 alt={item.name}
                 label={{
                   title: item.name,
-                  amount: item.priceHtml.finalPrice || '0',
+                  amount: item.priceHtml.finalPrice || item.priceHtml.regularPrice || '0',
                   currencyCode: item.priceHtml.currencyCode
                 }}
                 src={item.images?.[0]?.url || ''}

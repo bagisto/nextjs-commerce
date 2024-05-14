@@ -273,6 +273,7 @@ export const getCartQuery = /* GraphQL */ `
             url
             productId
           }
+          shareURL
           orderedInventories {
             id
             qty

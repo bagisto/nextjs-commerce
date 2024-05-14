@@ -80,7 +80,7 @@ export default function CartItemAccordian({ cartItem }: { cartItem: Cart | undef
                                   width={64}
                                   height={64}
                                   alt={item.product.images?.[0]?.path || item.product.name}
-                                  src={item.product.images?.[0]?.url || ''}
+                                  src={item.product.images?.[0]?.url || '/image/placeholder.webp'}
                                 />
                               </div>
 

@@ -1,5 +1,5 @@
 import { BAGISTO_GRAPHQL_API_ENDPOINT, CHECKOUT, HIDDEN_PRODUCT_TAG, TAGS } from 'lib/constants';
-import { isArray, isBagistoError, isObject } from 'lib/type-guards';
+import { isBagistoError, isObject } from 'lib/type-guards';
 import { ensureStartsWith } from 'lib/utils';
 import { revalidateTag } from 'next/cache';
 import { cookies, headers } from 'next/headers';
@@ -63,6 +63,7 @@ const domain = process.env.BAGISTO_STORE_DOMAIN
   ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, 'https://')
   : '';
 const endpoint = `${domain}${BAGISTO_GRAPHQL_API_ENDPOINT}`;
+// const key = process.env.BAGISTO_STOREFRONT_ACCESS_TOKEN!;
 
 type ExtractVariables<T> = T extends { variables: object } ? T['variables'] : never;
 export async function bagistoFetch<T>({
@@ -142,7 +143,7 @@ const reshapeCart = (cart: BagistoCart): Cart => {
 
   return {
     ...cart,
-    lines: isArray(cart?.items) && removeEdgesAndNodes(cart?.items)
+    lines: removeEdgesAndNodes(cart?.items)
   };
 };
 
