@@ -2,26 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-
 *::-webkit-scrollbar-track {
   -webkit-box-shadow: none;
-  @apply border-opacity-100 bg-gray-100;
+  @apply border-opacity-100 bg-white dark:bg-black;
 }
 
 *::-webkit-scrollbar {
-  @apply my-5 w-2 bg-gray-300;
+  @apply my-5 w-[6px] bg-gray-300;
 }
 
 *::-webkit-scrollbar-thumb {
-  @apply my-5 rounded-full bg-gray-300;
+  @apply my-5 rounded-full bg-gray-500 dark:bg-gray-300;
 }
 
-.hiddenScrollBar {
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
+/* .hiddenScrollBar {
+  -ms-overflow-style: none; 
   scrollbar-width: none;
-}
+} */
 .hiddenScrollBar::-webkit-scrollbar {
-  display: none; /* Safari and Chrome */
+  @apply my-5 h-[6px] bg-gray-300;
 }
 
 @media (prefers-color-scheme: dark) {
