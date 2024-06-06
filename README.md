@@ -1,6 +1,8 @@
 
 # Next.js Commerce Bagisto
 
+> Note: Looking for Bagisto Next.js Commerce v1? View the [code](https://github.com/bagisto/nextjs-commerce/tree/v1), [demo](https://bagisto-commerce.vercel.app/), and [release notes](https://github.com/bagisto/nextjs-commerce/releases/tag/v1)
+
 A Next.js 14 and App Router-ready ecommerce template featuring:
 
 - Next.js App Router
@@ -13,6 +15,8 @@ A Next.js 14 and App Router-ready ecommerce template featuring:
 - Styling with Tailwind CSS
 - Checkout and payments with Bagisto
 - Automatic light/dark mode based on system settings
+
+Demo live at: [Bagisto Store](https://v2-bagisto-demo.vercel.app/)
 
 <h3 id="v1-note"></h3>
 
