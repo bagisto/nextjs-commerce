@@ -1,13 +1,10 @@
 'use server';
-import {
-  addCheckoutAddress,
-  addPaymentMethod,
-  addShippingMethod,
-  createPlaceOrder
-} from 'lib/bagisto';
+import { addPaymentMethod, createPlaceOrder } from 'lib/bagisto';
 import { TAGS } from 'lib/constants';
 import { isObject } from 'lib/type-guards';
 import { revalidateTag } from 'next/cache';
+import { addShippingMethod } from 'lib/bagisto';
+import { addCheckoutAddress } from 'lib/bagisto';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -26,7 +23,7 @@ const schema = z.object({
   city: z.string({ required_error: 'City is required' }).min(1, { message: 'City is required' }),
   state: z.string({ required_error: 'State is required' }).min(1, { message: 'State is required' }),
   postcode: z
-    .string({ required_error: 'Zipcode is required' })
+    .string({ required_error: 'Zip code is required' })
     .min(1, { message: 'Zip code is required' }),
   phone: z
     .string({ required_error: 'Phone Number is required' })
@@ -43,7 +40,6 @@ export async function createCheckoutAddress(prevState: any, formData: FormData) 
     postcode: formData.get('postcode'),
     phone: formData.get('phone')
   });
-
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors
@@ -93,7 +89,7 @@ export async function createCheckoutAddress(prevState: any, formData: FormData) 
     return {
       shippingAddress: { ...checkoutInfo },
       cart: { ...(result.cart as Object) },
-      shippingMethos: result.shippingMethods
+      shippingMethod: result.shippingMethods
     };
   }
 }

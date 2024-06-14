@@ -28,12 +28,12 @@ export default async function FilterList({ list, title }: { list: ListItem[]; ti
         <ul className="hidden md:block">
           <Suspense fallback={null}>
             <FilterItemList list={list} />
-          </Suspense>{' '}
+          </Suspense>
         </ul>
         <ul className="md:hidden">
           <Suspense fallback={null}>
             <FilterItemDropdown list={list} />
-          </Suspense>{' '}
+          </Suspense>
         </ul>
       </nav>
     </>

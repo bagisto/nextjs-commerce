@@ -3,7 +3,7 @@ import { Radio, RadioGroup, cn } from '@nextui-org/react';
 import RightArrowIcon from 'components/icons/right-arrow';
 import { ShippingAddressDataType } from 'lib/bagisto/types';
 import { isArray, isObject } from 'lib/type-guards';
-import { createCheckoutProceess } from 'lib/utils';
+import { createCheckoutProcess } from 'lib/utils';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
@@ -11,7 +11,6 @@ import { useFormState } from 'react-dom';
 import { createShippingMethod } from '../action';
 import { ProceedToCheckout } from '../cart/proceed-to-checkout';
 
-// Define a type for the props
 type CustomRadioProps = {
   children: React.ReactNode;
   description?: string;
@@ -27,14 +26,15 @@ export default function ShippingMethod({
 }) {
   const getCartShippingMethod = shippingMethod?.cart?.shippingMethod;
   const initialState = {
-    shippingmethd: getCartShippingMethod || ''
+    shippingMethods: getCartShippingMethod || ''
   };
 
   const [state, formAction] = useFormState(createShippingMethod, initialState);
-  const getshippingMethods = shippingMethod?.shippingMethods || [];
+  const getShippingMethods = shippingMethod?.shippingMethods || [];
+
   useEffect(() => {
     if (isArray(state?.paymentMethods)) {
-      createCheckoutProceess(state);
+      createCheckoutProcess(state);
       redirect('/checkout/payment');
     }
   }, [state, shippingAddress]);
@@ -89,9 +89,9 @@ export default function ShippingMethod({
         <form action={formAction}>
           <div className="flex flex-col gap-5">
             <h1 className="text-2xl font-bold ">Shipping method</h1>
-            {isArray(getshippingMethods) && (
-              <RadioGroup label="" defaultValue={state?.shippingmethd} name="shippingMethod">
-                {getshippingMethods.map((method: any) => (
+            {isArray(getShippingMethods) && (
+              <RadioGroup label="" defaultValue={state?.shippingMethods} name="shippingMethod">
+                {getShippingMethods.map((method: any) => (
                   <CustomRadio
                     className="my-1 border border-solid border-neutral-300 dark:border-neutral-500"
                     key={method?.methods?.code}

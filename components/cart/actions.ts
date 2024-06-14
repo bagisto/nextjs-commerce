@@ -1,11 +1,9 @@
 'use server';
-
 import { addToCart, getCart, removeFromCart, updateCart } from 'lib/bagisto';
 import { SuperAttribute } from 'lib/bagisto/types';
-import { TAGS } from 'lib/constants';
+import { TAGS, BAGISTO_SESSION } from 'lib/constants';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
-
 export async function addItem(
   prevState: any,
   input: {
@@ -14,11 +12,11 @@ export async function addItem(
     superAttribute: SuperAttribute[];
   }
 ) {
-  const cartId = cookies().get('bagisto_session')?.value;
+  const cartId = cookies().get(BAGISTO_SESSION)?.value;
   if (cartId) {
-    await getCart(cartId);
+    await getCart();
   } else {
-    cookies().set('bagisto_session', generateCookieValue(40), {
+    cookies().set(BAGISTO_SESSION, generateCookieValue(40), {
       httpOnly: true,
       secure: false
     });
@@ -30,7 +28,6 @@ export async function addItem(
 
   const selectedConfigurableOption = input.selectedConfigurableOption;
   const superAttribute = input.superAttribute;
-
   try {
     await addToCart({
       productId: Number(input?.selectedVariantId),
@@ -54,7 +51,7 @@ function generateCookieValue(length: number) {
 }
 
 export async function removeItem(prevState: any, lineId: number) {
-  const cartId = cookies().get('bagisto_session')?.value;
+  const cartId = cookies().get(BAGISTO_SESSION)?.value;
 
   if (!cartId) {
     return 'Missing cart ID';
@@ -75,7 +72,7 @@ export async function updateItemQuantity(
     quantity: number;
   }
 ) {
-  const cartId = cookies().get('bagisto_session')?.value;
+  const cartId = cookies().get(BAGISTO_SESSION)?.value;
 
   if (!cartId) {
     return 'Missing cart ID';

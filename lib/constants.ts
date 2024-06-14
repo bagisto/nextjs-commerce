@@ -1,3 +1,6 @@
+/**
+ * Sorting & filtration constants
+ */
 export type SortFilterItem = {
   key: string;
   title: string;
@@ -15,14 +18,6 @@ export const defaultSort: SortFilterItem = {
   reverse: false, //asc
   position: '1'
 };
-
-// export const sorting: SortFilterItem[] = [
-//   defaultSort,
-//   { title: 'Trending', slug: 'trending-desc', sortKey: 'BEST_SELLING', reverse: false }, // asc
-//   { title: 'Latest arrivals', slug: 'latest-desc', sortKey: 'CREATED_AT', reverse: true },
-//   { title: 'Price: Low to high', slug: 'price-asc', sortKey: 'PRICE', reverse: false }, // asc
-//   { title: 'Price: High to low', slug: 'price-desc', sortKey: 'PRICE', reverse: true }
-// ];
 
 export const sorting: SortFilterItem[] = [
   defaultSort,
@@ -85,3 +80,25 @@ export const CHECKOUT = {
 export const HIDDEN_PRODUCT_TAG = 'nextjs-frontend-hidden';
 export const DEFAULT_OPTION = 'Default Title';
 export const BAGISTO_GRAPHQL_API_ENDPOINT = '/graphql';
+
+/**
+ * local storage constant keys
+ */
+export const SAVED_LOCAL_STORAGE = 'shippingAddress';
+export const REVIEW_ORDER = 'reviewOrder';
+export const CHECKOUT_DATA = 'checkOutData';
+/**
+productJsonLd constant
+**/
+export const BASE_SCHEMA_URL = 'https://schema.org';
+export const PRODUCT_TYPE = 'Product';
+export const PRODUCT_OFFER_TYPE = 'AggregateOffer';
+
+/**
+ * cookies constant
+ */
+
+export const BAGISTO_SESSION = 'bagisto_session';
+export const TOKEN = 'token';
+// next.js-frontend.vercel.app
+export const BASE_URL = 'https://nextjs-frontend.vercel.app';

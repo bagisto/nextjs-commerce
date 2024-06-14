@@ -2,19 +2,19 @@ import { Select, SelectItem } from '@nextui-org/react';
 import { useGlobalContext } from 'app/context/store';
 import clsx from 'clsx';
 import { CountryArrayDataType } from 'lib/bagisto/types';
-export default function Selectbox({
+export default function SelectBox({
   className,
   countries,
   label,
   errorMsg,
-  defaultvalue,
+  defaultValue,
   nameAttr
 }: {
   className: string;
   label: string;
   countries: any;
   errorMsg?: string;
-  defaultvalue?: string;
+  defaultValue?: string;
   nameAttr?: string;
 }) {
   const { setCountryCode } = useGlobalContext();
@@ -28,10 +28,10 @@ export default function Selectbox({
         label={label}
         name={nameAttr}
         variant="bordered"
-        color="primary"
+        color={'default'}
         radius="sm"
         autoFocus={false}
-        defaultSelectedKeys={[defaultvalue || 'IN']}
+        defaultSelectedKeys={[defaultValue || 'IN']}
         errorMessage={errorMsg && errorMsg}
         isInvalid={!!errorMsg}
         placeholder="Select country/region"

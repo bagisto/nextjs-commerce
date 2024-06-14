@@ -2,6 +2,7 @@
 import { ProceedToCheckout } from 'components/checkout/cart/proceed-to-checkout';
 import RightArrowIcon from 'components/icons/right-arrow';
 import { ShippingAddressDataType, selectedPaymentMethodType } from 'lib/bagisto/types';
+import { REVIEW_ORDER, CHECKOUT_DATA } from 'lib/constants';
 import { isObject } from 'lib/type-guards';
 import { removeFromLocalStorage, setLocalStorage } from 'lib/utils';
 import Link from 'next/link';
@@ -9,7 +10,6 @@ import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { placeOrder } from '../action';
-
 export default function PlaceOrderPage({
   selectedPayment,
   shippingAddress,
@@ -22,8 +22,8 @@ export default function PlaceOrderPage({
   const [state, formAction] = useFormState(placeOrder, '');
   useEffect(() => {
     if (isObject(state?.order)) {
-      removeFromLocalStorage('checkout_data');
-      setLocalStorage('reviewOrder', state?.order);
+      removeFromLocalStorage(CHECKOUT_DATA);
+      setLocalStorage(REVIEW_ORDER, state?.order);
       redirect(`/cart?order=${state?.order?.id}`);
     }
   }, [state, selectedPayment]);

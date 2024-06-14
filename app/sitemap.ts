@@ -1,15 +1,13 @@
 import { getHomeCategories, getPages, getProducts } from 'lib/bagisto';
-import { validateEnvironmentVariables } from 'lib/utils';
+import { validateEnvironmentVariables, getBaseUrl } from 'lib/utils';
 import { MetadataRoute } from 'next';
-
+export const dynamic = 'force-dynamic';
 type Route = {
   url: string;
   lastModified: string;
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : 'http://localhost:3000';
+const baseUrl = getBaseUrl(process.env.NEXT_PUBLIC_VERCEL_URL);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   validateEnvironmentVariables();

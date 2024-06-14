@@ -4,11 +4,11 @@ import { isObject } from 'lib/type-guards';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-type BreadCumbType = {
+type BreadCrumbType = {
   label: 'Information' | 'Shipping' | 'Payment' | 'Place Order';
   href: string;
 };
-type BreadcrumbArray = BreadCumbType[];
+type BreadcrumbArray = BreadCrumbType[];
 const breadCrumbs: BreadcrumbArray = new Array(
   {
     label: 'Information',
@@ -29,7 +29,7 @@ const breadCrumbs: BreadcrumbArray = new Array(
 );
 const NextBreadcrumb = () => {
   const paths = usePathname();
-  const [currentPage, setCurrentPage] = useState<BreadCumbType['label']>('Information');
+  const [currentPage, setCurrentPage] = useState<BreadCrumbType['label']>('Information');
   const currentPath = breadCrumbs?.find((item) => item.href === paths);
   useEffect(() => {
     if (isObject(currentPath)) {

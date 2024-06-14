@@ -6,13 +6,14 @@ import RightArrowIcon from 'components/icons/right-arrow';
 import WalletLogo from 'components/icons/wallet-logo';
 import { ShippingAddressDataType, selectedPaymentMethodType } from 'lib/bagisto/types';
 import { isArray, isObject } from 'lib/type-guards';
-import { createCheckoutProceess, getLocalStorage } from 'lib/utils';
+import { createCheckoutProcess, getLocalStorage } from 'lib/utils';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { createPaymentMethod } from '../action';
-// Define a type for the props
+import { CHECKOUT_DATA } from 'lib/constants';
+
 type CustomRadioProps = {
   children: React.ReactNode;
   description?: string;
@@ -28,16 +29,15 @@ export default function PaymentPage({
   selectedShipping?: any;
   shippingAddress?: ShippingAddressDataType;
 }) {
-  const getCheckoutData = getLocalStorage('checkout_data', true);
+  const getCheckoutData = getLocalStorage(CHECKOUT_DATA, true);
   const methods = getCheckoutData?.paymentMethods;
   const initialState = {
     method: selectedPayment?.method || ''
   };
-  
   const [state, formAction] = useFormState(createPaymentMethod, initialState);
   useEffect(() => {
     if (isObject(state?.payment)) {
-      createCheckoutProceess(state);
+      createCheckoutProcess(state);
       redirect('/checkout/place-order');
     }
   }, [state, selectedShipping]);

@@ -3,7 +3,7 @@
   "packageManager": "pnpm@9.0.5",
   "engines": {
     "node": ">=18",
-    "pnpm": ">=7"
+    "pnpm": ">=8"
   },
   "scripts": {
     "dev": "next dev",
@@ -30,6 +30,7 @@
     "framer-motion": "^11.0.14",
     "geist": "^1.0.0",
     "next": "14.0.0",
+    "next-auth": "^4.24.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zod": "^3.22.4"

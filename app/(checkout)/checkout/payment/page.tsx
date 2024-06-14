@@ -8,7 +8,6 @@ const PaymentPage = dynamic(() => import('components/checkout/payment'), {
 });
 const payment = async () => {
   const cart = await getCart();
-
   return (
     <PaymentPage
       selectedPayment={cart?.payment}

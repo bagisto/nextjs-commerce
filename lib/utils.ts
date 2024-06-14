@@ -1,6 +1,6 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { isArray, isObject } from './type-guards';
-
+import { CHECKOUT_DATA } from './constants';
 export const createUrl = (pathname: string, params: URLSearchParams | ReadonlyURLSearchParams) => {
   const paramsString = params.toString();
   const queryString = `${paramsString.length ? '?' : ''}${paramsString}`;
@@ -59,13 +59,13 @@ export const getLocalStorage = (key: string | any, needParsedData = false) => {
   }
 };
 
-export const createCheckoutProceess = (responseValues: object) => {
-  const getShippingAddress = getLocalStorage('checkout_data', true);
-  if (localStorage.getItem('checkout_data') === null) {
-    setLocalStorage('checkout_data', { ...responseValues });
+export const createCheckoutProcess = (responseValues: object) => {
+  const getShippingAddress = getLocalStorage(CHECKOUT_DATA, true);
+  if (localStorage.getItem(CHECKOUT_DATA) === null) {
+    setLocalStorage(CHECKOUT_DATA, { ...responseValues });
   }
-  if (isObject(getShippingAddress) && localStorage.getItem('checkout_data') !== null) {
-    setLocalStorage('checkout_data', { ...getShippingAddress, ...responseValues });
+  if (isObject(getShippingAddress) && localStorage.getItem(CHECKOUT_DATA) !== null) {
+    setLocalStorage(CHECKOUT_DATA, { ...getShippingAddress, ...responseValues });
   }
 };
 
@@ -79,4 +79,12 @@ export const removeFromLocalStorage = (storageKey: string | any) => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(storageKey);
   }
+};
+
+/**
+ * Get base url
+ * @returns string
+ */
+export const getBaseUrl = (baseUrl: string | any) => {
+  return baseUrl ? `https://${baseUrl}` : 'http://localhost:3000';
 };

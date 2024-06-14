@@ -8,6 +8,7 @@ const GuestCheckOutForm = dynamic(() => import('components/checkout/information/
 });
 export default async function Information() {
   const countryList = await getCountryList();
+
   return <GuestCheckOutForm countries={countryList} />;
 }
 export const metadata: Metadata = {

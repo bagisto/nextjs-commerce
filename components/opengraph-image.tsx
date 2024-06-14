@@ -5,7 +5,7 @@ export type Props = {
   title?: string;
 };
 
-export default async function OpengraphImage(props?: Props): Promise<ImageResponse> {
+export default async function OpenGraphImage(props?: Props): Promise<ImageResponse> {
   const { title } = {
     ...{
       title: process.env.SITE_NAME

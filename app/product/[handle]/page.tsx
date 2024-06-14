@@ -8,9 +8,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-
-export const runtime = 'edge';
-
+import { BASE_SCHEMA_URL, PRODUCT_TYPE, PRODUCT_OFFER_TYPE } from 'lib/constants';
 export async function generateMetadata({
   params
 }: {
@@ -56,17 +54,17 @@ export default async function ProductPage({ params }: { params: { handle: string
   const data = product[0];
 
   const productJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
+    '@context': BASE_SCHEMA_URL,
+    '@type': PRODUCT_TYPE,
     name: data?.name,
     description: data?.description,
     image: data?.images?.[0]?.url,
     offers: {
-      '@type': 'AggregateOffer',
+      '@type': PRODUCT_OFFER_TYPE,
       availability:
         data?.inventories?.[0]?.qty || 0 > 0
-          ? 'https://schema.org/InStock'
-          : 'https://schema.org/OutOfStock',
+          ? `${BASE_SCHEMA_URL}/InStock`
+          : `${BASE_SCHEMA_URL}/OutOfStock`,
       priceCurrency: data?.priceHtml.currencyCode,
       highPrice: data?.priceHtml?.regularPrice,
       lowPrice: data?.priceHtml?.regularPrice
@@ -110,14 +108,11 @@ export default async function ProductPage({ params }: { params: { handle: string
               )}
             </Suspense>
           </div>
-
           <div className="basis-full lg:basis-2/6">
             <ProductDescription product={product} />
           </div>
         </div>
-        <Suspense>
-          <RelatedProducts relatedProduct={data?.relatedProducts || []} />
-        </Suspense>
+        <RelatedProducts relatedProduct={data?.relatedProducts || []} />
       </div>
     </>
   );

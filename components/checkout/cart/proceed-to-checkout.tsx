@@ -44,10 +44,5 @@ function SubmitButton({
 
 export function ProceedToCheckout({ buttonName }: { buttonName: string }) {
   const { pending } = useFormStatus();
-
-  return (
-    <>
-      <SubmitButton buttonName={buttonName} availableForSale={!pending} />
-    </>
-  );
+  return <SubmitButton buttonName={buttonName} availableForSale={!pending} />;
 }

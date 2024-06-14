@@ -1,5 +1,4 @@
 'use client';
-
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import Price from 'components/price';
@@ -25,12 +24,11 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
 
   useEffect(() => {
     // Open cart modal when quantity changes.
-    if (cart?.itemsQty !== quantityRef.current) {
+    if (cart?.itemsQty !== quantityRef.current && typeof window !== 'undefined') {
       // But only if it's not already open (quantity also changes when editing items in cart).
-      if (!isOpen) {
+      if (!isOpen && !(window as any).isLogOutLoading) {
         setIsOpen(true);
       }
-
       // Always update the quantity reference
       quantityRef.current = cart?.itemsQty;
     }
@@ -83,12 +81,6 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                     {cart?.items?.map((item, i) => {
                       const merchandiseSearchParams = {} as MerchandiseSearchParams;
 
-                      /* item?.merchandise?.selectedOptions.forEach(({ name, value }) => {
-                        if (value !== DEFAULT_OPTION) {
-                          merchandiseSearchParams[name.toLowerCase()] = value;
-                        }
-                      }); */
-
                       const merchandiseUrl = createUrl(
                         `/product/${item?.product.sku}`,
                         new URLSearchParams(merchandiseSearchParams)
@@ -113,8 +105,9 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                                   className="h-full w-full object-cover"
                                   width={64}
                                   height={64}
-                                  alt={item.product.images?.[0]?.path || item.product.name}
-                                  src={item.product.images?.[0]?.url || '/image/placeholder.webp'}
+                                  alt={item?.product.images?.at(0)?.path || item?.product?.name}
+                                  src={item?.product.images?.at(0)?.url as any}
+                                  onError={(e) => (e.currentTarget.src = '/image/placeholder.webp')}
                                 />
                               </div>
 

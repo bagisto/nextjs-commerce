@@ -12,7 +12,8 @@ import ShoppingCartIcon from '../../icons/shopping-cart';
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
-export default function CartItemAccordian({ cartItem }: { cartItem: Cart | undefined }) {
+
+export default function CartItemAccordion({ cartItem }: { cartItem: Cart | undefined }) {
   return (
     <div className="mx-auto w-full bg-white/80 dark:bg-transparent">
       <Disclosure>

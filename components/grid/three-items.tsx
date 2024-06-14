@@ -3,7 +3,7 @@ import { getCollectionProducts } from 'lib/bagisto';
 import type { Product } from 'lib/bagisto/types';
 import Link from 'next/link';
 
-function ThreeItemGridItem({
+async function ThreeItemGridItem({
   item,
   size,
   priority
