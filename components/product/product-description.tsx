@@ -1,11 +1,11 @@
 import { AddToCart } from 'components/cart/add-to-cart';
-import Price from 'components/price';
-import Prose from 'components/prose';
+import dynamic from 'next/dynamic';
 import { BagistoProductInfo } from 'lib/bagisto/types';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { VariantSelector } from './variant-selector';
-
+const Price = dynamic(() => import('components/price'), { ssr: false });
+const Prose = dynamic(() => import('components/prose'), { ssr: false });
 export function ProductDescription({ product }: { product: BagistoProductInfo[] }) {
   if (!product.length) return notFound();
   const data = product[0];

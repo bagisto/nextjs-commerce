@@ -1,14 +1,14 @@
 'use client';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
-import Price from 'components/price';
 import type { Cart } from 'lib/bagisto/types';
 import { DEFAULT_OPTION } from 'lib/constants';
 import { createUrl } from 'lib/utils';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Link from 'next/link';
-import ShoppingCartIcon from '../../icons/shopping-cart';
-
+const ShoppingCartIcon = dynamic(() => import('../../icons/shopping-cart'), { ssr: false });
+const Price = dynamic(() => import('components/price'), { ssr: false });
 type MerchandiseSearchParams = {
   [key: string]: string;
 };

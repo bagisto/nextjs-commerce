@@ -1,16 +1,17 @@
 'use client';
+import dynamic from 'next/dynamic';
 import { Checkbox } from '@nextui-org/react';
 import { createCheckoutAddress } from 'components/checkout/action';
-import RegionDropDown from 'components/checkout/region-drop-down';
 import { CountryArrayDataType } from 'lib/bagisto/types';
 import { SAVED_LOCAL_STORAGE } from 'lib/constants';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { createCheckoutProcess, getLocalStorage, setLocalStorage } from '../../../lib/utils';
-import InputText from '../cart/input';
-import { ProceedToCheckout } from '../cart/proceed-to-checkout';
-import SelectBox from '../select-box';
+const RegionDropDown = dynamic(() => import('components/checkout/region-drop-down'), { ssr: false });
+const InputText = dynamic(() => import('../cart/input'), { ssr: false });
+const ProceedToCheckout = dynamic(() => import('../cart/proceed-to-checkout'), { ssr: false });
+const SelectBox = dynamic(() => import('../select-box'), { ssr: false });
 const GuestCheckOutForm = ({ countries }: { countries: CountryArrayDataType[] }) => {
   const [isSaved, setFormData] = useState(false);
   const values = getLocalStorage(SAVED_LOCAL_STORAGE, true);

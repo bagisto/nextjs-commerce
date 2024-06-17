@@ -1,8 +1,9 @@
+import dynamic from 'next/dynamic';
 import FooterMenu from 'components/layout/footer-menu';
-import LogoSquare from 'components/logo-square';
 import { getThemeCustomization } from 'lib/bagisto';
 import Link from 'next/link';
 import { Suspense } from 'react';
+const LogoSquare = dynamic(() => import('components/logo-square'), { ssr: false });
 const { COMPANY_NAME, SITE_NAME } = process.env;
 
 export default async function Footer() {

@@ -1,5 +1,4 @@
-import LogoSquare from 'components/logo-square';
-import Price from 'components/price';
+import dynamic from 'next/dynamic';
 import { getCart } from 'lib/bagisto';
 import { DEFAULT_OPTION, BAGISTO_SESSION } from 'lib/constants';
 import { isObject } from 'lib/type-guards';
@@ -7,7 +6,9 @@ import { createUrl } from 'lib/utils';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
-import CartItemAccordion from './cart-item-accordian';
+const Price = dynamic(() => import('components/price'), { ssr: false });
+const LogoSquare= dynamic(() => import('components/logo-square'), { ssr: false });
+const CartItemAccordion = dynamic(() => import('./cart-item-accordian'), { ssr: false });
 const { SITE_NAME } = process.env;
 type MerchandiseSearchParams = {
   [key: string]: string;

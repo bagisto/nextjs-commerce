@@ -1,13 +1,12 @@
 'use client';
-
+import dynamic from 'next/dynamic';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { addItem } from 'components/cart/actions';
-import LoadingDots from 'components/loading-dots';
 import { ConfigurableProductData, ConfigurableProductIndexData } from 'lib/bagisto/types';
 import { useSearchParams } from 'next/navigation';
 import { useFormState, useFormStatus } from 'react-dom';
-
+const LoadingDots = dynamic(() => import('components/loading-dots'), { ssr: false });
 function SubmitButton({
   availableForSale,
   selectedVariantId

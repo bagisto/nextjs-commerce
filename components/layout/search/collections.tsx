@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { getMenu } from 'lib/bagisto';
 import { Suspense } from 'react';
-import FilterList from './filter';
+import dynamic from 'next/dynamic';
+const FilterList = dynamic(() => import('./filter'), { ssr: false });
 async function CollectionList() {
   const collections = await getMenu('header-menu');
   const menuData = [{ path: '/search', title: 'All' }, ...collections];

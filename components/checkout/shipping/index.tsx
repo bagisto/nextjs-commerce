@@ -1,6 +1,6 @@
 'use client';
+import dynamic from 'next/dynamic';
 import { Radio, RadioGroup, cn } from '@nextui-org/react';
-import RightArrowIcon from 'components/icons/right-arrow';
 import { ShippingAddressDataType } from 'lib/bagisto/types';
 import { isArray, isObject } from 'lib/type-guards';
 import { createCheckoutProcess } from 'lib/utils';
@@ -9,8 +9,8 @@ import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { createShippingMethod } from '../action';
-import { ProceedToCheckout } from '../cart/proceed-to-checkout';
-
+const RightArrowIcon = dynamic(() => import('components/icons/right-arrow'), { ssr: false });
+const ProceedToCheckout = dynamic(() => import('../cart/proceed-to-checkout'), { ssr: false });
 type CustomRadioProps = {
   children: React.ReactNode;
   description?: string;

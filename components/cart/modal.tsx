@@ -1,17 +1,21 @@
 'use client';
+import dynamic from 'next/dynamic';
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
-import Price from 'components/price';
+
 import type { Cart } from 'lib/bagisto/types';
 import { DEFAULT_OPTION } from 'lib/constants';
 import { createUrl } from 'lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useEffect, useRef, useState } from 'react';
-import CloseCart from './close-cart';
+
 import { DeleteItemButton } from './delete-item-button';
 import { EditItemQuantityButton } from './edit-item-quantity-button';
-import OpenCart from './open-cart';
+const OpenCart = dynamic(() => import('./open-cart'), { ssr: false });
+const CloseCart = dynamic(() => import('./close-cart'), { ssr: false });
+const Price = dynamic(() => import('components/price'), { ssr: false });
+
 type MerchandiseSearchParams = {
   [key: string]: string;
 };

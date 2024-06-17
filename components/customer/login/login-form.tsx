@@ -1,12 +1,12 @@
 'use client';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import InputText from 'components/checkout/cart/input';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
 import { z } from 'zod';
 import { LoadingButton } from './loading-button';
-
+import dynamic from 'next/dynamic';
+const InputText = dynamic(() => import('components/checkout/cart/input'), { ssr: false });
 const loginDefaultValue = {
   username: '',
   password: ''

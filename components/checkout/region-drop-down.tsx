@@ -3,7 +3,8 @@ import { useGlobalContext } from 'app/context/store';
 import clsx from 'clsx';
 import { CountryArrayDataType, StateArrayDataType } from 'lib/bagisto/types';
 import { isArray } from 'lib/type-guards';
-import InputText from './cart/input';
+import dynamic from 'next/dynamic';
+const InputText = dynamic(() => import('./cart/input'), { ssr: false });
 export default function SelectBox({
   className,
   countries,

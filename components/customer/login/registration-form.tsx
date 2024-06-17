@@ -1,11 +1,11 @@
 'use client';
-
+import dynamic from 'next/dynamic';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import InputText from 'components/checkout/cart/input';
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
 import { createUser } from '../lib/action';
 import { LoadingButton } from './loading-button';
+const InputText = dynamic(() => import('components/checkout/cart/input'), { ssr: false });
 const initialState = {
   firstName: '',
   lastName: '',

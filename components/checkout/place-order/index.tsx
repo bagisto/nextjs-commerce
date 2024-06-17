@@ -1,6 +1,5 @@
 'use client';
-import { ProceedToCheckout } from 'components/checkout/cart/proceed-to-checkout';
-import RightArrowIcon from 'components/icons/right-arrow';
+import dynamic from 'next/dynamic';
 import { ShippingAddressDataType, selectedPaymentMethodType } from 'lib/bagisto/types';
 import { REVIEW_ORDER, CHECKOUT_DATA } from 'lib/constants';
 import { isObject } from 'lib/type-guards';
@@ -10,6 +9,8 @@ import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { placeOrder } from '../action';
+const RightArrowIcon = dynamic(() => import('components/icons/right-arrow'), { ssr: false });
+const ProceedToCheckout = dynamic(() => import('components/checkout/cart/proceed-to-checkout'), { ssr: false });
 export default function PlaceOrderPage({
   selectedPayment,
   shippingAddress,

@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 import {
   Avatar,
   Card,
@@ -17,7 +18,7 @@ import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { userLogoOut } from './lib/action';
 import OpenAuth from './open-auth';
-import LoadingDots from 'components/loading-dots';
+const LoadingDots = dynamic(() => import('components/loading-dots'), { ssr: false });
 export default function CredentialModal() {
   const [isLoading, setLoader] = useState<string>('');
 

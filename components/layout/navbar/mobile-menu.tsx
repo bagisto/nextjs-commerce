@@ -6,7 +6,9 @@ import { Menu } from 'lib/bagisto/types';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Fragment, Suspense, useEffect, useState } from 'react';
-import Search, { SearchSkeleton } from './search';
+import  { SearchSkeleton } from './search';
+import dynamic from 'next/dynamic';
+const Search = dynamic(() => import('./search'), { ssr: false, loading: () => <SearchSkeleton /> });
 
 export default function MobileMenu({ menu }: { menu: Menu[] }) {
   const pathname = usePathname();
