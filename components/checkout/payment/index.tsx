@@ -1,18 +1,15 @@
 'use client';
-import dynamic from 'next/dynamic';
-import { Radio, RadioGroup, cn } from '@nextui-org/react';
+
+import { Radio, RadioGroup, cn } from '@heroui/react';
+import { ProceedToCheckout } from 'components/checkout/cart/proceed-to-checkout';
 import RightArrowIcon from 'components/icons/right-arrow';
 import WalletLogo from 'components/icons/wallet-logo';
 import { ShippingAddressDataType, selectedPaymentMethodType } from 'lib/bagisto/types';
 import { isArray, isObject } from 'lib/type-guards';
-import { createCheckoutProcess, getLocalStorage } from 'lib/utils';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { createPaymentMethod } from '../action';
-import { CHECKOUT_DATA } from 'lib/constants';
-const ProceedToCheckout = dynamic(() => import('components/checkout/cart/proceed-to-checkout'), { ssr: false });
+
 type CustomRadioProps = {
   children: React.ReactNode;
   description?: string;
@@ -22,36 +19,30 @@ type CustomRadioProps = {
 export default function PaymentPage({
   selectedPayment,
   selectedShipping,
-  shippingAddress
+  shippingAddress,
+  methods
 }: {
   selectedPayment?: selectedPaymentMethodType;
   selectedShipping?: any;
   shippingAddress?: ShippingAddressDataType;
+  methods: any;
 }) {
-  const getCheckoutData = getLocalStorage(CHECKOUT_DATA, true);
-  const methods = getCheckoutData?.paymentMethods;
   const initialState = {
     method: selectedPayment?.method || ''
   };
   const [state, formAction] = useFormState(createPaymentMethod, initialState);
-  useEffect(() => {
-    if (isObject(state?.payment)) {
-      createCheckoutProcess(state);
-      redirect('/checkout/place-order');
-    }
-  }, [state, selectedShipping]);
 
   return (
     <div className="my-5 flex-col">
       <div className="relative my-4 rounded-lg border-[1px] border-solid px-3 dark:border-white/30">
         {isObject(shippingAddress) && (
-          <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
             <tbody>
               <tr className="border-b dark:border-gray-700">
-                <td className=" py-4">Contact</td>
+                <td className="py-4">Contact</td>
                 <th
                   scope="row"
-                  className=" break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
+                  className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
                 >
                   {shippingAddress?.email}
                 </th>
@@ -65,7 +56,7 @@ export default function PaymentPage({
                 </td>
               </tr>
               <tr className="border-b dark:border-gray-700">
-                <td className=" py-4">Ship to</td>
+                <td className="py-4">Ship to</td>
                 <th
                   scope="row"
                   className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -84,7 +75,7 @@ export default function PaymentPage({
                 </td>
               </tr>
               <tr className="border-b dark:border-gray-700">
-                <td className=" py-4">Method</td>
+                <td className="py-4">Method</td>
                 <th
                   scope="row"
                   className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -105,7 +96,7 @@ export default function PaymentPage({
         )}
       </div>
       <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-bold ">Payment method</h1>
+        <h1 className="text-2xl font-bold">Payment method</h1>
         <form action={formAction}>
           <div className="flex flex-col gap-5">
             {isArray(methods) && (
@@ -126,7 +117,7 @@ export default function PaymentPage({
           <div className="my-4 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row sm:gap-0">
             <button className="flex items-center text-blue-600">
               <RightArrowIcon className="" />
-              <Link href="/checkout/shipping" className=" mx-1 text-sm">
+              <Link href="/checkout/shipping" className="mx-1 text-sm">
                 Return to Shipping
               </Link>
             </button>
@@ -137,8 +128,8 @@ export default function PaymentPage({
         </form>
       </div>
       {isArray(!methods) && (
-        <div className="flex flex-col gap-2  ">
-          <h1 className="text-2xl font-bold ">Payment</h1>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold">Payment</h1>
           <p className="text-neutral-500">All transactions are secure and encrypted.</p>
           <div className="flex h-32 flex-col items-center justify-center gap-2 rounded-sm bg-neutral-100 px-3">
             <WalletLogo className="text-neutral-400" />

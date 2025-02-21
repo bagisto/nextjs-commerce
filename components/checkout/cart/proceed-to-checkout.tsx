@@ -42,7 +42,7 @@ function SubmitButton({
   );
 }
 
-export default function ProceedToCheckout({ buttonName }: { buttonName: string }) {
+export function ProceedToCheckout({ buttonName }: { buttonName: string }) {
   const { pending } = useFormStatus();
   return <SubmitButton buttonName={buttonName} availableForSale={!pending} />;
 }

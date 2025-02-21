@@ -1,21 +1,17 @@
 'use client';
-import dynamic from 'next/dynamic';
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
-
+import Price from 'components/price';
 import type { Cart } from 'lib/bagisto/types';
 import { DEFAULT_OPTION } from 'lib/constants';
 import { createUrl } from 'lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useEffect, useRef, useState } from 'react';
-
+import CloseCart from './close-cart';
 import { DeleteItemButton } from './delete-item-button';
 import { EditItemQuantityButton } from './edit-item-quantity-button';
-const OpenCart = dynamic(() => import('./open-cart'), { ssr: false });
-const CloseCart = dynamic(() => import('./close-cart'), { ssr: false });
-const Price = dynamic(() => import('components/price'), { ssr: false });
-
+import OpenCart from './open-cart';
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
@@ -84,7 +80,6 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                   <ul className="flex-grow overflow-auto py-4">
                     {cart?.items?.map((item, i) => {
                       const merchandiseSearchParams = {} as MerchandiseSearchParams;
-
                       const merchandiseUrl = createUrl(
                         `/product/${item?.product.sku}`,
                         new URLSearchParams(merchandiseSearchParams)

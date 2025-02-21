@@ -80,7 +80,7 @@ export const CHECKOUT = {
 export const HIDDEN_PRODUCT_TAG = 'nextjs-frontend-hidden';
 export const DEFAULT_OPTION = 'Default Title';
 export const BAGISTO_GRAPHQL_API_ENDPOINT = '/graphql';
-
+export const ORDER_ID = 'order-id';
 /**
  * local storage constant keys
  */

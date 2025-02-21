@@ -1,4 +1,4 @@
-import { BasketCartIcon } from 'components/icons/shopping-cart';
+import CheckSign from 'components/icons/check-sign';
 import dynamic from 'next/dynamic';
 import { EventButton } from './event-button';
 const OrderDetail = dynamic(() => import('./order-detail'), {
@@ -13,10 +13,9 @@ const OrderDetail = dynamic(() => import('./order-detail'), {
 const EmptyCartPage = () => {
   return (
     <div className="mx-auto flex h-[100dvh] max-w-6xl items-center">
-      <div className=" flex w-full flex-col items-center justify-center overflow-hidden">
-        <BasketCartIcon className="h-48 w-48" />
+      <div className="flex w-full flex-col items-center justify-center overflow-hidden">
+        <CheckSign className="h-48 w-48" />
         <OrderDetail />
-        <h1 className="my-2 text-center text-4xl font-bold">Your cart is empty.</h1>
         <EventButton buttonName="Continue shopping" redirect="/" />
       </div>
     </div>

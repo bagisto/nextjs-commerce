@@ -1,7 +1,6 @@
 export const addShippingAddressMutation = /* GraphQL */ `
   mutation saveCheckoutAddresses($input: SaveShippingAddressInput!) {
     saveCheckoutAddresses(input: $input) {
-      success
       shippingMethods {
         title
         methods {

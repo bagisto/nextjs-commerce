@@ -1,12 +1,11 @@
 'use client';
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import InputText from 'components/checkout/cart/input';
 import { isObject } from 'lib/type-guards';
 import Link from 'next/link';
 import { useFormState } from 'react-dom';
 import { recoverPassword } from '../lib/action';
 import { LoadingButton } from './loading-button';
-import dynamic from 'next/dynamic';
-const InputText= dynamic(() => import('components/checkout/cart/input'), { ssr: false });
 const forgetDefaultValue = {
   email: ''
 };

@@ -26,7 +26,6 @@ export const getCartQuery = /* GraphQL */ `
       checkoutMethod
       isGuest
       isActive
-      conversionTime
       customerId
       channelId
       appliedCartRuleIds
@@ -68,80 +67,80 @@ export const getCartQuery = /* GraphQL */ `
           attributeFamilyId
           sku
           parentId
-          productFlats {
-            id
-            sku
-            name
-            description
-            shortDescription
-            urlKey
-            new
-            featured
-            status
-            visibleIndividually
-            thumbnail
-            price
-            cost
-            specialPrice
-            specialPriceFrom
-            specialPriceTo
-            weight
-            color
-            colorLabel
-            size
-            sizeLabel
-            locale
-            channel
-            productId
-            parentId
-            minPrice
-            maxPrice
-            metaTitle
-            metaKeywords
-            metaDescription
-            width
-            height
-            depth
-            variants {
-              id
-              sku
-              name
-              description
-              shortDescription
-              urlKey
-              new
-              featured
-              status
-              visibleIndividually
-              thumbnail
-              price
-              locale
-              channel
-              productId
-              parentId
-            }
-            parent {
-              id
-              sku
-              name
-              description
-              shortDescription
-              urlKey
-              new
-              featured
-              status
-              visibleIndividually
-              thumbnail
-              price
-              cost
-              specialPrice
-              specialPriceFrom
-              specialPriceTo
-              weight
-            }
-            createdAt
-            updatedAt
-          }
+          # productFlats {
+          #   id
+          #   sku
+          #   name
+          #   description
+          #   shortDescription
+          #   urlKey
+          #   new
+          #   featured
+          #   status
+          #   visibleIndividually
+          #   thumbnail
+          #   price
+          #   cost
+          #   specialPrice
+          #   specialPriceFrom
+          #   specialPriceTo
+          #   weight
+          #   color
+          #   colorLabel
+          #   size
+          #   sizeLabel
+          #   locale
+          #   channel
+          #   productId
+          #   parentId
+          #   minPrice
+          #   maxPrice
+          #   metaTitle
+          #   metaKeywords
+          #   metaDescription
+          #   width
+          #   height
+          #   depth
+          #   variants {
+          #     id
+          #     sku
+          #     name
+          #     description
+          #     shortDescription
+          #     urlKey
+          #     new
+          #     featured
+          #     status
+          #     visibleIndividually
+          #     thumbnail
+          #     price
+          #     locale
+          #     channel
+          #     productId
+          #     parentId
+          #   }
+          #   parent {
+          #     id
+          #     sku
+          #     name
+          #     description
+          #     shortDescription
+          #     urlKey
+          #     new
+          #     featured
+          #     status
+          #     visibleIndividually
+          #     thumbnail
+          #     price
+          #     cost
+          #     specialPrice
+          #     specialPriceFrom
+          #     specialPriceTo
+          #     weight
+          #   }
+          #   createdAt
+          #   updatedAt
+          # }
           variants {
             id
             type
@@ -192,14 +191,14 @@ export const getCartQuery = /* GraphQL */ `
           }
           categories {
             id
-            categoryId
+            # categoryId
             position
             logoPath
             logoUrl
             status
             displayMode
-            Lft
-            Rgt
+            lft
+            rgt
             parentId
             additional
             bannerPath
@@ -398,8 +397,8 @@ export const getCartQuery = /* GraphQL */ `
         lastName
         gender
         companyName
-        address1
-        address2
+        # address1
+        # address2
         postcode
         city
         state
@@ -408,7 +407,7 @@ export const getCartQuery = /* GraphQL */ `
         phone
         defaultAddress
         vatId
-        additional
+        # additional
         createdAt
         updatedAt
       }

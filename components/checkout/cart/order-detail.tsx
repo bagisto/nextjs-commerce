@@ -1,16 +1,13 @@
-'use client';
-import { getLocalStorage } from 'lib/utils';
-import { useSearchParams } from 'next/navigation';
+import { ORDER_ID } from 'lib/constants';
+import { cookies } from 'next/headers';
 
-export default function OrderDetail() {
-  const searchParams = useSearchParams();
-  const order = searchParams.get('order');
-  const getOrder = getLocalStorage('reviewOrder', true);
+export default async function OrderDetail() {
+  const cookieStore = await cookies();
+  const getOrder = cookieStore.get(ORDER_ID);
+
   return (
-    getOrder?.id === order && (
-      <div>
-        <h1 className="my-2 text-center text-2xl font-bold">Your order number:{getOrder?.id}</h1>
-      </div>
-    )
+    <div>
+      <h1 className="my-2 text-center text-2xl font-bold">Your order number: #{getOrder?.value}</h1>
+    </div>
   );
 }

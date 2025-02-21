@@ -2,9 +2,9 @@ import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 const checkAuthPages = (pathName: string) => {
   return (
-    pathName.endsWith('/login1') ||
-    pathName.endsWith('/forget-password1') ||
-    pathName.endsWith('/register1')
+    pathName.endsWith('/login') ||
+    pathName.endsWith('/forget-password') ||
+    pathName.endsWith('/register')
   );
 };
 
@@ -26,7 +26,7 @@ export default withAuth(
   {
     callbacks: {
       authorized: async () => {
-        return true; // Authorized
+        return true;
       }
     }
   }

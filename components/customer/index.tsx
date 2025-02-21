@@ -1,5 +1,5 @@
-import dynamic from 'next/dynamic';
-const CredentialModal = dynamic(() => import('./modal'), { ssr: false });
+import CredentialModal from './modal';
+
 export default function UserAccount() {
   return <CredentialModal />;
 }

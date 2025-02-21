@@ -1,7 +1,7 @@
 'use server';
 import { addToCart, getCart, removeFromCart, updateCart } from 'lib/bagisto';
 import { SuperAttribute } from 'lib/bagisto/types';
-import { TAGS, BAGISTO_SESSION } from 'lib/constants';
+import { BAGISTO_SESSION, TAGS } from 'lib/constants';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 export async function addItem(

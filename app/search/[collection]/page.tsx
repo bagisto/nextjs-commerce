@@ -11,19 +11,15 @@ export async function generateMetadata({
   params: { collection: string };
 }): Promise<Metadata> {
   const collections = await getMenu('header-menu');
-  const categoryItem = collections.filter((item) => item.path == params.collection);
+  const categoryItem = collections.filter((item) => item.path == `/search/${params.collection}`);
   const collection = await getCollection(categoryItem?.[0]?.id || '');
-
   if (!collection) return notFound();
 
   const firstP = collection[0];
 
   return {
-    title: firstP?.productFlats?.[0]?.metaTitle || firstP?.name,
-    description:
-      firstP?.productFlats?.[0]?.metaDescription ||
-      firstP?.description ||
-      `${firstP?.name} products`
+    title: firstP?.metaTitle || firstP?.name,
+    description: firstP?.metaDescription || firstP?.description || `${firstP?.name} products`
   };
 }
 
@@ -39,7 +35,7 @@ export default async function CategoryPage({
   const { sort } = searchParams as { [key: string]: string };
   const { sortKey, reverse } = sorting.find((item) => item.slug === sort) || defaultSort;
   const products = await getCollectionProducts({
-    collection: categoryItem?.[0]?.id || '',
+    collection: categoryItem?.at(0)?.id || '',
     sortKey,
     reverse
   });

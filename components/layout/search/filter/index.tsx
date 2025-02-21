@@ -1,8 +1,8 @@
-import dynamic from 'next/dynamic';
 import { SortFilterItem } from 'lib/constants';
 import { Suspense } from 'react';
+import FilterItemDropdown from './dropdown';
 import { FilterItem } from './item';
-const FilterItemDropdown = dynamic(() => import('./dropdown'), { ssr: false });
+
 export type ListItem = SortFilterItem | PathFilterItem;
 export type PathFilterItem = { title: string; path: string };
 

@@ -1,8 +1,8 @@
 export const ForgetPassword = /* GraphQL */ `
-  mutation ForgotPassword($input: ForgotPasswordInput!) {
-    forgotPassword(input: $input) {
+  mutation ForgotPassword($email: String!) {
+    forgotPassword(email: $email) {
       success
-      status
+      message
     }
   }
 `;

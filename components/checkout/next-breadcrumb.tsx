@@ -1,5 +1,5 @@
 'use client';
-import { BreadcrumbItem, Breadcrumbs } from '@nextui-org/react';
+import { BreadcrumbItem, Breadcrumbs } from '@heroui/breadcrumbs';
 import { isObject } from 'lib/type-guards';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';

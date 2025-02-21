@@ -1,15 +1,13 @@
-import dynamic from 'next/dynamic';
+import Cart from 'components/cart';
+import OpenCart from 'components/cart/open-cart';
+import UserAccount from 'components/customer';
+import LogoSquare from 'components/logo-square';
 import { getMenu } from 'lib/bagisto';
 import { Menu } from 'lib/bagisto/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import  { SearchSkeleton } from './search';
-const Cart = dynamic(() => import('components/cart'), { ssr: false });
-const OpenCart = dynamic(() => import('components/cart/open-cart'), { ssr: false });
-const UserAccount = dynamic(() => import('components/customer'), { ssr: false });
-const LogoSquare = dynamic(() => import('components/logo-square'), { ssr: false });
-const Search = dynamic(() => import('./search'), { ssr: false, loading: () => <SearchSkeleton /> });
-const MobileMenu = dynamic(() => import('./mobile-menu'), { ssr: false });
+import MobileMenu from './mobile-menu';
+import Search, { SearchSkeleton } from './search';
 const { SITE_NAME } = process.env;
 export default async function Navbar() {
   const menu = await getMenu('next-js-frontend-header-menu');

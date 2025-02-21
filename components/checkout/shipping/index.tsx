@@ -1,16 +1,13 @@
 'use client';
-import dynamic from 'next/dynamic';
-import { Radio, RadioGroup, cn } from '@nextui-org/react';
+import { Radio, RadioGroup, cn } from '@heroui/react';
+import RightArrowIcon from 'components/icons/right-arrow';
 import { ShippingAddressDataType } from 'lib/bagisto/types';
 import { isArray, isObject } from 'lib/type-guards';
-import { createCheckoutProcess } from 'lib/utils';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { createShippingMethod } from '../action';
-const RightArrowIcon = dynamic(() => import('components/icons/right-arrow'), { ssr: false });
-const ProceedToCheckout = dynamic(() => import('../cart/proceed-to-checkout'), { ssr: false });
+import { ProceedToCheckout } from '../cart/proceed-to-checkout';
+
 type CustomRadioProps = {
   children: React.ReactNode;
   description?: string;
@@ -32,21 +29,14 @@ export default function ShippingMethod({
   const [state, formAction] = useFormState(createShippingMethod, initialState);
   const getShippingMethods = shippingMethod?.shippingMethods || [];
 
-  useEffect(() => {
-    if (isArray(state?.paymentMethods)) {
-      createCheckoutProcess(state);
-      redirect('/checkout/payment');
-    }
-  }, [state, shippingAddress]);
-
   return (
     <div className="my-6 flex flex-col gap-6">
       {isObject(shippingAddress) && (
         <div className="relative my-4 rounded-lg border-[1px] border-solid px-3 dark:border-white/30">
-          <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
             <tbody>
               <tr className="border-b dark:border-gray-700">
-                <td className=" py-4">Contact</td>
+                <td className="py-4">Contact</td>
                 <th
                   scope="row"
                   className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -63,7 +53,7 @@ export default function ShippingMethod({
                 </td>
               </tr>
               <tr className="border-b dark:border-gray-700">
-                <td className=" py-4">Ship to</td>
+                <td className="py-4">Ship to</td>
                 <th
                   scope="row"
                   className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -88,7 +78,7 @@ export default function ShippingMethod({
       <div className="w-full">
         <form action={formAction}>
           <div className="flex flex-col gap-5">
-            <h1 className="text-2xl font-bold ">Shipping method</h1>
+            <h1 className="text-2xl font-bold">Shipping method</h1>
             {isArray(getShippingMethods) && (
               <RadioGroup label="" defaultValue={state?.shippingMethods} name="shippingMethod">
                 {getShippingMethods.map((method: any) => (
@@ -109,11 +99,11 @@ export default function ShippingMethod({
           <div className="my-4 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row sm:gap-0">
             <button className="flex items-center text-blue-600">
               <RightArrowIcon className="" />
-              <Link href="/checkout/information" className=" mx-1 text-sm">
+              <Link href="/checkout/information" className="mx-1 text-sm">
                 Return to information
               </Link>
             </button>
-            <div className="w-full sm:w-2/5 ">
+            <div className="w-full sm:w-2/5">
               <ProceedToCheckout buttonName="Continue to payment" />
             </div>
           </div>

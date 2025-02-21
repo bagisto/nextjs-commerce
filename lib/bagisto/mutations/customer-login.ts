@@ -1,8 +1,8 @@
 export const CustomerLogin = /* GraphQL */ `
   mutation CustomerLogin($input: LoginInput!) {
     customerLogin(input: $input) {
-      status
       success
+      message
       accessToken
       tokenType
       expiresIn
@@ -15,7 +15,6 @@ export const CustomerLogin = /* GraphQL */ `
         dateOfBirth
         email
         phone
-        notes
         image
         imageUrl
         password
@@ -27,7 +26,6 @@ export const CustomerLogin = /* GraphQL */ `
         status
         createdAt
         updatedAt
-        success
       }
     }
   }

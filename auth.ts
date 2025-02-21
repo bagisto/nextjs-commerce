@@ -31,11 +31,12 @@ export const authOptions: NextAuthOptions = {
             cache: 'no-store'
           });
 
+          console.log(res);
+
           if (
             res?.status === 200 &&
             isObject(res?.body?.data) &&
-            isObject(res?.body?.data?.customerLogin) &&
-            res?.body?.data?.customerLogin?.status
+            isObject(res?.body?.data?.customerLogin)
           ) {
             const customerInfo = res?.body?.data?.customerLogin;
             cookies().set(TOKEN, customerInfo?.accessToken);

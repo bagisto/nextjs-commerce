@@ -1,5 +1,5 @@
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import { Input } from '@nextui-org/react';
+import { Input } from '@heroui/input';
 import clsx from 'clsx';
 import { isArray } from 'lib/type-guards';
 export default function InputText({

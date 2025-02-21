@@ -3,8 +3,8 @@ import cartFragment from '../fragments/cart';
 export const addToCartMutation = /* GraphQL */ `
   mutation addItemToCart($input: AddItemToCartInput!) {
     addItemToCart(input: $input) {
-      status
       message
+      success
       cart {
         id
         customerEmail
@@ -28,15 +28,22 @@ export const addToCartMutation = /* GraphQL */ `
         baseTaxTotal
         discountAmount
         baseDiscountAmount
+        shippingAmount
+        baseShippingAmount
+        shippingAmountInclTax
+        baseShippingAmountInclTax
+        subTotalInclTax
+        baseSubTotalInclTax
         checkoutMethod
         isGuest
         isActive
-        conversionTime
+        appliedCartRuleIds
         customerId
         channelId
-        appliedCartRuleIds
         createdAt
         updatedAt
+        status
+        message
       }
     }
   }
@@ -82,7 +89,6 @@ export const editCartItemsMutation = /* GraphQL */ `
         checkoutMethod
         isGuest
         isActive
-        conversionTime
         customerId
         channelId
         appliedCartRuleIds
@@ -122,7 +128,6 @@ export const removeFromCartMutation = /* GraphQL */ `
         checkoutMethod
         isGuest
         isActive
-        conversionTime
         customerId
         channelId
         appliedCartRuleIds

@@ -1,4 +1,4 @@
-import { Divider } from '@nextui-org/react';
+import { Divider } from '@heroui/divider';
 import Cart from 'components/checkout/cart/cart';
 import Loading from 'components/checkout/loading';
 import NextBreadcrumb from 'components/checkout/next-breadcrumb';

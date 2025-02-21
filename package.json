@@ -1,6 +1,7 @@
 {
   "private": true,
   "packageManager": "pnpm@9.0.5",
+  "version": "2.2.3",
   "engines": {
     "node": ">=18",
     "pnpm": ">=8"
@@ -24,8 +25,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
-    "@nextui-org/react": "^2.2.10",
-    "@nextui-org/theme": "^2.1.18",
+    "@heroui/react": "^2.7.2",
     "clsx": "^2.0.0",
     "framer-motion": "^11.0.14",
     "geist": "^1.0.0",

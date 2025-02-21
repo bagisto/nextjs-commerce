@@ -1,12 +1,13 @@
 'use client';
 import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
+import InputText from 'components/checkout/cart/input';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useFormState } from 'react-dom';
 import { z } from 'zod';
 import { LoadingButton } from './loading-button';
-import dynamic from 'next/dynamic';
-const InputText = dynamic(() => import('components/checkout/cart/input'), { ssr: false });
+
 const loginDefaultValue = {
   username: '',
   password: ''
@@ -25,6 +26,7 @@ const loginSchema = z.object({
 });
 
 export function LoginForm() {
+  const router = useRouter();
   async function authenticate(prevState: any, formData: FormData) {
     try {
       const data = {
@@ -32,18 +34,30 @@ export function LoginForm() {
         password: formData.get('password')
       };
       const validatedFields = loginSchema.safeParse(data);
-
       if (!validatedFields.success) {
         return {
           errors: validatedFields.error.flatten().fieldErrors
         };
       }
 
-      await signIn('credentials', {
-        redirect: true,
+      return await signIn('credentials', {
+        redirect: false,
         ...data,
         callbackUrl: '/'
-      });
+      })
+        .then((result) => {
+          if (result?.ok) {
+            router.push('/');
+          }
+          return {
+            errors: {
+              apiError: result?.error
+            }
+          };
+        })
+        .catch((errr) => {
+          console.log(errr);
+        });
     } catch (error) {
       console.error('Something went wrong :', error);
     }

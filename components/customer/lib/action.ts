@@ -61,7 +61,7 @@ export async function createUser(prevState: any, formData: FormData) {
   const result = await createUserToLogin(createUserValues);
   if (isObject(result?.error)) {
     return {
-      errors: { apiError: 'This Email has already been taken.' }
+      errors: { apiError: result?.error?.message }
     };
   } else {
     redirect('/customer/login');
@@ -90,6 +90,7 @@ export async function recoverPassword(prevState: any, formData: FormData) {
   }
 
   const result = await recoverUserLogin(data);
+
   if (isObject(result?.error)) {
     return {
       errors: {

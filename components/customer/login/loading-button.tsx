@@ -1,8 +1,9 @@
 'use client';
-import dynamic from 'next/dynamic';
+
 import clsx from 'clsx';
+import LoadingDots from 'components/loading-dots';
 import { useFormStatus } from 'react-dom';
-const LoadingDots = dynamic(() => import('components/loading-dots'), { ssr: false });
+
 export function LoadingButton({ buttonName }: { buttonName: string }) {
   const { pending } = useFormStatus();
   const buttonClasses =

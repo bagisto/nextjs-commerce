@@ -3,12 +3,12 @@ import { Gallery } from 'components/product/gallery';
 import { ProductDescription } from 'components/product/product-description';
 import { getCollectionProducts } from 'lib/bagisto';
 import type { ImageInfo, RelatedProducts } from 'lib/bagisto/types';
+import { BASE_SCHEMA_URL, PRODUCT_OFFER_TYPE, PRODUCT_TYPE } from 'lib/constants';
 import { isArray } from 'lib/type-guards';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { BASE_SCHEMA_URL, PRODUCT_TYPE, PRODUCT_OFFER_TYPE } from 'lib/constants';
 export async function generateMetadata({
   params
 }: {
@@ -19,7 +19,7 @@ export async function generateMetadata({
   const data = product[0];
   const { url, altText: alt } = data?.images?.[0] || {};
 
-  const { width, height, name, description } = data?.productFlats?.[0] || {};
+  const { width, height = '100', name, description } = data || {};
   const indexable = true;
 
   return {

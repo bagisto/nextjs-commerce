@@ -1,7 +1,4 @@
-
 # Next.js Commerce Bagisto
-
-> Note: Looking for Bagisto Next.js Commerce v1? View the [code](https://github.com/bagisto/nextjs-commerce/tree/v1), [demo](https://bagisto-commerce.vercel.app/), and [release notes](https://github.com/bagisto/nextjs-commerce/releases/tag/v1)
 
 A Next.js 14 and App Router-ready ecommerce template featuring:
 
@@ -16,22 +13,20 @@ A Next.js 14 and App Router-ready ecommerce template featuring:
 - Checkout and payments with Bagisto
 - Automatic light/dark mode based on system settings
 
-Demo live at: [Bagisto Store](https://v2-bagisto-demo.vercel.app/)
-
 <h3 id="v1-note"></h3>
 
 ## Configuration
 
 ### Setup Bagisto Store
 
-- For `BAGISTO_CURRENCY_CODE` and `BAGISTO_STORE_ENDPOINT`, you need to install the [Bagisto](https://github.com/bagisto/bagisto/tree/v2.0.0).
-- Then, you need to install the [Bagisto Headless Extension](https://github.com/bagisto/headless-ecommerce/tree/v2.0.1) in the Bagisto.
+- For `BAGISTO_CURRENCY_CODE` and `BAGISTO_STORE_ENDPOINT`, you need to install the [Bagisto](https://github.com/bagisto/bagisto).
+- Then, you need to install the [Bagisto Headless Extension](https://github.com/bagisto/headless-ecommerce) in the Bagisto.
 - Now you need to host the full application so that you have store endpoint and if you are in development mode then you can use Ngrok also.
 - After that you can proceed with setting up Next.js commerce.
 
 ## Running locally
 
-You will need to use the environment variables defined in [`.env.example`](.env.example) to run Next.js Commerce. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables) for this, but a `.env` file is all that is necessary.
+You will need to use the environment variables [defined in `.env.example`](.env.example) to run Next.js Commerce. It's recommended you use [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables) for this, but a `.env` file is all that is necessary.
 
 > Note: You should not commit your `.env` file or it will expose secrets that will allow others to control your Bagisto store.
 

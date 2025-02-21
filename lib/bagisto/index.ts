@@ -1,10 +1,15 @@
-import { BAGISTO_GRAPHQL_API_ENDPOINT, CHECKOUT, HIDDEN_PRODUCT_TAG, TAGS } from 'lib/constants';
-import { isBagistoError, isObject } from 'lib/type-guards';
+import {
+  BAGISTO_GRAPHQL_API_ENDPOINT,
+  CHECKOUT,
+  HIDDEN_PRODUCT_TAG,
+  TAGS,
+  TOKEN
+} from 'lib/constants';
+import { isArray, isBagistoError, isObject } from 'lib/type-guards';
 import { ensureStartsWith } from 'lib/utils';
 import { revalidateTag } from 'next/cache';
 import { cookies, headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import { TOKEN } from 'lib/constants';
 import {
   addToCartMutation,
   createCartMutation,
@@ -27,6 +32,7 @@ import {
   getPagesQuery,
   getThemeCustomizationQuery
 } from './queries/page';
+import { getPaymentMethodsQuery } from './queries/payment-methods';
 import { getShippingMethodQuery } from './queries/shipping-method';
 import {
   BagistoAddToCartOperation,
@@ -63,7 +69,7 @@ import {
 } from './types';
 
 const domain = process.env.BAGISTO_STORE_DOMAIN
-  ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, 'https://')
+  ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, process.env.BAGISTO_PROTOCOL || 'https://')
   : '';
 const endpoint = `${domain}${BAGISTO_GRAPHQL_API_ENDPOINT}`;
 
@@ -100,6 +106,7 @@ export async function bagistoFetch<T>({
         Authorization: `${session}`,
         ...headers
       },
+
       body: JSON.stringify({
         ...(query && { query }),
         ...(variables && { variables })
@@ -251,7 +258,7 @@ export async function getChannel(): Promise<ChannelType> {
     query: getChannelQuery,
     cache: 'no-store'
   });
-  return res.body.data.getDefaultChannel;
+  return res.body.data?.getDefaultChannel;
 }
 
 export async function addToCart(input: {
@@ -262,16 +269,14 @@ export async function addToCart(input: {
 }): Promise<Cart> {
   const res = await bagistoFetch<BagistoAddToCartOperation>({
     query: addToCartMutation,
-    variables: {
-      input
-    },
+    variables: { input },
     cache: 'no-store'
   });
 
   return reshapeCart(res.body.data.addItemToCart.cart);
 }
 
-export async function addShippingMethod(input: { shippingMethod: string }): Promise<any> {
+export async function addShippingMethod(input: { method: string }): Promise<any> {
   const res = await bagistoFetch<any>({
     query: addShippingMethodMutation,
     variables: {
@@ -279,8 +284,25 @@ export async function addShippingMethod(input: { shippingMethod: string }): Prom
     },
     cache: 'no-store'
   });
+
   revalidateTag(TAGS.cart);
-  return reshapePayments(res.body.data.paymentMethods);
+  return reshapePayments(res.body.data.saveShipping);
+}
+
+export async function getPaymentMethod(input: { shippingMethod: string }) {
+  const res = await bagistoFetch<any>({
+    query: getPaymentMethodsQuery,
+    variables: {
+      input
+    },
+    cache: 'no-store'
+  });
+  const { paymentMethods } = res?.body?.data?.paymentMethods;
+  if (!isArray(paymentMethods)) {
+    return [];
+  }
+
+  return paymentMethods;
 }
 
 export async function addPaymentMethod(input: { method: string }): Promise<BagistoPaymentDataType> {
@@ -335,7 +357,7 @@ export async function recoverUserLogin(input: any): Promise<any> {
     return await bagistoFetch<any>({
       query: ForgetPassword,
       variables: {
-        input
+        ...input
       },
       cache: 'no-store'
     });
@@ -364,6 +386,7 @@ export async function updateCart(qty: { cartItemId: number; quantity: number }[]
     },
     cache: 'no-store'
   });
+  console.log(res);
 
   return reshapeCart(res.body.data.updateItemToCart.cart);
 }
@@ -384,7 +407,6 @@ export async function getCart(): Promise<Cart | undefined> {
 
 export async function getCollection(handle: string): Promise<Product[] | undefined> {
   const input = [{ key: 'category_id', value: `${handle}` }];
-
   const res = await bagistoFetch<BagistoCollectionOperation>({
     query: getCollectionProductsQuery,
     tags: [TAGS.collections],
@@ -501,16 +523,14 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   });
 
   return (
-    res.body?.data?.homeCategories?.map(
-      (item: { name: string; slug: string; categoryId: string }) => ({
-        id: item.categoryId,
-        title: item.name,
-        path: `/search/${item.slug
-          .replace(domain, '')
-          .replace('/collections', '/search')
-          .replace('/pages', '/search')}`
-      })
-    ) || []
+    res.body?.data?.homeCategories?.map((item: { name: string; slug: string; id: string }) => ({
+      id: item.id,
+      title: item.name,
+      path: `/search/${item.slug
+        .replace(domain, '')
+        .replace('/collections', '/search')
+        .replace('/pages', '/search')}`
+    })) || []
   );
 }
 
@@ -578,7 +598,7 @@ export async function getCountryList(): Promise<CountryArrayDataType[]> {
   const res = await bagistoFetch<BagistoCountriesOperation>({
     query: getCountryQuery
   });
-  return res.body?.data?.countries?.data;
+  return res.body?.data?.countries;
 }
 
 export async function getShippingMethod(): Promise<ShippingArrayDataType[] | undefined> {

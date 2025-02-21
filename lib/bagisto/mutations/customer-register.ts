@@ -1,7 +1,8 @@
 export const CustomerRegister = /* GraphQL */ `
-  mutation CustomerRegister($input: CreateRegisterInput!) {
-    customerRegister(input: $input) {
+  mutation CustomerSignUp($input: SignUpInput!) {
+    customerSignUp(input: $input) {
       success
+      message
       accessToken
       tokenType
       expiresIn

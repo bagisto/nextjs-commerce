@@ -1,4 +1,4 @@
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from '@heroui/select';
 import { useGlobalContext } from 'app/context/store';
 import clsx from 'clsx';
 import { CountryArrayDataType } from 'lib/bagisto/types';
@@ -21,6 +21,7 @@ export default function SelectBox({
   const getKeyValue = (countryCode: string) => {
     setCountryCode(countryCode);
   };
+
   return (
     <div className={clsx('w-full', className)}>
       <Select
@@ -30,6 +31,7 @@ export default function SelectBox({
         variant="bordered"
         color={'default'}
         radius="sm"
+        size="sm"
         autoFocus={false}
         defaultSelectedKeys={[defaultValue || 'IN']}
         errorMessage={errorMsg && errorMsg}
@@ -38,6 +40,7 @@ export default function SelectBox({
         className={clsx('w-full bg-transparent', className)}
         onChange={(e) => getKeyValue(e.target.value)}
         classNames={{
+          base: 'text-black dark:text-gray-500',
           label: 'text-gray-500',
           mainWrapper: 'border-none outline-none',
           trigger: 'border border-[0.5px] rounded-md dark:border-gray-700',

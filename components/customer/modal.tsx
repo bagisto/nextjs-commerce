@@ -1,5 +1,4 @@
 'use client';
-import dynamic from 'next/dynamic';
 import {
   Avatar,
   Card,
@@ -9,8 +8,9 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger
-} from '@nextui-org/react';
+} from '@heroui/react';
 import clsx from 'clsx';
+import LoadingDots from 'components/loading-dots';
 import { isObject } from 'lib/type-guards';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -18,7 +18,6 @@ import { useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { userLogoOut } from './lib/action';
 import OpenAuth from './open-auth';
-const LoadingDots = dynamic(() => import('components/loading-dots'), { ssr: false });
 export default function CredentialModal() {
   const [isLoading, setLoader] = useState<string>('');
 
@@ -27,7 +26,7 @@ export default function CredentialModal() {
 
   useEffect(() => {
     if (status?.success) {
-      signOut({ callbackUrl: '/customer/login' });
+      signOut({ callbackUrl: '/customer/login', redirect: false });
     } else if (status?.error) {
       console.error('Something gone wrong !');
     }
@@ -55,7 +54,7 @@ export default function CredentialModal() {
                   isBordered
                   color="default"
                   size="md"
-                  icon={<OpenAuth className="h-8  " />}
+                  icon={<OpenAuth className="h-8" />}
                 />
                 <div className="flex flex-col items-start justify-center">
                   <h4 className="text-small font-semibold leading-none text-default-500 dark:text-white">

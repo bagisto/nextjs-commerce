@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import dynamic from 'next/dynamic';
-const Price = dynamic(() => import('./price'), { ssr: false });
+import Price from './price';
+
 const Label = ({
   title,
   amount,

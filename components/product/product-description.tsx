@@ -1,17 +1,17 @@
 import { AddToCart } from 'components/cart/add-to-cart';
-import dynamic from 'next/dynamic';
+import Price from 'components/price';
+import Prose from 'components/prose';
 import { BagistoProductInfo } from 'lib/bagisto/types';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { VariantSelector } from './variant-selector';
-const Price = dynamic(() => import('components/price'), { ssr: false });
-const Prose = dynamic(() => import('components/prose'), { ssr: false });
+
 export function ProductDescription({ product }: { product: BagistoProductInfo[] }) {
   if (!product.length) return notFound();
   const data = product[0];
   const configurableProductData = data?.configutableData?.attributes || [];
   const configurableProductIndexData = data?.configutableData?.index || [];
-  const quantity = Number(data?.inventories?.[0]?.qty) || 1;
+  const quantity = Number(data?.inventories?.[0]?.qty);
   return (
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
