@@ -1,6 +1,7 @@
 'use client';
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+import LoadingDots from 'components/loading-dots';
 import Price from 'components/price';
 import type { Cart } from 'lib/bagisto/types';
 import { DEFAULT_OPTION } from 'lib/constants';
@@ -8,6 +9,8 @@ import { createUrl } from 'lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { redirectToCheckout } from './actions';
 import CloseCart from './close-cart';
 import { DeleteItemButton } from './delete-item-button';
 import { EditItemQuantityButton } from './edit-item-quantity-button';
@@ -160,19 +163,32 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                       />
                     </div>
                   </div>
-                  <Link
-                    onClick={closeCart}
-                    href="/checkout/information"
-                    className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
-                  >
-                    Proceed to Checkout
-                  </Link>
+                  <form action={redirectToCheckout}>
+                    <CheckoutButton />
+                  </form>
                 </div>
               )}
             </Dialog.Panel>
           </Transition.Child>
         </Dialog>
       </Transition>
+    </>
+  );
+}
+
+function CheckoutButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <>
+      <input type="" name="url" value="/checkout/information" />
+      <button
+        className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
+        type="submit"
+        disabled={pending}
+      >
+        {pending ? <LoadingDots className="bg-white" /> : 'Proceed to Checkout'}
+      </button>
     </>
   );
 }

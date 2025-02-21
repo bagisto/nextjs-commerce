@@ -4,6 +4,7 @@ import { SuperAttribute } from 'lib/bagisto/types';
 import { BAGISTO_SESSION, TAGS } from 'lib/constants';
 import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 export async function addItem(
   prevState: any,
   input: {
@@ -97,4 +98,9 @@ export async function updateItemQuantity(
   } catch (e) {
     return 'Error updating item quantity';
   }
+}
+
+export async function redirectToCheckout(formData: FormData) {
+  const url = formData.get('url') as string;
+  redirect(url);
 }
