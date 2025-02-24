@@ -328,8 +328,7 @@ export type ShippingAddressDataType = {
   lastName: string;
   gender: string;
   companyName: string;
-  address1: string;
-  address2: string;
+  address: string;
   postcode: string;
   city: string;
   state: string;

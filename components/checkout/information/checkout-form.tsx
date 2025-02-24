@@ -2,17 +2,20 @@
 import { Checkbox } from '@heroui/checkbox';
 import { createCheckoutAddress } from 'components/checkout/action';
 import RegionDropDown from 'components/checkout/region-drop-down';
-import { CountryArrayDataType } from 'lib/bagisto/types';
-import { SAVED_LOCAL_STORAGE } from 'lib/constants';
+import { CountryArrayDataType, ShippingAddressDataType } from 'lib/bagisto/types';
 import { useFormState } from 'react-dom';
-import { getLocalStorage } from '../../../lib/utils';
 import InputText from '../cart/input';
 import { ProceedToCheckout } from '../cart/proceed-to-checkout';
 import SelectBox from '../select-box';
-const GuestCheckOutForm = ({ countries }: { countries: CountryArrayDataType[] }) => {
-  const values = getLocalStorage(SAVED_LOCAL_STORAGE, true);
+const GuestCheckOutForm = ({
+  countries,
+  shippingAddress
+}: {
+  countries: CountryArrayDataType[];
+  shippingAddress?: ShippingAddressDataType;
+}) => {
   const initialState = {
-    ...values?.shipping
+    ...(shippingAddress || {})
   };
   const [state, formAction] = useFormState(createCheckoutAddress, initialState);
 
@@ -64,14 +67,14 @@ const GuestCheckOutForm = ({ countries }: { countries: CountryArrayDataType[] })
           countries={countries}
           className="col-span-3"
           nameAttr="country"
-          defaultValue={state?.country}
+          defaultValue={'AI'}
           errorMsg={state?.errors?.country?.join(', ')}
           label="Country/Region *"
         />
         <RegionDropDown
           countries={countries}
           errorMsg={state?.errors?.state}
-          defaultValue={state?.state}
+          defaultValue={''}
           className="col-span-3 sm:col-span-3"
           label="State *"
         />
@@ -97,7 +100,11 @@ const GuestCheckOutForm = ({ countries }: { countries: CountryArrayDataType[] })
           errorMsg={state?.errors?.phone}
         />
 
-        <Checkbox defaultSelected={values?.isSaved} className="col-span-6" color="primary">
+        <Checkbox
+          defaultSelected={shippingAddress?.defaultAddress}
+          className="col-span-6"
+          color="primary"
+        >
           <span className="text-neutral-400 dark:text-white">Use same address for shipping</span>
         </Checkbox>
         <div className="col-span-6 flex w-full justify-end">

@@ -59,7 +59,7 @@ export default function ShippingMethod({
                   className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
                 >
                   {shippingAddress?.firstName}, {shippingAddress?.lastName},{' '}
-                  {shippingAddress?.address1}, {shippingAddress?.city}, {shippingAddress?.state},{' '}
+                  {shippingAddress?.address}, {shippingAddress?.city}, {shippingAddress?.state},{' '}
                   {shippingAddress?.postcode}, {shippingAddress?.country}
                 </th>
                 <td className="py-4 text-center">

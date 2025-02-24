@@ -18,7 +18,9 @@ const schema = z.object({
       required_error: 'Email is required'
     })
     .email('This is not a valid email.'),
-  country: z.string({ required_error: 'Country is required' }),
+  country: z
+    .string({ required_error: 'Country is required' })
+    .min(1, { message: 'Country is required' }),
   companyName: z.string({ required_error: 'Country is required' }),
   firstName: z
     .string({ required_error: 'First Name is required' })
@@ -51,6 +53,7 @@ export async function createCheckoutAddress(prevState: any, formData: FormData) 
     postcode: formData.get('postcode'),
     phone: formData.get('phone')
   };
+  console.log(adressData);
   const validatedFields = schema.safeParse({
     ...adressData
   });

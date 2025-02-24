@@ -181,7 +181,7 @@ function CheckoutButton() {
 
   return (
     <>
-      <input type="" name="url" value="/checkout/information" />
+      <input type="hidden" name="url" value="/checkout/information" />
       <button
         className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
         type="submit"
