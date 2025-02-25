@@ -3,8 +3,8 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: '192.168.15.84'
+        protocol: 'https',
+        hostname: 'https://nextjsv2.bagisto.com'
       }
     ]
   },
