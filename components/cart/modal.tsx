@@ -1,7 +1,7 @@
 'use client';
-
 import { Dialog, Transition } from '@headlessui/react';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+import LoadingDots from 'components/loading-dots';
 import Price from 'components/price';
 import type { Cart } from 'lib/bagisto/types';
 import { DEFAULT_OPTION } from 'lib/constants';
@@ -9,6 +9,8 @@ import { createUrl } from 'lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { redirectToCheckout } from './actions';
 import CloseCart from './close-cart';
 import { DeleteItemButton } from './delete-item-button';
 import { EditItemQuantityButton } from './edit-item-quantity-button';
@@ -25,12 +27,11 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
 
   useEffect(() => {
     // Open cart modal when quantity changes.
-    if (cart?.itemsQty !== quantityRef.current) {
+    if (cart?.itemsQty !== quantityRef.current && typeof window !== 'undefined') {
       // But only if it's not already open (quantity also changes when editing items in cart).
-      if (!isOpen) {
+      if (!isOpen && !(window as any).isLogOutLoading) {
         setIsOpen(true);
       }
-
       // Always update the quantity reference
       quantityRef.current = cart?.itemsQty;
     }
@@ -82,13 +83,6 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                   <ul className="flex-grow overflow-auto py-4">
                     {cart?.items?.map((item, i) => {
                       const merchandiseSearchParams = {} as MerchandiseSearchParams;
-
-                      /* item?.merchandise?.selectedOptions.forEach(({ name, value }) => {
-                        if (value !== DEFAULT_OPTION) {
-                          merchandiseSearchParams[name.toLowerCase()] = value;
-                        }
-                      }); */
-
                       const merchandiseUrl = createUrl(
                         `/product/${item?.product.sku}`,
                         new URLSearchParams(merchandiseSearchParams)
@@ -113,8 +107,9 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                                   className="h-full w-full object-cover"
                                   width={64}
                                   height={64}
-                                  alt={item.product.images?.[0]?.path || item.product.name}
-                                  src={item.product.images?.[0]?.url || '/image/placeholder.webp'}
+                                  alt={item?.product.images?.at(0)?.path || item?.product?.name}
+                                  src={item?.product.images?.at(0)?.url as any}
+                                  onError={(e) => (e.currentTarget.src = '/image/placeholder.webp')}
                                 />
                               </div>
 
@@ -168,19 +163,32 @@ export default function CartModal({ cart }: { cart: Cart | undefined }) {
                       />
                     </div>
                   </div>
-                  <Link
-                    onClick={closeCart}
-                    href="/checkout/information"
-                    className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
-                  >
-                    Proceed to Checkout
-                  </Link>
+                  <form action={redirectToCheckout}>
+                    <CheckoutButton />
+                  </form>
                 </div>
               )}
             </Dialog.Panel>
           </Transition.Child>
         </Dialog>
       </Transition>
+    </>
+  );
+}
+
+function CheckoutButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <>
+      <input type="hidden" name="url" value="/checkout/information" />
+      <button
+        className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
+        type="submit"
+        disabled={pending}
+      >
+        {pending ? <LoadingDots className="bg-white" /> : 'Proceed to Checkout'}
+      </button>
     </>
   );
 }

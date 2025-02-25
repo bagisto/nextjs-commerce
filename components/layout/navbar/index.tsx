@@ -1,5 +1,6 @@
 import Cart from 'components/cart';
 import OpenCart from 'components/cart/open-cart';
+import UserAccount from 'components/customer';
 import LogoSquare from 'components/logo-square';
 import { getMenu } from 'lib/bagisto';
 import { Menu } from 'lib/bagisto/types';
@@ -11,7 +12,6 @@ const { SITE_NAME } = process.env;
 export default async function Navbar() {
   const menu = await getMenu('next-js-frontend-header-menu');
   const menuData = [{ id: '', path: '/search', title: 'All' }, ...menu];
-
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -47,9 +47,12 @@ export default async function Navbar() {
             <Search />
           </Suspense>
         </div>
-        <div className="flex justify-end md:w-1/3">
+        <div className="flex justify-end gap-4 md:w-1/3">
           <Suspense fallback={<OpenCart />}>
             <Cart />
+          </Suspense>
+          <Suspense fallback={<OpenCart />}>
+            <UserAccount />
           </Suspense>
         </div>
       </div>

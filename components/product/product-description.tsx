@@ -11,7 +11,7 @@ export function ProductDescription({ product }: { product: BagistoProductInfo[] 
   const data = product[0];
   const configurableProductData = data?.configutableData?.attributes || [];
   const configurableProductIndexData = data?.configutableData?.index || [];
-  const quantity = Number(data?.inventories?.[0]?.qty) || 1;
+  const quantity = Number(data?.inventories?.[0]?.qty);
   return (
     <>
       <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">

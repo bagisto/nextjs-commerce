@@ -3,7 +3,7 @@ import { getCollectionProducts } from 'lib/bagisto';
 import type { Product } from 'lib/bagisto/types';
 import Link from 'next/link';
 
-function ThreeItemGridItem({
+async function ThreeItemGridItem({
   item,
   size,
   priority
@@ -18,7 +18,7 @@ function ThreeItemGridItem({
     >
       <Link className="relative block aspect-square h-full w-full" href={`/product/${item.urlKey}`}>
         <GridTileImage
-          src={item.images?.[0]?.url || ''}
+          src={item.images?.[0]?.url || 'product image'}
           fill
           sizes={
             size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'
@@ -48,7 +48,7 @@ export async function ThreeItemGrid() {
   const [firstProduct, secondProduct, thirdProduct] = homepageItems;
 
   return (
-    <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2">
+    <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
       <ThreeItemGridItem size="full" item={firstProduct} priority={true} />
       <ThreeItemGridItem size="half" item={secondProduct} priority={true} />
       <ThreeItemGridItem size="half" item={thirdProduct} />

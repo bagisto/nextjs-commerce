@@ -1,17 +1,13 @@
 'use client';
-import { Radio, RadioGroup, cn } from '@nextui-org/react';
+import { Radio, RadioGroup, cn } from '@heroui/react';
 import RightArrowIcon from 'components/icons/right-arrow';
 import { ShippingAddressDataType } from 'lib/bagisto/types';
 import { isArray, isObject } from 'lib/type-guards';
-import { createCheckoutProceess } from 'lib/utils';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { createShippingMethod } from '../action';
 import { ProceedToCheckout } from '../cart/proceed-to-checkout';
 
-// Define a type for the props
 type CustomRadioProps = {
   children: React.ReactNode;
   description?: string;
@@ -27,26 +23,20 @@ export default function ShippingMethod({
 }) {
   const getCartShippingMethod = shippingMethod?.cart?.shippingMethod;
   const initialState = {
-    shippingmethd: getCartShippingMethod || ''
+    shippingMethods: getCartShippingMethod || ''
   };
 
   const [state, formAction] = useFormState(createShippingMethod, initialState);
-  const getshippingMethods = shippingMethod?.shippingMethods || [];
-  useEffect(() => {
-    if (isArray(state?.paymentMethods)) {
-      createCheckoutProceess(state);
-      redirect('/checkout/payment');
-    }
-  }, [state, shippingAddress]);
+  const getShippingMethods = shippingMethod?.shippingMethods || [];
 
   return (
     <div className="my-6 flex flex-col gap-6">
       {isObject(shippingAddress) && (
         <div className="relative my-4 rounded-lg border-[1px] border-solid px-3 dark:border-white/30">
-          <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+          <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">
             <tbody>
               <tr className="border-b dark:border-gray-700">
-                <td className=" py-4">Contact</td>
+                <td className="py-4">Contact</td>
                 <th
                   scope="row"
                   className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
@@ -63,13 +53,13 @@ export default function ShippingMethod({
                 </td>
               </tr>
               <tr className="border-b dark:border-gray-700">
-                <td className=" py-4">Ship to</td>
+                <td className="py-4">Ship to</td>
                 <th
                   scope="row"
                   className="break-all px-6 py-4 font-medium text-gray-900 dark:text-white"
                 >
                   {shippingAddress?.firstName}, {shippingAddress?.lastName},{' '}
-                  {shippingAddress?.address1}, {shippingAddress?.city}, {shippingAddress?.state},{' '}
+                  {shippingAddress?.address}, {shippingAddress?.city}, {shippingAddress?.state},{' '}
                   {shippingAddress?.postcode}, {shippingAddress?.country}
                 </th>
                 <td className="py-4 text-center">
@@ -88,10 +78,10 @@ export default function ShippingMethod({
       <div className="w-full">
         <form action={formAction}>
           <div className="flex flex-col gap-5">
-            <h1 className="text-2xl font-bold ">Shipping method</h1>
-            {isArray(getshippingMethods) && (
-              <RadioGroup label="" defaultValue={state?.shippingmethd} name="shippingMethod">
-                {getshippingMethods.map((method: any) => (
+            <h1 className="text-2xl font-bold">Shipping method</h1>
+            {isArray(getShippingMethods) && (
+              <RadioGroup label="" defaultValue={state?.shippingMethods} name="shippingMethod">
+                {getShippingMethods.map((method: any) => (
                   <CustomRadio
                     className="my-1 border border-solid border-neutral-300 dark:border-neutral-500"
                     key={method?.methods?.code}
@@ -109,11 +99,11 @@ export default function ShippingMethod({
           <div className="my-4 flex flex-col-reverse items-center justify-between gap-4 sm:flex-row sm:gap-0">
             <button className="flex items-center text-blue-600">
               <RightArrowIcon className="" />
-              <Link href="/checkout/information" className=" mx-1 text-sm">
+              <Link href="/checkout/information" className="mx-1 text-sm">
                 Return to information
               </Link>
             </button>
-            <div className="w-full sm:w-2/5 ">
+            <div className="w-full sm:w-2/5">
               <ProceedToCheckout buttonName="Continue to payment" />
             </div>
           </div>

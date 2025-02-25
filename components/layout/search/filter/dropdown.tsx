@@ -2,7 +2,6 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import type { ListItem } from '.';
 import { FilterItem } from './item';

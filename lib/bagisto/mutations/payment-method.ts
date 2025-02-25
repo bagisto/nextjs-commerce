@@ -1,14 +1,18 @@
 export const savePaymentMutation = /* GraphQL */ `
-  mutation savePayment($input: SavePaymentMethodInput!) {
+  mutation savePayment($input: savePaymentMethodInput!) {
     savePayment(input: $input) {
+      message
       cart {
         id
         customerEmail
         customerFirstName
         customerLastName
         shippingMethod
+        couponCode
+        isGift
         itemsCount
         itemsQty
+        exchangeRate
         globalCurrencyCode
         baseCurrencyCode
         channelCurrencyCode
@@ -21,54 +25,162 @@ export const savePaymentMutation = /* GraphQL */ `
         baseTaxTotal
         discountAmount
         baseDiscountAmount
+        shippingAmount
+        baseShippingAmount
+        shippingAmountInclTax
+        baseShippingAmountInclTax
+        subTotalInclTax
+        baseSubTotalInclTax
         checkoutMethod
         isGuest
         isActive
-        conversionTime
+        appliedCartRuleIds
         customerId
         channelId
-        appliedCartRuleIds
         createdAt
         updatedAt
-        formattedPrice {
-          grandTotal
-          baseGrandTotal
-          subTotal
-          baseSubTotal
-          taxTotal
-          baseTaxTotal
-          discount
-          baseDiscount
-          discountedSubTotal
-          baseDiscountedSubTotal
+        status
+        message
+        appliedTaxRates {
+          taxName
+          totalAmount
         }
-        shippingAddress {
+        formattedPrice {
+          adjustmentFee
+          adjustmentRefund
+          amountRefunded
+          baseAdjustmentFee
+          baseAdjustmentRefund
+          baseAmountRefunded
+          baseDiscount
+          baseDiscountAmount
+          baseDiscountInvoiced
+          baseDiscountRefunded
+          baseDiscountedSubTotal
+          baseGrandTotal
+          baseGrandTotalInvoiced
+          baseGrandTotalRefunded
+          basePrice
+          basePriceInclTax
+          baseShippingAmount
+          baseShippingAmountInclTax
+          baseShippingDiscountAmount
+          baseShippingInvoiced
+          baseShippingRefunded
+          baseShippingTaxAmount
+          baseShippingTaxRefunded
+          baseSubTotal
+          baseSubTotalInclTax
+          baseSubTotalInvoiced
+          baseTaxAmount
+          baseTaxAmountInvoiced
+          baseTaxAmountRefunded
+          baseTaxTotal
+          baseTotal
+          baseTotalInclTax
+          baseTotalInvoiced
+          customPrice
+          discount
+          discountAmount
+          discountInvoiced
+          discountRefunded
+          discountedSubTotal
+          grandTotal
+          grandTotalInvoiced
+          grandTotalRefunded
+          price
+          priceInclTax
+          shippingAmount
+          shippingAmountInclTax
+          shippingDiscountAmount
+          shippingInvoiced
+          shippingRefunded
+          shippingTaxAmount
+          shippingTaxRefunded
+          subTotal
+          subTotalInclTax
+          subTotalInvoiced
+          subTotalRefunded
+          taxAmount
+          taxAmountInvoiced
+          taxAmountRefunded
+          taxTotal
+          total
+          totalInclTax
+          totalInvoiced
+        }
+        items {
           id
-          addressType
-          customerId
+          quantity
+          sku
+          type
+          name
+          couponCode
+          weight
+          totalWeight
+          baseTotalWeight
+          price
+          basePrice
+          customPrice
+          total
+          baseTotal
+          taxPercent
+          taxAmount
+          baseTaxAmount
+          discountPercent
+          discountAmount
+          baseDiscountAmount
+          priceInclTax
+          basePriceInclTax
+          totalInclTax
+          baseTotalInclTax
+          appliedTaxRate
+          parentId
+          productId
           cartId
-          orderId
-          firstName
-          lastName
-          gender
-          companyName
-          address1
-          address2
-          postcode
-          city
-          state
-          country
-          email
-          phone
-          defaultAddress
-          vatId
-          additional
+          taxCategoryId
+          appliedCartRuleIds
+          createdAt
+          updatedAt
+        }
+        allItems {
+          id
+          quantity
+          sku
+          type
+          name
+          couponCode
+          weight
+          totalWeight
+          baseTotalWeight
+          price
+          basePrice
+          customPrice
+          total
+          baseTotal
+          taxPercent
+          taxAmount
+          baseTaxAmount
+          discountPercent
+          discountAmount
+          baseDiscountAmount
+          priceInclTax
+          basePriceInclTax
+          totalInclTax
+          baseTotalInclTax
+          appliedTaxRate
+          parentId
+          productId
+          cartId
+          taxCategoryId
+          appliedCartRuleIds
           createdAt
           updatedAt
         }
         billingAddress {
           id
           addressType
+          parentAddressId
           customerId
           cartId
           orderId
@@ -76,17 +188,44 @@ export const savePaymentMutation = /* GraphQL */ `
           lastName
           gender
           companyName
-          address1
-          address2
-          postcode
+          address
           city
           state
+          stateName
           country
+          countryName
+          postcode
           email
           phone
-          defaultAddress
           vatId
-          additional
+          defaultAddress
+          useForShipping
+          createdAt
+          updatedAt
+        }
+        shippingAddress {
+          id
+          addressType
+          parentAddressId
+          customerId
+          cartId
+          orderId
+          firstName
+          lastName
+          gender
+          companyName
+          address
+          city
+          state
+          stateName
+          country
+          countryName
+          postcode
+          email
+          phone
+          vatId
+          defaultAddress
+          useForShipping
           createdAt
           updatedAt
         }
@@ -101,13 +240,16 @@ export const savePaymentMutation = /* GraphQL */ `
           basePrice
           discountAmount
           baseDiscountAmount
+          taxPercent
+          taxAmount
+          baseTaxAmount
+          priceInclTax
+          basePriceInclTax
+          appliedTaxRate
+          isCalculateTax
           cartAddressId
           createdAt
           updatedAt
-          formattedPrice {
-            price
-            basePrice
-          }
         }
         payment {
           id

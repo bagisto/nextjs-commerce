@@ -1,11 +1,12 @@
 const plugin = require('tailwindcss/plugin');
-const { nextui } = require('@nextui-org/react');
+const { heroui } = require('@heroui/react');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'
+    './node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}'
   ],
   theme: {
     container: {
@@ -58,18 +59,6 @@ module.exports = {
         }
       );
     }),
-    nextui({
-      themes: {
-        light: {
-          // colors: {
-          //   primary: {
-          //     DEFAULT: '#BEF264',
-          //     foreground: '#000000'
-          //   },
-          //   focus: '#BEF264'
-          // }
-        }
-      }
-    })
+    heroui()
   ]
 };

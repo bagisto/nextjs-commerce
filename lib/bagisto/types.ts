@@ -316,6 +316,7 @@ export type BagistoCart = {
   payment?: selectedPaymentMethodType;
   selectedShippingRate: {
     price: string;
+    method: string;
   };
   shippingAddress: ShippingAddressDataType;
 };
@@ -327,8 +328,7 @@ export type ShippingAddressDataType = {
   lastName: string;
   gender: string;
   companyName: string;
-  address1: string;
-  address2: string;
+  address: string;
   postcode: string;
   city: string;
   state: string;
@@ -378,7 +378,11 @@ export type BagistoProductInfo = {
   longDescription?: string;
   urlKey: string;
   slug?: string;
+  width: string;
+  height: string;
   path?: string;
+  metaTitle: string;
+  metaDescription: string;
   price: ProductPrice;
   id: string;
   handle: string;
@@ -528,7 +532,6 @@ export type bagistPaymentType = {
     checkoutMethod: null;
     isGuest: true;
     isActive: true;
-    conversionTime: null;
     customerId: null;
     channelId: '1';
     appliedCartRuleIds: null;
@@ -759,9 +762,7 @@ export type CountryArrayDataType = {
 
 export type BagistoCountriesOperation = {
   data: {
-    countries: {
-      data: CountryArrayDataType[];
-    };
+    countries: CountryArrayDataType[];
   };
 };
 

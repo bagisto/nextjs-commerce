@@ -31,7 +31,6 @@ const cartFragment = /* GraphQL */ `
     checkoutMethod
     isGuest
     isActive
-    conversionTime
     customerId
     channelId
     appliedCartRuleIds

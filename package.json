@@ -1,9 +1,10 @@
 {
   "private": true,
   "packageManager": "pnpm@9.0.5",
+  "version": "2.1.0",
   "engines": {
     "node": ">=18",
-    "pnpm": ">=7"
+    "pnpm": ">=8"
   },
   "scripts": {
     "dev": "next dev",
@@ -24,12 +25,12 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
-    "@nextui-org/react": "^2.2.10",
-    "@nextui-org/theme": "^2.1.18",
+    "@heroui/react": "^2.7.2",
     "clsx": "^2.0.0",
     "framer-motion": "^11.0.14",
     "geist": "^1.0.0",
     "next": "14.0.0",
+    "next-auth": "^4.24.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "zod": "^3.22.4"

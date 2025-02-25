@@ -1,36 +1,16 @@
 /** @type {import('next').NextConfig} */
-
-module.exports = {
-  eslint: {
-    // Disabling on production builds because we're running checks on PRs via GitHub Actions.
-    ignoreDuringBuilds: true
-  },
-  env: {
-    SITE_NAME: process.env.SITE_NAME
-  },
-
+const nextConfig = {
   images: {
-    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cdn.bagisto.com',
-        pathname: '/s/files/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'nextjsv2.bagisto.com',
-        pathname: '/**'
+        hostname: 'nextjsv2.bagisto.com'
       }
     ]
   },
-  async redirects() {
-    return [
-      {
-        source: '/password',
-        destination: '/',
-        permanent: true
-      }
-    ];
+  env: {
+    NEXTAUTH_SECRET: '/lLj/OWKqymAisCWbatVdCaovgIOvQeFNaQEtZTSR1Q='
   }
 };
+
+module.exports = nextConfig;
