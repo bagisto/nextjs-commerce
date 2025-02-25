@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'nextjsv2.bagisto.com'
+        hostname: 'https://nextjsv2.bagisto.com'
       }
     ]
   },
