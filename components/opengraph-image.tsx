@@ -1,4 +1,6 @@
+import { readFile } from 'fs/promises';
 import { ImageResponse } from 'next/og';
+import { join } from 'path';
 import LogoIcon from './icons/logo';
 
 export type Props = {
@@ -12,11 +14,13 @@ export default async function OpenGraphImage(props?: Props): Promise<ImageRespon
     },
     ...props
   };
+  const file = await readFile(join(process.cwd(), './fonts/Inter-Bold.ttf'));
+  const font = Uint8Array.from(file).buffer;
 
   return new ImageResponse(
     (
       <div tw="flex h-full w-full flex-col items-center justify-center bg-black">
-        <div tw="flex flex-none items-center justify-center border border-neutral-700 h-[160px] w-[160px] rounded-3xl">
+        <div tw="flex h-[160px] w-[160px] flex-none items-center justify-center rounded-3xl border border-neutral-700">
           <LogoIcon width="64" height="58" fill="white" />
         </div>
         <p tw="mt-12 text-6xl font-bold text-white">{title}</p>
@@ -28,9 +32,7 @@ export default async function OpenGraphImage(props?: Props): Promise<ImageRespon
       fonts: [
         {
           name: 'Inter',
-          data: await fetch(new URL('../fonts/Inter-Bold.ttf', import.meta.url)).then((res) =>
-            res.arrayBuffer()
-          ),
+          data: font,
           style: 'normal',
           weight: 700
         }

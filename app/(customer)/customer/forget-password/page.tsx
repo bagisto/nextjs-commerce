@@ -2,7 +2,6 @@ import { ForgetPasswordForm } from 'components/customer/login/forget-password';
 import Link from 'next/link';
 import LogoSquare from '../../../../components/logo-square';
 
-export const runtime = 'edge';
 export const metadata = {
   title: 'Search',
   description: 'Search for products in the store.'

@@ -2,7 +2,6 @@ import RegistrationForm from 'components/customer/login/registration-form';
 import LogoSquare from 'components/logo-square';
 import Link from 'next/link';
 
-export const runtime = 'edge';
 export const metadata = {
   title: 'Registration Form',
   description: 'Customer registration page'

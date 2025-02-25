@@ -386,7 +386,6 @@ export async function updateCart(qty: { cartItemId: number; quantity: number }[]
     },
     cache: 'no-store'
   });
-  console.log(res);
 
   return reshapeCart(res.body.data.updateItemToCart.cart);
 }
