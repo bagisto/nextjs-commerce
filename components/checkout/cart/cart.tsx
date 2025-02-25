@@ -1,22 +1,23 @@
 import LogoSquare from 'components/logo-square';
 import Price from 'components/price';
 import { getCart } from 'lib/bagisto';
-import { DEFAULT_OPTION } from 'lib/constants';
+import { DEFAULT_OPTION, BAGISTO_SESSION } from 'lib/constants';
 import { isObject } from 'lib/type-guards';
 import { createUrl } from 'lib/utils';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
-import CartItemAccordian from './cart-item-accordian';
+import CartItemAccordion from './cart-item-accordian';
 const { SITE_NAME } = process.env;
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
 export default async function Cart() {
-  const cartId = cookies().get('bagisto_session')?.value;
+  const cartId = cookies().get(BAGISTO_SESSION)?.value;
+
   let cart;
   if (cartId) {
-    cart = await getCart(cartId);
+    cart = await getCart();
   }
   return (
     <>
@@ -27,7 +28,7 @@ export default async function Cart() {
             <span className="uppercase">{SITE_NAME}</span>
           </Link>
         </div>
-        <CartItemAccordian cartItem={cart} />
+        <CartItemAccordion cartItem={cart} />
       </div>
       <div className="mt-2 hidden max-h-[95dvh] w-full flex-col overflow-hidden bg-transparent px-6 text-sm text-black backdrop-blur-xl lg:flex dark:text-white">
         <ul className="flex-grow overflow-auto py-4">

@@ -17,16 +17,16 @@ export default function Collections() {
     <Suspense
       fallback={
         <div className="col-span-2 hidden h-[400px] w-full flex-none py-4 lg:block">
-          <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
+          {Array(2)
+            .fill(0)
+            .map((_, i) => (
+              <div key={i} className={clsx(skeleton, activeAndTitles)} />
+            ))}
+          {Array(8)
+            .fill(0)
+            .map((_, i) => (
+              <div key={i} className={clsx(skeleton, items)} />
+            ))}
         </div>
       }
     >

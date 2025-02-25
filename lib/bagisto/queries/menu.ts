@@ -8,14 +8,14 @@ export const getMenuQuery = /* GraphQL */ `
       ]
     ) {
       id
-      categoryId
+      # categoryId
       position
       logoPath
       logoUrl
       status
       displayMode
-      Lft
-      Rgt
+      lft
+      rgt
       parentId
       additional
       bannerPath

@@ -23,12 +23,11 @@ export default async function Footer() {
         <Suspense
           fallback={
             <div className="flex h-[188px] w-[200px] flex-col gap-2">
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
+              {Array(6)
+                .fill(0)
+                .map((_, index) => (
+                  <div key={index} className={skeleton} />
+                ))}
             </div>
           }
         >

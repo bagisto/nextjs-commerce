@@ -1,10 +1,10 @@
-import { Select, SelectItem } from '@nextui-org/react';
+import { Select, SelectItem } from '@heroui/select';
 import { useGlobalContext } from 'app/context/store';
 import clsx from 'clsx';
 import { CountryArrayDataType, StateArrayDataType } from 'lib/bagisto/types';
 import { isArray } from 'lib/type-guards';
 import InputText from './cart/input';
-export default function Selectbox({
+export default function SelectBox({
   className,
   countries,
   label,
@@ -27,10 +27,12 @@ export default function Selectbox({
       <Select
         items={countryStates}
         label={label}
+        color={'default'}
         placeholder="Select State"
         name="state"
         variant="bordered"
         radius="sm"
+        size="sm"
         defaultSelectedKeys={[defaultValue || 'AP']}
         errorMessage={errorMsg && errorMsg}
         isInvalid={!!errorMsg}

@@ -52,7 +52,7 @@ function SubmitButton({
       aria-disabled={pending}
       className={clsx(buttonClasses, {
         'hover:opacity-90': true,
-        disabledClasses: pending
+        [disabledClasses]: pending
       })}
     >
       <div className="absolute left-0 ml-4">
@@ -76,7 +76,6 @@ export function AddToCart({
 }) {
   const [message, formAction] = useFormState(addItem, null);
   const searchParams = useSearchParams();
-
   // Function to convert URLSearchParams to object
   const searchParamsToObject = (searchParams: any) => {
     const paramsObject: any = {};
@@ -118,7 +117,7 @@ export function AddToCart({
   const matchingObject = findMatchingObject(searchParamsObject, index);
 
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : productId;
-  // This coede checked configruable product is selected or not
+  // This code checked configurable product is selected or not
   const buttonStatus = variants.length > 1 ? (matchingObject?.id ? true : false) : true;
   const variant = variants.find((variant: ConfigurableProductData) =>
     variant.options.every((option) => option.id === searchParams.get(variant.code.toLowerCase()))

@@ -1,5 +1,11 @@
-import { BAGISTO_GRAPHQL_API_ENDPOINT, CHECKOUT, HIDDEN_PRODUCT_TAG, TAGS } from 'lib/constants';
-import { isBagistoError, isObject } from 'lib/type-guards';
+import {
+  BAGISTO_GRAPHQL_API_ENDPOINT,
+  CHECKOUT,
+  HIDDEN_PRODUCT_TAG,
+  TAGS,
+  TOKEN
+} from 'lib/constants';
+import { isArray, isBagistoError, isObject } from 'lib/type-guards';
 import { ensureStartsWith } from 'lib/utils';
 import { revalidateTag } from 'next/cache';
 import { cookies, headers } from 'next/headers';
@@ -10,8 +16,10 @@ import {
   editCartItemsMutation,
   removeFromCartMutation
 } from './mutations/cart';
+import { CustomerRegister } from './mutations/customer-register';
 import { savePaymentMutation } from './mutations/payment-method';
 import { savePlaceOrder } from './mutations/place-order';
+import { ForgetPassword } from './mutations/recover-password';
 import { addShippingAddressMutation } from './mutations/shipping-address';
 import { addShippingMethodMutation } from './mutations/shipping-method';
 import { getCartQuery } from './queries/cart';
@@ -24,6 +32,7 @@ import {
   getPagesQuery,
   getThemeCustomizationQuery
 } from './queries/page';
+import { getPaymentMethodsQuery } from './queries/payment-methods';
 import { getShippingMethodQuery } from './queries/shipping-method';
 import {
   BagistoAddToCartOperation,
@@ -60,10 +69,9 @@ import {
 } from './types';
 
 const domain = process.env.BAGISTO_STORE_DOMAIN
-  ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, 'https://')
+  ? ensureStartsWith(process.env.BAGISTO_STORE_DOMAIN, process.env.BAGISTO_PROTOCOL || 'https://')
   : '';
 const endpoint = `${domain}${BAGISTO_GRAPHQL_API_ENDPOINT}`;
-// const key = process.env.BAGISTO_STOREFRONT_ACCESS_TOKEN!;
 
 type ExtractVariables<T> = T extends { variables: object } ? T['variables'] : never;
 export async function bagistoFetch<T>({
@@ -75,7 +83,7 @@ export async function bagistoFetch<T>({
   cartId = true
 }: {
   cache?: RequestCache;
-  headers?: HeadersInit;
+  headers?: HeadersInit | any;
   query: string;
   tags?: string[];
   variables?: ExtractVariables<T>;
@@ -86,14 +94,19 @@ export async function bagistoFetch<T>({
     if (cartId) {
       bagistoCartId = cookies().get('bagisto_session')?.value;
     }
+    const session = cookies().get(TOKEN)?.value;
+    if (isObject(headers)) {
+      headers['Authorization'] = `${session}`;
+    }
     const result = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // 'X-Bagisto-Storefront-Access-Token': key,
         Cookie: `${bagistoCartId ? `bagisto_session=${bagistoCartId}` : ''}`,
+        Authorization: `${session}`,
         ...headers
       },
+
       body: JSON.stringify({
         ...(query && { query }),
         ...(variables && { variables })
@@ -134,13 +147,6 @@ const removeEdgesAndNodes = (array: Array<any>) => {
 };
 
 const reshapeCart = (cart: BagistoCart): Cart => {
-  if (!cart?.grandTotal) {
-    // cart.cost.totalTaxAmount = {
-    //   amount: '0.0',
-    //   currencyCode: 'USD'
-    // };
-  }
-
   return {
     ...cart,
     lines: removeEdgesAndNodes(cart?.items)
@@ -200,7 +206,7 @@ const reshapeImages = (images: Array<ImageInfo>, productTitle: string) => {
   const flattened = removeEdgesAndNodes(images);
 
   return flattened.map((image) => {
-    const filename = image?.url.match(/.*\/(.*)\..*/)[1];
+    const filename = image?.url.match(/.*\/(.*)\..*/)?.[1];
     return {
       ...image,
       altText: image?.altText || `${productTitle} - ${filename}`
@@ -247,12 +253,12 @@ export async function createCart(): Promise<Cart> {
   return reshapeCart(res.body.data.cartCreate.cart);
 }
 
-export async function getChennel(): Promise<ChannelType> {
+export async function getChannel(): Promise<ChannelType> {
   const res = await bagistoFetch<BagistoChannelOperation>({
     query: getChannelQuery,
     cache: 'no-store'
   });
-  return res.body.data.getDefaultChannel;
+  return res.body.data?.getDefaultChannel;
 }
 
 export async function addToCart(input: {
@@ -263,16 +269,14 @@ export async function addToCart(input: {
 }): Promise<Cart> {
   const res = await bagistoFetch<BagistoAddToCartOperation>({
     query: addToCartMutation,
-    variables: {
-      input
-    },
+    variables: { input },
     cache: 'no-store'
   });
 
   return reshapeCart(res.body.data.addItemToCart.cart);
 }
 
-export async function addShippingMethod(input: { shippingMethod: string }): Promise<any> {
+export async function addShippingMethod(input: { method: string }): Promise<any> {
   const res = await bagistoFetch<any>({
     query: addShippingMethodMutation,
     variables: {
@@ -280,8 +284,25 @@ export async function addShippingMethod(input: { shippingMethod: string }): Prom
     },
     cache: 'no-store'
   });
+
   revalidateTag(TAGS.cart);
-  return reshapePayments(res.body.data.paymentMethods);
+  return reshapePayments(res.body.data.saveShipping);
+}
+
+export async function getPaymentMethod(input: { shippingMethod: string }) {
+  const res = await bagistoFetch<any>({
+    query: getPaymentMethodsQuery,
+    variables: {
+      input
+    },
+    cache: 'no-store'
+  });
+  const { paymentMethods } = res?.body?.data?.paymentMethods;
+  if (!isArray(paymentMethods)) {
+    return [];
+  }
+
+  return paymentMethods;
 }
 
 export async function addPaymentMethod(input: { method: string }): Promise<BagistoPaymentDataType> {
@@ -314,6 +335,37 @@ export async function addCheckoutAddress(input: any): Promise<any> {
   return reshapeShippingAddress(res.body.data.saveCheckoutAddresses);
 }
 
+export async function createUserToLogin(input: any): Promise<any> {
+  let result = null;
+  try {
+    const res = await bagistoFetch<any>({
+      query: CustomerRegister,
+      variables: {
+        input
+      },
+      cache: 'no-store'
+    });
+    result = res;
+  } catch (error) {
+    result = error;
+  }
+  return result;
+}
+
+export async function recoverUserLogin(input: any): Promise<any> {
+  try {
+    return await bagistoFetch<any>({
+      query: ForgetPassword,
+      variables: {
+        ...input
+      },
+      cache: 'no-store'
+    });
+  } catch (error) {
+    return error;
+  }
+}
+
 export async function removeFromCart(lineIds: number): Promise<Cart> {
   const res = await bagistoFetch<BagistoRemoveFromCartOperation>({
     query: removeFromCartMutation,
@@ -338,7 +390,7 @@ export async function updateCart(qty: { cartItemId: number; quantity: number }[]
   return reshapeCart(res.body.data.updateItemToCart.cart);
 }
 
-export async function getCart(cartId?: string): Promise<Cart | undefined> {
+export async function getCart(): Promise<Cart | undefined> {
   const res = await bagistoFetch<BagistoCartOperation>({
     query: getCartQuery,
     tags: [TAGS.cart],
@@ -354,7 +406,6 @@ export async function getCart(cartId?: string): Promise<Cart | undefined> {
 
 export async function getCollection(handle: string): Promise<Product[] | undefined> {
   const input = [{ key: 'category_id', value: `${handle}` }];
-
   const res = await bagistoFetch<BagistoCollectionOperation>({
     query: getCollectionProductsQuery,
     tags: [TAGS.collections],
@@ -471,16 +522,14 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   });
 
   return (
-    res.body?.data?.homeCategories?.map(
-      (item: { name: string; slug: string; categoryId: string }) => ({
-        id: item.categoryId,
-        title: item.name,
-        path: `/search/${item.slug
-          .replace(domain, '')
-          .replace('/collections', '/search')
-          .replace('/pages', '/search')}`
-      })
-    ) || []
+    res.body?.data?.homeCategories?.map((item: { name: string; slug: string; id: string }) => ({
+      id: item.id,
+      title: item.name,
+      path: `/search/${item.slug
+        .replace(domain, '')
+        .replace('/collections', '/search')
+        .replace('/pages', '/search')}`
+    })) || []
   );
 }
 
@@ -498,6 +547,7 @@ export async function getThemeCustomization(handle: string): Promise<ThemeCustom
 export async function getPage(input: FilterCmsPageTranslationInput): Promise<Page> {
   const res = await bagistoFetch<BagistoPageOperation>({
     query: getPageQuery,
+    cache: 'no-store',
     variables: { input }
   });
   return res.body.data?.cmsPages;
@@ -506,7 +556,8 @@ export async function getPage(input: FilterCmsPageTranslationInput): Promise<Pag
 export async function getPages(): Promise<Page> {
   const res = await bagistoFetch<BagistoPagesOperation>({
     query: getPagesQuery,
-    cartId: false
+    cartId: false,
+    cache: 'no-store'
   });
 
   return res.body.data?.cmsPages;
@@ -546,7 +597,7 @@ export async function getCountryList(): Promise<CountryArrayDataType[]> {
   const res = await bagistoFetch<BagistoCountriesOperation>({
     query: getCountryQuery
   });
-  return res.body?.data?.countries?.data;
+  return res.body?.data?.countries;
 }
 
 export async function getShippingMethod(): Promise<ShippingArrayDataType[] | undefined> {

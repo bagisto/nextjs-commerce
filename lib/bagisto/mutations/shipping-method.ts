@@ -1,13 +1,7 @@
 export const addShippingMethodMutation = /* GraphQL */ `
-  mutation PaymentMethodInput($input: SaveShippingMethodInput!) {
-    paymentMethods(input: $input) {
-      success
-      paymentMethods {
-        method
-        methodTitle
-        description
-        sort
-      }
+  mutation saveShipping($input: saveShippingMethodInput!) {
+    saveShipping(input: $input) {
+      message
       cart {
         id
         customerEmail

@@ -9,6 +9,7 @@ const productFragment = /* GraphQL */ `
     title
     description
     descriptionHtml
+    isSaleable
     options {
       id
       name
@@ -68,7 +69,12 @@ export const productInfoFragment = /* GraphQL */ `
     id
     type
     name
+    shortDescription
     description
+    metaTitle
+    metaKeywords
+    metaDescription
+    weight
     isInWishlist
     attributeFamilyId
     additionalData {
@@ -104,81 +110,7 @@ export const productInfoFragment = /* GraphQL */ `
     urlKey
     updatedAt
     parentId
-    productFlats {
-      id
-      urlKey
-      productNumber
-      name
-      description
-      shortDescription
-      urlKey
-      new
-      featured
-      status
-      visibleIndividually
-      thumbnail
-      price
-      cost
-      specialPrice
-      specialPriceFrom
-      specialPriceTo
-      weight
-      color
-      colorLabel
-      size
-      sizeLabel
-      locale
-      channel
-      productId
-      parentId
-      minPrice
-      maxPrice
-      metaTitle
-      metaKeywords
-      metaDescription
-      width
-      height
-      depth
-      variants {
-        id
-        urlKey
-        name
-        description
-        shortDescription
-        urlKey
-        new
-        featured
-        status
-        visibleIndividually
-        thumbnail
-        price
-        locale
-        channel
-        productId
-        parentId
-      }
-      parent {
-        id
-        urlKey
-        name
-        description
-        shortDescription
-        urlKey
-        new
-        featured
-        status
-        visibleIndividually
-        thumbnail
-        price
-        cost
-        specialPrice
-        specialPriceFrom
-        specialPriceTo
-        weight
-      }
-      createdAt
-      updatedAt
-    }
+
     variants {
       id
       type
@@ -260,13 +192,13 @@ export const productInfoFragment = /* GraphQL */ `
         type
         position
       }
-      translations {
-        id
-        name
-        description
-        localeId
-        locale
-      }
+      # translations {
+      #   id
+      #   name
+      #   description
+      #   localeId
+      #   locale
+      # }
       createdAt
       updatedAt
     }
@@ -315,18 +247,18 @@ export const productInfoFragment = /* GraphQL */ `
       productId
       channelId
     }
-    reviews {
-      id
-      title
-      rating
-      comment
-      status
-      productId
-      customerId
-      customerName
-      createdAt
-      updatedAt
-    }
+    # reviews {
+    #   id
+    #   title
+    #   rating
+    #   comment
+    #   status
+    #   productId
+    #   customerId
+    #   customerName
+    #   createdAt
+    #   updatedAt
+    # }
     groupedProducts {
       id
       qty

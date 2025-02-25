@@ -5,9 +5,11 @@ import {
   addShippingMethod,
   createPlaceOrder
 } from 'lib/bagisto';
-import { TAGS } from 'lib/constants';
+import { ORDER_ID, TAGS } from 'lib/constants';
 import { isObject } from 'lib/type-guards';
 import { revalidateTag } from 'next/cache';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -16,32 +18,44 @@ const schema = z.object({
       required_error: 'Email is required'
     })
     .email('This is not a valid email.'),
-  country: z.string({ required_error: 'Country is required' }),
+  country: z
+    .string({ required_error: 'Country is required' })
+    .min(1, { message: 'Country is required' }),
+  companyName: z.string({ required_error: 'Country is required' }),
   firstName: z
     .string({ required_error: 'First Name is required' })
     .min(1, { message: 'Please Enter First name' }),
-  address1: z
+  lastName: z
+    .string({ required_error: 'Last Name is required' })
+    .min(1, { message: 'Please Enter Last name' }),
+  address: z
     .string({ required_error: 'Address is required' })
     .min(1, { message: 'Address is required!' }),
   city: z.string({ required_error: 'City is required' }).min(1, { message: 'City is required' }),
   state: z.string({ required_error: 'State is required' }).min(1, { message: 'State is required' }),
   postcode: z
-    .string({ required_error: 'Zipcode is required' })
+    .string({ required_error: 'Zip code is required' })
     .min(1, { message: 'Zip code is required' }),
   phone: z
     .string({ required_error: 'Phone Number is required' })
     .min(1, { message: 'Phone Number is required' })
 });
 export async function createCheckoutAddress(prevState: any, formData: FormData) {
-  const validatedFields = schema.safeParse({
+  const adressData = {
     email: formData.get('email'),
-    country: formData.get('country'),
     firstName: formData.get('firstName'),
-    address1: formData.get('address1'),
-    city: formData.get('city'),
+    lastName: formData.get('lastName'),
+    companyName: formData.get('companyName'),
+    address: formData.get('address'),
+    country: formData.get('country'),
     state: formData.get('state'),
+    city: formData.get('city'),
     postcode: formData.get('postcode'),
     phone: formData.get('phone')
+  };
+  console.log(adressData);
+  const validatedFields = schema.safeParse({
+    ...adressData
   });
 
   if (!validatedFields.success) {
@@ -49,52 +63,27 @@ export async function createCheckoutAddress(prevState: any, formData: FormData) 
       errors: validatedFields.error.flatten().fieldErrors
     };
   }
-
+  const moreInfo = {
+    useForShipping: false,
+    saveAddress: false,
+    defaultAddress: false
+  };
   const checkoutInfo = {
-    billingAddressId: 0,
-    shippingAddressId: 0,
     billing: {
-      defaultAddress: false,
-      companyName: 'C. Trades',
-      firstName: formData.get('firstName'),
-      lastName: formData.get('lastName'),
-      email: formData.get('email'),
-      address1: formData.get('address1'),
-      address2: formData.get('address2'),
-      city: formData.get('city'),
-      country: formData.get('country'),
-      state: formData.get('state'),
-      postcode: formData.get('postcode'),
-      phone: formData.get('phone'),
-      useForShipping: false,
-      isSaved: false
+      ...adressData,
+      ...moreInfo
     },
     shipping: {
-      defaultAddress: false,
-      companyName: 'C. Trades',
-      firstName: formData.get('firstName'),
-      lastName: formData.get('lastName'),
-      email: formData.get('email'),
-      address1: formData.get('address1'),
-      address2: formData.get('address2'),
-      city: formData.get('city'),
-      country: formData.get('country'),
-      state: formData.get('state'),
-      postcode: formData.get('postcode'),
-      phone: formData.get('phone'),
-      isSaved: false
-    },
-    type: 'shipping'
+      ...adressData,
+      ...moreInfo
+    }
   };
+
   const result = await addCheckoutAddress(checkoutInfo);
 
   if (isObject(result)) {
     revalidateTag(TAGS.cart);
-    return {
-      shippingAddress: { ...checkoutInfo },
-      cart: { ...(result.cart as Object) },
-      shippingMethos: result.shippingMethods
-    };
+    redirect('/checkout/shipping');
   }
 }
 
@@ -105,9 +94,11 @@ const shippingSchema = z.object({
 });
 
 export async function createShippingMethod(prevState: any, formData: FormData) {
+  const method = { shippingMethod: formData.get('shippingMethod') };
   const validatedFields = shippingSchema.safeParse({
-    shippingMethod: formData.get('shippingMethod')
+    ...method
   });
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors
@@ -115,13 +106,11 @@ export async function createShippingMethod(prevState: any, formData: FormData) {
   }
 
   const result = await addShippingMethod({
-    shippingMethod: formData.get('shippingMethod') as string
+    method: method.shippingMethod as string
   });
   if (isObject(result)) {
-    return {
-      paymentMethods: result?.paymentMethods,
-      cart: { ...(result?.cart as object) }
-    };
+    revalidateTag(TAGS.cart);
+    redirect('/checkout/payment');
   }
 }
 
@@ -144,17 +133,22 @@ export async function createPaymentMethod(prevState: any, formData: FormData) {
 
   if (isObject(result)) {
     revalidateTag(TAGS.cart);
-    return {
-      formattedPrice: { ...(result.cart.formattedPrice as Object) },
-      selectedShippingRate: { ...(result.cart.selectedShippingRate as Object) },
-      payment: { ...(result?.cart.payment as Object) }
-    };
+    redirect('/checkout/place-order');
   }
 }
 
 export async function placeOrder() {
   const result = await createPlaceOrder();
   if (isObject(result?.order)) {
-    return result;
+    const cookieStore = await cookies();
+    const orderId = result?.order?.id;
+    cookieStore.set({
+      name: ORDER_ID,
+      value: orderId,
+      httpOnly: true,
+      path: '/'
+    });
+    revalidateTag(TAGS.cart);
+    redirect(`/cart?order=${orderId}`);
   }
 }

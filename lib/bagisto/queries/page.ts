@@ -37,18 +37,16 @@ export const getPagesQuery = /* GraphQL */ `
 
 export const getCountryQuery = /* GraphQL */ `
   query Countries {
-    countries(first: 200, page: 1) {
-      data {
+    countries {
+      id
+      code
+      name
+      states {
         id
+        countryCode
         code
-        name
-        states {
-          id
-          countryCode
-          code
-          defaultName
-          countryId
-        }
+        defaultName
+        countryId
       }
     }
   }
@@ -58,20 +56,12 @@ export const getThemeCustomizationQuery = /* GraphQL */ `
   query themeCustomization {
     themeCustomization {
       id
-      channelId
       type
       name
-      sortOrder
       status
-      baseUrl
       translations {
         id
-        themeCustomizationId
-        locale
         options {
-          css
-          html
-          title
           column_1 {
             url
             title
@@ -86,15 +76,6 @@ export const getThemeCustomizationQuery = /* GraphQL */ `
             url
             title
             sortOrder
-          }
-          images {
-            link
-            image
-            imageUrl
-          }
-          filters {
-            key
-            value
           }
         }
       }

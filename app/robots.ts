@@ -1,6 +1,5 @@
-const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-  : 'http://localhost:3000';
+import { getBaseUrl } from 'lib/utils';
+const baseUrl = getBaseUrl(process.env.NEXT_PUBLIC_VERCEL_URL);
 
 export default function robots() {
   return {
