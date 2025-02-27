@@ -19,7 +19,7 @@ A Next.js 14 and App Router-ready ecommerce template featuring:
 
 ### Setup Bagisto Store
 
-- For `BAGISTO_CURRENCY_CODE` and `BAGISTO_STORE_ENDPOINT`, you need to install the [Bagisto](https://github.com/bagisto/bagisto).
+- For `BAGISTO_PROTOCOL`, `BAGISTO_STOREFRONT_ACCESS_TOKEN`, `BAGISTO_REVALIDATION_SECRET` and `BAGISTO_STORE_DOMAIN`, you need to install the [Bagisto](https://github.com/bagisto/bagisto).
 - Then, you need to install the [Bagisto Headless Extension](https://github.com/bagisto/headless-ecommerce) in the Bagisto.
 - Now you need to host the full application so that you have store endpoint and if you are in development mode then you can use Ngrok also.
 - After that you can proceed with setting up Next.js commerce.
@@ -40,13 +40,3 @@ pnpm dev
 ```
 
 Your app should now be running on [localhost:3000](http://localhost:3000/).
-
-#### Features Available
-
-The following features can be enabled or disabled. This means that the UI will remove all code related to the feature.
-For example: Turning `cart` off will disable Cart capabilities.
-
-- cart
-- search
-- customerAuth
-- customCheckout
