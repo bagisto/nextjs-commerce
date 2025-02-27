@@ -40,13 +40,3 @@ pnpm dev
 ```
 
 Your app should now be running on [localhost:3000](http://localhost:3000/).
-
-#### Features Available
-
-The following features can be enabled or disabled. This means that the UI will remove all code related to the feature.
-For example: Turning `cart` off will disable Cart capabilities.
-
-- cart
-- search
-- customerAuth
-- customCheckout
