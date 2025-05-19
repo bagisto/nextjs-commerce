@@ -15,7 +15,6 @@ A Next.js 14 and App Router-ready ecommerce template featuring:
 
 Demo live at: [Bagisto NextJs Commerce](https://v2-bagisto-demo.vercel.app)
 
-
 ## Configuration
 
 ### Setup Bagisto Store
