@@ -13,7 +13,7 @@ A Next.js 14 and App Router-ready ecommerce template featuring:
 - Checkout and payments with Bagisto
 - Automatic light/dark mode based on system settings
 
-Demo live at: [v2-bagisto-demo.vercel.app](https://v2-bagisto-demo.vercel.app)
+Demo live at: [Bagisto NextJs Commerce](https://v2-bagisto-demo.vercel.app)
 
 
 ## Configuration
