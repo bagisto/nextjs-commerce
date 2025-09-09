@@ -1,17 +1,6 @@
 export const addShippingAddressMutation = /* GraphQL */ `
   mutation saveCheckoutAddresses($input: SaveShippingAddressInput!) {
     saveCheckoutAddresses(input: $input) {
-      shippingMethods {
-        title
-        methods {
-          code
-          label
-          price
-          formattedPrice
-          basePrice
-          formattedBasePrice
-        }
-      }
       cart {
         id
         customerEmail
@@ -22,6 +11,177 @@ export const addShippingAddressMutation = /* GraphQL */ `
         isGift
         itemsCount
         itemsQty
+        exchangeRate
+        globalCurrencyCode
+        baseCurrencyCode
+        channelCurrencyCode
+        cartCurrencyCode
+        grandTotal
+        baseGrandTotal
+        subTotal
+        baseSubTotal
+        taxTotal
+        baseTaxTotal
+        discountAmount
+        baseDiscountAmount
+        checkoutMethod
+        isGuest
+        isActive
+        customerId
+        channelId
+        appliedCartRuleIds
+        createdAt
+        updatedAt
+        items {
+          id
+          type
+          quantity
+          sku
+          name
+          couponCode
+          weight
+          totalWeight
+          baseTotalWeight
+          price
+          basePrice
+          total
+          baseTotal
+          taxPercent
+          taxAmount
+          baseTaxAmount
+          discountPercent
+          discountAmount
+          baseDiscountAmount
+          parentId
+          productId
+          cartId
+          taxCategoryId
+          customPrice
+          appliedCartRuleIds
+          createdAt
+          updatedAt
+          product {
+            id
+            type
+            urlKey
+            name
+            attributeFamilyId
+            sku
+            shortDescription
+            parentId
+            guestCheckout
+            variants {
+              id
+              type
+              attributeFamilyId
+              sku
+              parentId
+            }
+            images {
+              id
+              type
+              path
+              url
+              productId
+            }
+            shareURL
+          }
+          formattedPrice {
+            price
+            basePrice
+            total
+            baseTotal
+            taxAmount
+            baseTaxAmount
+            discountAmount
+            baseDiscountAmount
+          }
+        }
+        shippingAddress {
+          id
+          addressType
+          customerId
+          cartId
+          orderId
+          firstName
+          lastName
+          gender
+          companyName
+          address
+          postcode
+          city
+          state
+          country
+          email
+          phone
+          defaultAddress
+          useForShipping
+          vatId
+          createdAt
+          updatedAt
+        }
+        billingAddress {
+          id
+          addressType
+          parentAddressId
+          customerId
+          cartId
+          orderId
+          firstName
+          lastName
+          gender
+          companyName
+          address
+          city
+          state
+          stateName
+          country
+          countryName
+          postcode
+          email
+          phone
+          vatId
+          defaultAddress
+          useForShipping
+          createdAt
+          updatedAt
+        }
+        formattedPrice {
+          grandTotal
+          baseGrandTotal
+          subTotal
+          baseSubTotal
+          taxTotal
+          baseTaxTotal
+          discount
+          baseDiscount
+          discountedSubTotal
+          baseDiscountedSubTotal
+        }
+        selectedShippingRate {
+          id
+          carrier
+          carrierTitle
+          method
+          methodTitle
+          methodDescription
+          price
+          basePrice
+          discountAmount
+          baseDiscountAmount
+          cartAddressId
+          createdAt
+          updatedAt
+        }
+
+        payment {
+          id
+          method
+          methodTitle
+          cartId
+          createdAt
+          updatedAt
+        }
       }
     }
   }

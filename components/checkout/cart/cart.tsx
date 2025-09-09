@@ -1,109 +1,127 @@
-import LogoSquare from 'components/logo-square';
-import Price from 'components/price';
-import { getCart } from 'lib/bagisto';
-import { DEFAULT_OPTION, BAGISTO_SESSION } from 'lib/constants';
-import { isObject } from 'lib/type-guards';
-import { createUrl } from 'lib/utils';
-import { cookies } from 'next/headers';
-import Image from 'next/image';
-import Link from 'next/link';
-import CartItemAccordion from './cart-item-accordian';
-const { SITE_NAME } = process.env;
+"use client";
+
+import Link from "next/link";
+
+import CartItemAccordion from "./cart-item-accordian";
+
+import { GridTileImage } from "@/components/grid/tile";
+import Price from "@/components/price";
+import Prose from "@/components/prose";
+import { DEFAULT_OPTION } from "@/lib/constants";
+import { isObject } from "@/lib/type-guards";
+import { createUrl } from "@/lib/utils";
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
-export default async function Cart() {
-  const cartId = cookies().get(BAGISTO_SESSION)?.value;
-
-  let cart;
-  if (cartId) {
-    cart = await getCart();
-  }
+export default function Cart({ cart }: { cart: any }) {
   return (
     <>
-      <div className="flex w-full flex-col gap-6 lg:hidden">
-        <div className="mx-auto mt-8 flex items-center px-2 lg:hidden">
-          <Link className="flex items-center gap-2 text-black md:pt-1 dark:text-white" href="/">
-            <LogoSquare />
-            <span className="uppercase">{SITE_NAME}</span>
-          </Link>
-        </div>
-        <CartItemAccordion cartItem={cart} />
-      </div>
-      <div className="mt-2 hidden max-h-[95dvh] w-full flex-col overflow-hidden bg-transparent px-6 text-sm text-black backdrop-blur-xl lg:flex dark:text-white">
-        <ul className="flex-grow overflow-auto py-4">
-          {cart?.items?.map((item, i) => {
-            const merchandiseSearchParams = {} as MerchandiseSearchParams;
-            const merchandiseUrl = createUrl(
-              `/product/${item?.product.sku}`,
-              new URLSearchParams(merchandiseSearchParams)
-            );
-            return (
-              <li key={i} className="flex w-full flex-col">
-                <div className="relative flex w-full flex-row justify-between py-4">
-                  <div className="absolute z-40 -mt-2 ml-[52px] flex h-5 w-5 items-center justify-center rounded-full bg-primary dark:bg-white/80">
-                    <span className="text-sm font-semibold text-white/60 dark:text-black">
-                      {item.quantity}
-                    </span>
-                  </div>
-                  <Link href={merchandiseUrl} className="z-30 flex flex-row items-center space-x-4">
-                    <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                      <Image
-                        className="h-full w-full object-cover"
-                        width={64}
-                        height={64}
-                        alt={item.product.images?.[0]?.path || item.product.name}
-                        src={item.product.images?.[0]?.url || '/image/placeholder.webp'}
+      <CartItemAccordion cartItem={cart} />
+      <div className="hidden h-full min-h-[100dvh] flex-col justify-between py-4 pl-4 pr-12 lg:flex">
+        <div className="">
+          <h1 className="p-6 font-outfit text-xl font-medium text-black dark:text-neutral-300">
+            Order Summary
+          </h1>
+          <ul className="m-0 flex max-h-[calc(100dvh-292px)] flex-col gap-y-6 overflow-y-auto px-4 py-6">
+            {cart?.items?.map((item: any, i: number) => {
+              const merchandiseSearchParams = {} as MerchandiseSearchParams;
+              const merchandiseUrl = createUrl(
+                `/product/${item?.product.urlKey}?type=${item?.product.type}`,
+                new URLSearchParams(merchandiseSearchParams)
+              );
+
+              return (
+                <li key={i} className="flex w-full flex-col">
+                  <div className="relative flex w-full flex-row justify-between">
+                    <Link
+                      className="z-30 flex flex-row items-center space-x-4"
+                      href={merchandiseUrl}
+                    >
+                      <div className="relative h-[120px] w-[120px] cursor-pointer rounded-2xl bg-neutral-300 xl:h-[162px] xl:w-[194px]">
+                        <GridTileImage
+                          fill
+                          alt={
+                            item.product.images?.[0]?.path || item.product.name
+                          }
+                          className="h-full w-full object-cover"
+                          src={
+                            item.product.images?.[0]?.url ||
+                            "/image/placeholder.webp"
+                          }
+                        />
+                      </div>
+                      <div className="flex flex-1 flex-col text-base">
+                        <h1 className="font-outfit text-lg font-medium">
+                          {item.product.name}
+                        </h1>
+                        {item.name !== DEFAULT_OPTION ? (
+                          <p className="text-sm font-normal text-neutral-500 dark:text-neutral-400">
+                            {item.sku}
+                          </p>
+                        ) : null}
+                        <span className="font-normal text-black dark:text-white">
+                          Quantity : {item.quantity}
+                        </span>
+                        <Prose
+                          className="font-sm line-clamp-3 font-outfit font-normal text-black/[60%] dark:!text-neutral-300"
+                          html={item?.product.shortDescription}
+                        />
+                        <div className="block h-16 xl:hidden">
+                          <Price
+                            amount={item.total}
+                            className="space-y-2 text-start font-outfit text-lg font-medium xl:text-right"
+                            currencyCode={"USD"}
+                          />
+                        </div>
+                      </div>
+                    </Link>
+                    <div className="hidden h-16 xl:block">
+                      <Price
+                        amount={item.total}
+                        className="space-y-2 text-start font-outfit text-lg font-medium xl:text-right"
+                        currencyCode={"USD"}
                       />
                     </div>
-                    <div className="flex flex-1 flex-col text-base">
-                      <span className="leading-tight">{item.product.name}</span>
-                      {item.name !== DEFAULT_OPTION ? (
-                        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                          {item.name}
-                        </p>
-                      ) : null}
-                    </div>
-                  </Link>
-                  <div className="flex h-16 flex-col justify-between">
-                    <Price
-                      className="flex justify-end space-y-2 text-right text-sm"
-                      amount={item.total}
-                      currencyCode={'USD'}
-                    />
                   </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div className="px-4 py-4 text-sm text-neutral-500 dark:text-neutral-400">
           <div className="mb-3 flex items-center justify-between pb-1">
-            <p>Subtotal</p>
+            <p className="text-black[60%] font-outfit text-base font-normal">
+              Subtotal
+            </p>
             <Price
+              amount={cart?.subTotal || "0"}
               className="text-right text-base text-black dark:text-white"
-              amount={cart?.subTotal || '0'}
-              currencyCode={'USD'}
+              currencyCode={"USD"}
             />
           </div>
           <div className="mb-3 flex items-center justify-between pb-1 pt-1">
-            <p>Shipping</p>
+            <p className="text-black[60%] font-outfit text-base font-normal">
+              {" "}
+              Shipping
+            </p>
             {isObject(cart?.selectedShippingRate) ? (
               <Price
+                amount={cart?.selectedShippingRate?.price || "0"}
                 className="text-right text-base text-black dark:text-white"
-                amount={cart?.selectedShippingRate?.price || '0'}
-                currencyCode={'USD'}
+                currencyCode={"USD"}
               />
             ) : (
-              <p className="text-right">Calculated at next step</p>
+              <p className="text-right text-base">Calculated at Next Step</p>
             )}
           </div>
-          <div className="mb-3 flex items-center justify-between pb-1 pt-1">
-            <p className="text-xl font-bold dark:text-white">Total</p>
+          <div className="my-6 flex items-center justify-between">
+            <p className="font-outfit text-2xl font-normal text-black/[60%] dark:text-white">
+              Grand Total
+            </p>
             <Price
-              className="text-right text-base text-black dark:text-white"
-              amount={cart?.grandTotal || '0'}
-              currencyCode={'USD'}
+              amount={cart?.grandTotal || "0"}
+              className="text-right font-outfit text-2xl font-normal text-black dark:text-white"
+              currencyCode={"USD"}
             />
           </div>
         </div>

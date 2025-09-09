@@ -1,54 +1,93 @@
-import './globals.css';
-import { GeistSans } from 'geist/font';
-import { getChannel } from 'lib/bagisto';
-import { ensureStartsWith, getBaseUrl } from 'lib/utils';
-import { ReactNode } from 'react';
-import { GlobalContextProvider } from './context/store';
-import NextAuthProvider from './next-auth-provider';
-import { Providers } from './providers';
-export const dynamic = 'force-dynamic';
-const { TWITTER_CREATOR, TWITTER_SITE, SITE_NAME } = process.env;
-const baseUrl = getBaseUrl(process.env.NEXT_PUBLIC_VERCEL_URL);
-const twitterCreator = TWITTER_CREATOR ? ensureStartsWith(TWITTER_CREATOR, '@') : undefined;
-const twitterSite = TWITTER_SITE ? ensureStartsWith(TWITTER_SITE, 'https://') : undefined;
-
-export const metadata = {
-  metadataBase: new URL(baseUrl),
-  title: {
-    default: SITE_NAME!,
-    template: `%s | ${SITE_NAME}`
+import { Metadata, Viewport } from "next";
+import clsx from "clsx";
+import "@/styles/globals.css";
+import NextAuthProvider from "./providers/next-auth-provider";
+import { TanstackProvider } from "./providers/tanstack-provider";
+import { ReduxProvider } from "./providers/redux-provider";
+import { ToastProvider } from "./context/toast-context";
+import { siteConfig } from "@/config/site";
+import { outfit } from "@/config/fonts";
+import { Providers } from "@/app/providers/providers";
+import { ToastContainer } from "@/components/elements/react-toasted/toast-container";
+export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  ...siteConfig,
+  icons: {
+    icon: "/favicon.svg",
   },
-  robots: {
-    follow: true,
-    index: true
-  },
-  ...(twitterCreator &&
-    twitterSite && {
-      twitter: {
-        card: 'summary_large_image',
-        creator: twitterCreator,
-        site: twitterSite
-      }
-    })
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
-  const storeConfig = await getChannel();
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={GeistSans.variable}>
+    <html
+      className={clsx(
+        "scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 dark:scrollbar-thumb-neutral-300"
+      )}
+      suppressHydrationWarning
+      lang="en"
+    >
       <head>
-        <link rel="icon" href={storeConfig?.faviconUrl} sizes="any" />
+        <script
+          type="speculationrules"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              prerender: [
+                {
+                  where: {
+                    and: [
+                      { href_matches: "/*" },
+                      { not: { href_matches: "/logout" } },
+                      { not: { href_matches: "/*\\?*(^|&)add-to-cart=*" } },
+                      { not: { selector_matches: ".no-prerender" } },
+                      { not: { selector_matches: "[rel~=nofollow]" } },
+                    ],
+                  },
+                },
+              ],
+              prefetch: [
+                {
+                  urls: ["next.html", "next2.html"],
+                  requires: ["anonymous-client-ip-when-cross-origin"],
+                  referrer_policy: "no-referrer",
+                },
+              ],
+            }),
+          }}
+        />
       </head>
       <body
-        className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white"
+        className={clsx(
+          "min-h-screen font-outfit text-foreground bg-background antialiased",
+          outfit.variable
+        )}
         suppressHydrationWarning={true}
       >
         <main>
-          <Providers>
-            <GlobalContextProvider>
-              <NextAuthProvider> {children} </NextAuthProvider>{' '}
-            </GlobalContextProvider>
-          </Providers>
+          <NextAuthProvider>
+            <TanstackProvider>
+              <Providers
+                themeProps={{ attribute: "class", defaultTheme: "dark" }}
+              >
+                <ReduxProvider>
+                  <ToastProvider>
+                    {children}
+                    <ToastContainer />
+                  </ToastProvider>
+                </ReduxProvider>
+              </Providers>
+            </TanstackProvider>
+          </NextAuthProvider>
         </main>
       </body>
     </html>

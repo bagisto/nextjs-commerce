@@ -1,4 +1,4 @@
-import seoFragment from '../fragments/seo';
+import seoFragment from "../fragments/seo";
 
 const collectionFragment = /* GraphQL */ `
   fragment collection on Collection {
@@ -35,9 +35,9 @@ export const getCollectionsQuery = /* GraphQL */ `
   ${collectionFragment}
 `;
 
-import { productInfoFragment } from '../fragments/product';
+import { productInfoFragment } from "../fragments/product";
 
-export const getCollectionProductsQuery = /* GraphQL */ `
+export const getCollectionProductQuery = /* GraphQL */ `
   query allProducts($input: [FilterHomeCategoriesInput]) {
     allProducts(input: $input) {
       paginatorInfo {
@@ -53,4 +53,70 @@ export const getCollectionProductsQuery = /* GraphQL */ `
   }
 
   ${productInfoFragment}
+`;
+
+export const getCollectionSeoQuery = /* GraphQL */ `
+  query allProducts($input: [FilterHomeCategoriesInput]) {
+    allProducts(input: $input) {
+      paginatorInfo {
+        count
+        currentPage
+        lastPage
+        total
+      }
+      data {
+        id
+        type
+        name
+        shortDescription
+        description
+        metaTitle
+        metaKeywords
+        metaDescription
+      }
+    }
+  }
+`;
+
+export const getCollectionProductsQuery = /* GraphQL */ `
+  query allProducts($input: [FilterHomeCategoriesInput]) {
+    allProducts(input: $input) {
+      paginatorInfo {
+        count
+        currentPage
+        lastPage
+        total
+      }
+      data {
+        id
+        type
+        name
+        priceHtml {
+          id
+          type
+          priceHtml
+          priceWithoutHtml
+          minPrice
+          regularPrice
+          formattedRegularPrice
+          finalPrice
+          formattedFinalPrice
+          currencyCode
+        }
+        urlKey
+        images {
+          id
+          path
+          url
+          productId
+        }
+        cacheGalleryImages {
+          smallImageUrl
+          mediumImageUrl
+          largeImageUrl
+          originalImageUrl
+        }
+      }
+    }
+  }
 `;

@@ -1,99 +1,94 @@
-'use client';
+"use client";
 
-import { Dialog, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Menu } from 'lib/bagisto/types';
-import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { Fragment, Suspense, useEffect, useState } from 'react';
-import Search, { SearchSkeleton } from './search';
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+} from "@heroui/drawer";
+import { Menu } from "@/lib/bagisto/types";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useDisclosure } from "@heroui/react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { isObject } from "@/lib/type-guards";
+import ThemeSwitch from "./theme-switch";
 
 export default function MobileMenu({ menu }: { menu: Menu[] }) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isOpen, setIsOpen] = useState(false);
-  const openMobileMenu = () => setIsOpen(true);
-  const closeMobileMenu = () => setIsOpen(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 768) {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isOpen]);
-
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname, searchParams]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { data: session } = useSession();
 
   return (
     <>
       <button
-        onClick={openMobileMenu}
+        onClick={onOpen}
         aria-label="Open mobile menu"
-        className="flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors md:hidden dark:border-neutral-700 dark:text-white"
+        className="flex h-9 w-9 flex-none items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white md:h-9 md:w-9 lg:hidden lg:h-11 lg:w-11"
       >
         <Bars3Icon className="h-4" />
       </button>
-      <Transition show={isOpen}>
-        <Dialog onClose={closeMobileMenu} className="relative z-50">
-          <Transition.Child
-            as={Fragment}
-            enter="transition-all ease-in-out duration-300"
-            enterFrom="opacity-0 backdrop-blur-none"
-            enterTo="opacity-100 backdrop-blur-[.5px]"
-            leave="transition-all ease-in-out duration-200"
-            leaveFrom="opacity-100 backdrop-blur-[.5px]"
-            leaveTo="opacity-0 backdrop-blur-none"
-          >
-            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-          </Transition.Child>
-          <Transition.Child
-            as={Fragment}
-            enter="transition-all ease-in-out duration-300"
-            enterFrom="translate-x-[-100%]"
-            enterTo="translate-x-0"
-            leave="transition-all ease-in-out duration-200"
-            leaveFrom="translate-x-0"
-            leaveTo="translate-x-[-100%]"
-          >
-            <Dialog.Panel className="fixed bottom-0 left-0 right-0 top-0 flex h-full w-full flex-col bg-white pb-6 dark:bg-black">
-              <div className="p-4">
+
+      <Drawer
+        backdrop="blur"
+        hideCloseButton={true}
+        isOpen={isOpen}
+        radius="none"
+        placement="left"
+        onOpenChange={onOpenChange}
+      >
+        <DrawerContent>
+          {(onClose) => (
+            <>
+              <DrawerHeader className="flex w-full items-center justify-between border-b border-neutral-200">
                 <button
-                  className="mb-4 flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
-                  onClick={closeMobileMenu}
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
+                  onClick={onClose}
                   aria-label="Close mobile menu"
                 >
                   <XMarkIcon className="h-6" />
                 </button>
-
-                <div className="mb-4 w-full">
-                  <Suspense fallback={<SearchSkeleton />}>
-                    <Search />
-                  </Suspense>
-                </div>
+                <ThemeSwitch />
+              </DrawerHeader>
+              <DrawerBody className="px-4 py-4">
                 {menu.length ? (
                   <ul className="flex w-full flex-col">
                     {menu.map((item: Menu) => (
                       <li
-                        className="py-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
+                        className="p-2 text-xl text-black transition-colors hover:text-neutral-500 dark:text-white"
                         key={item?.id + item.title}
                       >
-                        <Link href={item.path} onClick={closeMobileMenu}>
+                        <Link href={item.path} onClick={onClose}>
                           {item.title}
                         </Link>
                       </li>
                     ))}
                   </ul>
                 ) : null}
-              </div>
-            </Dialog.Panel>
-          </Transition.Child>
-        </Dialog>
-      </Transition>
+              </DrawerBody>
+              <DrawerFooter>
+                {isObject(session?.user) ? (
+                  <button
+                    onClick={onClose}
+                    className="h-12 w-full cursor-pointer items-center justify-center rounded-lg border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
+                  >
+                    Log Out
+                  </button>
+                ) : (
+                  <Link className="w-full" href="/customer/login">
+                    <button
+                      onClick={onClose}
+                      className="h-12 w-full cursor-pointer items-center justify-center rounded-lg border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white"
+                    >
+                      Log In
+                    </button>
+                  </Link>
+                )}
+              </DrawerFooter>
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }

@@ -1,0 +1,90 @@
+export const getCustomerAddressQuery = /* GraphQL */ `
+  query CheckoutAddresses {
+    checkoutAddresses {
+      isGuest
+      defaultCountry
+      addresses {
+        id
+        address
+      }
+      customer {
+        id
+        firstName
+        lastName
+        name
+        gender
+        dateOfBirth
+        email
+        phone
+        image
+        imageUrl
+        status
+        password
+        apiToken
+        customerGroupId
+        channelId
+        subscribedToNewsLetter
+        isVerified
+        isSuspended
+        token
+        rememberToken
+        createdAt
+        updatedAt
+        isWishlistShared
+        getWishlistSharedLink
+        defaultAddress {
+          id
+          addressType
+          parentAddressId
+          customerId
+          cartId
+          orderId
+          firstName
+          lastName
+          gender
+          companyName
+          address
+          city
+          state
+          stateName
+          country
+          countryName
+          postcode
+          email
+          phone
+          vatId
+          defaultAddress
+          useForShipping
+          createdAt
+          updatedAt
+        }
+        addresses {
+          id
+          addressType
+          parentAddressId
+          customerId
+          cartId
+          orderId
+          firstName
+          lastName
+          gender
+          companyName
+          address
+          city
+          state
+          stateName
+          country
+          countryName
+          postcode
+          email
+          phone
+          vatId
+          defaultAddress
+          useForShipping
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+`;

@@ -1,61 +1,74 @@
-import Cart from 'components/cart';
-import OpenCart from 'components/cart/open-cart';
-import UserAccount from 'components/customer';
-import LogoSquare from 'components/logo-square';
-import { getMenu } from 'lib/bagisto';
-import { Menu } from 'lib/bagisto/types';
-import Link from 'next/link';
-import { Suspense } from 'react';
-import MobileMenu from './mobile-menu';
-import Search, { SearchSkeleton } from './search';
-const { SITE_NAME } = process.env;
+import Link from "next/link";
+import { Suspense } from "react";
+import MobileMenu from "./mobile-menu";
+import Search, { SearchSkeleton } from "./search";
+const ThemeSwitch = dynamic(() => import("./theme-switch"), {
+  ssr: true,
+});
+import { CACHE_KEY } from "@/lib/constants";
+import Cart from "@/components/cart";
+import OpenCart from "@/components/cart/open-cart";
+import UserAccount from "@/components/customer";
+import LogoIcon from "@/components/icons/logo";
+import { getMenu } from "@/lib/bagisto";
+import MobileSearch from "./mobile-search";
+import dynamic from "next/dynamic";
+
 export default async function Navbar() {
-  const menu = await getMenu('next-js-frontend-header-menu');
-  const menuData = [{ id: '', path: '/search', title: 'All' }, ...menu];
+  const menu = await getMenu(CACHE_KEY.headerMenus);
+  const menuData = [{ id: "", path: "/search", title: "All" }, ...menu];
+
   return (
-    <nav className="relative flex items-center justify-between p-4 lg:px-6">
-      <div className="block flex-none md:hidden">
-        <Suspense fallback={null}>
-          <MobileMenu menu={menu} />
-        </Suspense>
-      </div>
-      <div className="flex w-full items-center">
-        <div className="flex w-full md:w-1/3">
-          <Link href="/" className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6">
-            <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-              {SITE_NAME}
-            </div>
-          </Link>
-          {menu.length ? (
-            <ul className="hidden gap-6 text-sm md:flex md:items-center">
-              {menuData.slice(0, 3).map((item: Menu) => (
-                <li key={item?.id + item.title}>
-                  <Link
-                    href={`${item.path}`}
-                    className="text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+    <header className="sticky top-0 z-10">
+      <nav className="relative flex flex-col items-center justify-between gap-4 bg-neutral-50 p-4 dark:bg-neutral-900 md:flex-row lg:px-6">
+        <div className="flex w-full items-center justify-between gap-0 sm:gap-4">
+          <div className="flex max-w-fit gap-2 xl:gap-6">
+            <Suspense fallback={null}>
+              <MobileMenu menu={menuData} />
+            </Suspense>
+            <Link
+              className="flex h-9 w-full scale-95 items-center md:h-9 md:w-auto lg:h-10"
+              href="/"
+            >
+              <LogoIcon />
+            </Link>
+            {menu.length ? (
+              <ul className="hidden gap-4 text-sm md:items-center lg:flex xl:gap-6">
+                {menuData.slice(0, 3).map((item) => (
+                  <li key={item?.id + item.title}>
+                    <Link
+                      className="text-nowrap text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
+                      href={`${item.path}`}
+                      prefetch={true}
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+          <div className="hidden justify-center md:flex">
+            <Suspense fallback={<SearchSkeleton />}>
+              <Search search={false} />
+            </Suspense>
+          </div>
+          <div className="flex max-w-fit gap-2 md:gap-4">
+            <MobileSearch />
+            <Suspense fallback={<OpenCart />}>
+              <div className="hidden lg:block">
+                <ThemeSwitch />
+              </div>
+            </Suspense>
+            <Suspense fallback={<OpenCart />}>
+              <Cart />
+            </Suspense>
+            <Suspense fallback={<OpenCart />}>
+              <UserAccount />
+            </Suspense>
+          </div>
         </div>
-        <div className="hidden justify-center md:flex md:w-1/3">
-          <Suspense fallback={<SearchSkeleton />}>
-            <Search />
-          </Suspense>
-        </div>
-        <div className="flex justify-end gap-4 md:w-1/3">
-          <Suspense fallback={<OpenCart />}>
-            <Cart />
-          </Suspense>
-          <Suspense fallback={<OpenCart />}>
-            <UserAccount />
-          </Suspense>
-        </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }

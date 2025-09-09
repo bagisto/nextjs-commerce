@@ -1,5 +1,4 @@
-import cartFragment from '../fragments/cart';
-
+// Create the add to cart items.
 export const addToCartMutation = /* GraphQL */ `
   mutation addItemToCart($input: AddItemToCartInput!) {
     addItemToCart(input: $input) {
@@ -7,64 +6,125 @@ export const addToCartMutation = /* GraphQL */ `
       success
       cart {
         id
-        customerEmail
-        customerFirstName
-        customerLastName
-        shippingMethod
-        couponCode
-        isGift
-        itemsCount
-        itemsQty
-        exchangeRate
-        globalCurrencyCode
-        baseCurrencyCode
-        channelCurrencyCode
-        cartCurrencyCode
-        grandTotal
-        baseGrandTotal
-        subTotal
-        baseSubTotal
-        taxTotal
-        baseTaxTotal
-        discountAmount
-        baseDiscountAmount
-        shippingAmount
-        baseShippingAmount
-        shippingAmountInclTax
-        baseShippingAmountInclTax
-        subTotalInclTax
-        baseSubTotalInclTax
-        checkoutMethod
-        isGuest
-        isActive
-        appliedCartRuleIds
-        customerId
-        channelId
-        createdAt
-        updatedAt
         status
         message
+        customerEmail
+        customerFirstName
+        customerLastName
+        shippingMethod
+        couponCode
+        isGift
+        itemsCount
+        itemsQty
+        exchangeRate
+        globalCurrencyCode
+        baseCurrencyCode
+        channelCurrencyCode
+        cartCurrencyCode
+        grandTotal
+        baseGrandTotal
+        subTotal
+        baseSubTotal
+        taxTotal
+        baseTaxTotal
+        discountAmount
+        baseDiscountAmount
+        checkoutMethod
+        isGuest
+        isActive
+        customerId
+        channelId
+        appliedCartRuleIds
+        items {
+          id
+          type
+          quantity
+          sku
+          type
+          name
+          couponCode
+          price
+          basePrice
+          total
+          baseTotal
+          taxPercent
+          taxAmount
+          baseTaxAmount
+          discountPercent
+          discountAmount
+          baseDiscountAmount
+          parentId
+          productId
+          cartId
+          taxCategoryId
+          customPrice
+          appliedCartRuleIds
+          product {
+            id
+            sku
+            type
+            parentId
+            guestCheckout
+            name
+            shortDescription
+            description
+            urlKey
+            name
+            priceHtml {
+              id
+              type
+              minPrice
+              priceHtml
+              priceWithoutHtml
+              regularPrice
+              formattedRegularPrice
+              finalPrice
+              formattedFinalPrice
+              currencyCode
+            }
+            cacheGalleryImages {
+              smallImageUrl
+              mediumImageUrl
+              largeImageUrl
+              originalImageUrl
+            }
+            images {
+              id
+              type
+              path
+              url
+              productId
+            }
+          }
+        }
+
+        formattedPrice {
+          grandTotal
+          baseGrandTotal
+          subTotal
+          baseSubTotal
+          taxTotal
+          baseTaxTotal
+          discount
+          baseDiscount
+          discountedSubTotal
+          baseDiscountedSubTotal
+        }
       }
     }
   }
 `;
 
-export const createCartMutation = /* GraphQL */ `
-  mutation createCart($lineItems: [CartLineInput!]) {
-    cartCreate(input: { lines: $lineItems }) {
-      cart {
-        ...cart
-      }
-    }
-  }
-  ${cartFragment}
-`;
-
+// Edit the Existing the add to cart Items (Increament and Decreament Action).
 export const editCartItemsMutation = /* GraphQL */ `
-  mutation updateItemToCart($input: UpdateItemToCartInput!) {
+  mutation UpdateItemToCart($input: UpdateItemToCartInput!) {
     updateItemToCart(input: $input) {
+      success
+      message
       cart {
         id
+        status
+        message
         customerEmail
         customerFirstName
         customerLastName
@@ -92,18 +152,94 @@ export const editCartItemsMutation = /* GraphQL */ `
         customerId
         channelId
         appliedCartRuleIds
-        createdAt
-        updatedAt
+        items {
+          id
+          type
+          quantity
+          sku
+          type
+          name
+          couponCode
+          price
+          basePrice
+          total
+          baseTotal
+          taxPercent
+          taxAmount
+          baseTaxAmount
+          discountPercent
+          discountAmount
+          baseDiscountAmount
+          parentId
+          productId
+          cartId
+          taxCategoryId
+          customPrice
+          appliedCartRuleIds
+          product {
+            id
+            sku
+            type
+            parentId
+            guestCheckout
+            name
+            shortDescription
+            description
+            urlKey
+            name
+            priceHtml {
+              id
+              type
+              minPrice
+              priceHtml
+              priceWithoutHtml
+              regularPrice
+              formattedRegularPrice
+              finalPrice
+              formattedFinalPrice
+              currencyCode
+            }
+
+            cacheGalleryImages {
+              smallImageUrl
+            }
+            images {
+              id
+              type
+              path
+              url
+              productId
+            }
+          }
+        }
+
+        formattedPrice {
+          grandTotal
+          baseGrandTotal
+          subTotal
+          baseSubTotal
+          taxTotal
+          baseTaxTotal
+          discount
+          baseDiscount
+          discountedSubTotal
+          baseDiscountedSubTotal
+        }
       }
     }
   }
 `;
 
+// Remove action to the cart Items.
 export const removeFromCartMutation = /* GraphQL */ `
-  mutation removeCartItem($lineIds: ID!) {
-    removeCartItem(id: $lineIds) {
+  mutation removeCartItem($id: ID!) {
+    removeCartItem(id: $id) {
+      success
+      message
       cart {
         id
+        status
+        message
         customerEmail
         customerFirstName
         customerLastName
@@ -131,8 +267,79 @@ export const removeFromCartMutation = /* GraphQL */ `
         customerId
         channelId
         appliedCartRuleIds
-        createdAt
-        updatedAt
+        items {
+          id
+          type
+          quantity
+          sku
+          type
+          name
+          couponCode
+          price
+          basePrice
+          total
+          baseTotal
+          taxPercent
+          taxAmount
+          baseTaxAmount
+          discountPercent
+          discountAmount
+          baseDiscountAmount
+          parentId
+          productId
+          cartId
+          taxCategoryId
+          customPrice
+          appliedCartRuleIds
+          product {
+            id
+            sku
+            type
+            parentId
+            guestCheckout
+            name
+            shortDescription
+            description
+            urlKey
+            name
+            priceHtml {
+              id
+              type
+              minPrice
+              priceHtml
+              priceWithoutHtml
+              regularPrice
+              formattedRegularPrice
+              finalPrice
+              formattedFinalPrice
+              currencyCode
+            }
+
+            cacheGalleryImages {
+              smallImageUrl
+            }
+            images {
+              id
+              type
+              path
+              url
+              productId
+            }
+          }
+        }
+
+        formattedPrice {
+          grandTotal
+          baseGrandTotal
+          subTotal
+          baseSubTotal
+          taxTotal
+          baseTaxTotal
+          discount
+          baseDiscount
+          discountedSubTotal
+          baseDiscountedSubTotal
+        }
       }
     }
   }

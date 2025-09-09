@@ -1,34 +1,51 @@
-'use client';
+"use client";
+import React from "react";
+import clsx from "clsx";
 
-import clsx from 'clsx';
-import LoadingDots from 'components/loading-dots';
-import { useFormStatus } from 'react-dom';
+import LoadingDots from "@/components/loading-dots";
 
-export function LoadingButton({ buttonName }: { buttonName: string }) {
-  const { pending } = useFormStatus();
-  const buttonClasses =
-    'relative flex w-full items-center justify-center rounded-md bg-blue-600 p-3 tracking-wide text-white';
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
+  title: string;
+  loading?: boolean;
+  disabled?: boolean;
+  type?: "button" | "submit" | "reset";
+}
+
+export function Button({
+  className = "",
+  title,
+  loading = false,
+  disabled = false,
+  type,
+  ...rest
+}: ButtonProps) {
+  const buttonClasses = clsx(
+    "relative flex w-full text-lg cursor-pointer font-outfit font-semibold items-center justify-center rounded-xl bg-blue-600 p-3 tracking-wide text-white",
+    "hover:opacity-90",
+    {
+      "opacity-50 cursor-wait ": loading || disabled,
+    },
+    className
+  );
 
   return (
     <button
-      onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-        if (pending) e.preventDefault();
-      }}
-      aria-label="Add to cart"
-      aria-disabled={pending}
-      className={clsx(buttonClasses, {
-        'hover:opacity-90': true,
-        disabledClasses: pending
-      })}
+      aria-disabled={loading || disabled}
+      aria-label={title}
+      className={buttonClasses}
+      disabled={loading || disabled}
+      type={type ?? "reset"}
+      {...rest}
     >
-      <div className="mx-2">
-        {pending ? (
-          <div className="flex items-center justify-center">
-            <p>Loading</p>
+      <div className="mx-2 flex items-center justify-center gap-2">
+        {loading ? (
+          <>
             <LoadingDots className="bg-white" />
-          </div>
+            <span>loading</span>
+          </>
         ) : (
-          <p> {buttonName}</p>
+          <span>{title}</span>
         )}
       </div>
     </button>

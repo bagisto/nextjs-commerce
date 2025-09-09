@@ -36,7 +36,6 @@ export const getCartQuery = /* GraphQL */ `
         type
         quantity
         sku
-        type
         name
         couponCode
         weight
@@ -63,132 +62,19 @@ export const getCartQuery = /* GraphQL */ `
         product {
           id
           type
+          urlKey
           name
           attributeFamilyId
           sku
+          shortDescription
           parentId
+          guestCheckout
           variants {
             id
             type
             attributeFamilyId
             sku
             parentId
-          }
-          parent {
-            id
-            type
-            attributeFamilyId
-            sku
-            parentId
-          }
-          attributeFamily {
-            id
-            code
-            name
-            status
-            isUserDefined
-          }
-          attributeValues {
-            id
-            productId
-            attributeId
-            locale
-            channel
-            textValue
-            booleanValue
-            integerValue
-            floatValue
-            dateTimeValue
-            dateValue
-            jsonValue
-            attribute {
-              id
-              code
-              adminName
-              type
-            }
-          }
-          superAttributes {
-            id
-            code
-            adminName
-            type
-            position
-          }
-          categories {
-            id
-            position
-            logoPath
-            logoUrl
-            status
-            displayMode
-            lft
-            rgt
-            parentId
-            additional
-            bannerPath
-            bannerUrl
-            name
-            slug
-            urlPath
-            description
-            metaTitle
-            metaDescription
-            metaKeywords
-            localeId
-            createdAt
-            updatedAt
-            filterableAttributes {
-              id
-              adminName
-              code
-              type
-              position
-            }
-            children {
-              id
-              name
-              description
-              slug
-              urlPath
-              logoPath
-              logoUrl
-              bannerPath
-              bannerUrl
-              metaTitle
-              metaDescription
-              metaKeywords
-              position
-              status
-              displayMode
-              parentId
-            }
-          }
-          inventories {
-            id
-            qty
-            productId
-            inventorySourceId
-            vendorId
-            inventorySource {
-              id
-              code
-              name
-              description
-              contactName
-              contactEmail
-              contactNumber
-              contactFax
-              country
-              state
-              city
-              street
-              postcode
-              priority
-              latitude
-              longitude
-              status
-            }
           }
           images {
             id
@@ -197,108 +83,11 @@ export const getCartQuery = /* GraphQL */ `
             url
             productId
           }
-          shareURL
-          orderedInventories {
-            id
-            qty
-            productId
-            channelId
-          }
-          reviews {
-            id
-            title
-            rating
-            comment
-            status
-            productId
-            customerId
-            createdAt
-            updatedAt
-          }
-          groupedProducts {
-            id
-            qty
-            sortOrder
-            productId
-            associatedProductId
-            associatedProduct {
-              id
-              type
-              attributeFamilyId
-              sku
-              parentId
-            }
-          }
-          downloadableSamples {
-            id
-            url
-            file
-            fileName
-            type
-            sortOrder
-            productId
-            createdAt
-            updatedAt
-            translations {
-              id
-              locale
-              title
-              productDownloadableSampleId
-            }
-          }
-          downloadableLinks {
-            id
-            title
-            price
-            url
-            file
-            fileName
-            type
-            sampleUrl
-            sampleFile
-            sampleFileName
-            sampleType
-            sortOrder
-            productId
-            downloads
-            translations {
-              id
-              locale
-              title
-              productDownloadableLinkId
-            }
-          }
-          bundleOptions {
-            id
-            type
-            isRequired
-            sortOrder
-            productId
-            bundleOptionProducts {
-              id
-              qty
-              isUserDefined
-              sortOrder
-              isDefault
-              productBundleOptionId
-              productId
-            }
-            translations {
-              id
-              locale
-              label
-              productBundleOptionId
-            }
-          }
-          customerGroupPrices {
-            id
-            qty
-            valueType
-            value
-            productId
-            customerGroupId
-            createdAt
-            updatedAt
+          cacheBaseImage {
+            smallImageUrl
+            mediumImageUrl
+            largeImageUrl
+            originalImageUrl
           }
         }
         formattedPrice {
@@ -330,7 +119,34 @@ export const getCartQuery = /* GraphQL */ `
         email
         phone
         defaultAddress
+        useForShipping
         vatId
+        createdAt
+        updatedAt
+      }
+      billingAddress {
+        id
+        addressType
+        parentAddressId
+        customerId
+        cartId
+        orderId
+        firstName
+        lastName
+        gender
+        companyName
+        address
+        city
+        state
+        stateName
+        country
+        countryName
+        postcode
+        email
+        phone
+        vatId
+        defaultAddress
+        useForShipping
         createdAt
         updatedAt
       }

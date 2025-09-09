@@ -1,31 +1,55 @@
-import clsx from 'clsx';
-import Price from './price';
+import clsx from "clsx";
+
+import { LeftArrow } from "./icons/service/left-arrow";
+import Price from "./price";
 
 const Label = ({
   title,
   amount,
   currencyCode,
-  position = 'bottom'
+  page,
+  position = "bottom",
 }: {
   title: string;
   amount: string;
+  page?: string;
   currencyCode: string;
-  position?: 'bottom' | 'center';
+  position?: "bottom" | "center" | "left";
 }) => {
   return (
     <div
-      className={clsx('absolute bottom-0 left-0 flex w-full px-4 pb-4 @container/label', {
-        'lg:px-20 lg:pb-[35%]': position === 'center'
+      className={clsx("absolute w-fit px-4 ", {
+        "bottom-0  pb-4": position === "center",
+        "bottom-0  pb-10": position === "bottom",
+        "bottom-0 left-0  pb-4": position === "left",
       })}
     >
-      <div className="flex items-center rounded-full border bg-white/70 p-1 text-xs font-semibold text-black backdrop-blur-md dark:border-neutral-800 dark:bg-black/70 dark:text-white">
-        <h3 className="mr-4 line-clamp-2 flex-grow pl-2 leading-none tracking-tight">{title}</h3>
-        <Price
-          className="flex-none rounded-full bg-blue-600 p-2 text-white"
-          amount={amount}
-          currencyCode={currencyCode}
-          currencyCodeClassName="hidden @[275px]/label:inline"
-        />
+      <div
+        className={`flex gap-5 items-center rounded-full border border-neutral-200 bg-white/70 text-xs font-semibold text-black backdrop-blur-md dark:border-neutral-800 dark:bg-black/70 dark:text-white ${
+          page === "category" ? "px-6 py-4" : "px-6 py-5 "
+        }`}
+      >
+        <p
+          className={` line-clamp-2 font-semibold leading-none tracking-tight ${clsx(
+            page === "category"
+              ? "text-lg md:text-xl lg:text-[28px]"
+              : "text-base "
+          )}`}
+        >
+          {title}
+        </p>
+        {page === "category" ? (
+          <button aria-label="Go back" className="rounded-full bg-blue-600 p-3">
+            <LeftArrow />
+          </button>
+        ) : (
+          <Price
+            amount={amount}
+            className="flex-none rounded-full bg-blue-600 p-2 text-sm text-white"
+            currencyCode={currencyCode}
+            currencyCodeClassName="@[275px]/label:inline hidden"
+          />
+        )}
       </div>
     </div>
   );

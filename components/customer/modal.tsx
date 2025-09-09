@@ -1,170 +1,170 @@
-'use client';
-import {
-  Avatar,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@heroui/react';
-import clsx from 'clsx';
-import LoadingDots from 'components/loading-dots';
-import { isObject } from 'lib/type-guards';
-import { signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { useFormState } from 'react-dom';
-import { userLogoOut } from './lib/action';
-import OpenAuth from './open-auth';
+"use client";
+
+import { Popover, PopoverTrigger, PopoverContent } from "@heroui/popover";
+import clsx from "clsx";
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
+import { Avatar } from "@heroui/avatar";
+import { useForm } from "react-hook-form";
+import { usePathname, useRouter } from "next/navigation";
+
+import { useCustomToast } from "../hooks/use-toast";
+
+import OpenAuth from "./open-auth";
+
+import { isObject } from "@/lib/type-guards";
+import LoadingDots from "@/components/loading-dots";
+import { useState } from "react";
 export default function CredentialModal() {
-  const [isLoading, setLoader] = useState<string>('');
+  const pathname = usePathname();
+  const router = useRouter();
+  const { showToast } = useCustomToast();
+  const [isOpen, setOpen] = useState(false);
+
+  const {
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm();
 
   const { data: session } = useSession();
-  const [status, handleLogout] = useFormState(userLogoOut, undefined);
 
-  useEffect(() => {
-    if (status?.success) {
-      signOut({ callbackUrl: '/customer/login', redirect: false });
-    } else if (status?.error) {
-      console.error('Something gone wrong !');
-    }
-  }, [status]);
-  const loadStatusHandler = (type: string) => {
-    if (typeof window !== 'undefined') {
-      (window as any).isLogOutLoading = true;
-    }
-    isLoading === '' && setLoader(type);
+  const onSubmit = () => {
+    signOut({ callbackUrl: "/customer/login", redirect: false })
+      .then((res) => {
+        showToast("You are logout successfully!", "success");
+        setOpen(!isOpen);
+        router.push(res.url);
+      })
+      .catch((err) => {
+        showToast(err.message as string, "danger");
+      });
   };
-  return (
-    <Popover showArrow placement="bottom">
-      <PopoverTrigger>
-        <button aria-label="Open cart">
-          <OpenAuth />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="p-1 dark:bg-black">
-        {isObject(session?.user) ? (
-          <Card shadow="none" className="max-w-[300px] border-none bg-transparent">
-            <CardHeader className="justify-between">
-              <div className="flex gap-3">
+
+  const content = (
+    <PopoverContent className="min-w-[300px] px-4">
+      {isObject(session?.user) ? (
+        <div className="flex w-full flex-col gap-y-6 rounded-md py-4">
+          <header>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
                 <Avatar
-                  showFallback
                   isBordered
+                  showFallback
                   color="default"
-                  size="md"
                   icon={<OpenAuth className="h-8" />}
+                  size="md"
                 />
                 <div className="flex flex-col items-start justify-center">
-                  <h4 className="text-small font-semibold leading-none text-default-500 dark:text-white">
+                  <h4 className="font-semibold leading-none text-default-500 text-small dark:text-white">
                     {session?.user?.name}
                   </h4>
-                  <h5 className="text-small tracking-tight text-default-500 dark:text-white">
+                  <h5 className="tracking-tight text-default-500 text-small dark:text-white">
                     {session?.user?.email}
                   </h5>
                 </div>
               </div>
-            </CardHeader>
-            <CardBody className="px-3 py-0">
-              <p className="pl-px text-small text-default-500 dark:text-white">
+
+              <p className="pl-px text-default-500 text-small dark:text-white">
                 Manage Cart, Orders
                 <span aria-label="confetti" className="px-2" role="img">
                   🎉
                 </span>
               </p>
-            </CardBody>
-            <CardFooter>
-              <form action={handleLogout}>
-                <button
-                  onClick={() => loadStatusHandler('logout')}
-                  type="submit"
-                  className={clsx(
-                    'my-2 w-full rounded-full bg-gray-800 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700',
-                    isLoading === 'logout' ? 'cursor-not-allowed' : ''
-                  )}
-                >
-                  <div className="mx-1">
-                    {isLoading === 'logout' ? (
-                      <div className="flex items-center justify-center">
-                        <p>Loading</p>
-                        <LoadingDots className="bg-white" />
-                      </div>
-                    ) : (
-                      <p> Log Out</p>
-                    )}
-                  </div>
-                </button>
-              </form>
-            </CardFooter>
-          </Card>
-        ) : (
-          <Card shadow="none" className="min-w-[300px] border-none bg-transparent">
-            <CardHeader className="justify-between">
-              <div className="flex gap-3">
-                <h4 className="text-xl font-semibold leading-none text-default-600 dark:text-white">
-                  Welcome Guest
-                </h4>
-              </div>
-            </CardHeader>
-            <CardBody className="px-3 py-0">
-              <p className="pl-px text-small text-default-500 dark:text-white">
-                Manage Cart, Orders
-                <span aria-label="confetti" className="px-2" role="img">
-                  🎉
-                </span>
-              </p>
-            </CardBody>
-            <CardFooter className="my-2 flex gap-4">
-              <Link
-                onClick={() => loadStatusHandler('login')}
-                href="/customer/login"
-                className="w-full"
+            </div>
+          </header>
+
+          <footer>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <button
+                className={clsx(
+                  " w-full rounded-full bg-gray-800 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700",
+                  isSubmitting ? " cursor-not-allowed" : " cursor-pointer"
+                )}
+                type="submit"
               >
-                <button
-                  type="button"
-                  className={clsx(
-                    'mb-2 w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800',
-                    isLoading === 'login' ? 'cursor-not-allowed' : ''
+                <div className="mx-1">
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center">
+                      <p>Loading</p>
+                      <LoadingDots className="bg-white" />
+                    </div>
+                  ) : (
+                    <p> Log Out</p>
                   )}
-                >
-                  <div className="mx-1">
-                    {isLoading === 'login' ? (
-                      <div className="flex items-center justify-center">
-                        <p>Loading</p>
-                        <LoadingDots className="bg-white" />
-                      </div>
-                    ) : (
-                      <p> Sign In</p>
-                    )}
-                  </div>
-                </button>
-              </Link>
-              <Link href="/customer/register" className="w-full">
-                <button
-                  onClick={() => loadStatusHandler('signup')}
-                  type="button"
-                  className={clsx(
-                    'mb-2 w-full rounded-full bg-gray-800 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700',
-                    isLoading === 'signup' ? 'cursor-not-allowed' : ''
-                  )}
-                >
-                  <div className="mx-1">
-                    {isLoading === 'signup' ? (
-                      <div className="flex items-center justify-center">
-                        <p>Loading</p>
-                        <LoadingDots className="bg-white" />
-                      </div>
-                    ) : (
-                      <p> Sign Up</p>
-                    )}
-                  </div>
-                </button>
-              </Link>
-            </CardFooter>
-          </Card>
-        )}
-      </PopoverContent>
+                </div>
+              </button>
+            </form>
+          </footer>
+        </div>
+      ) : (
+        <div className="flex w-full flex-col gap-y-6 rounded-md border-none py-4">
+          <header className="">
+            <div className="flex flex-col gap-y-2">
+              <h4 className="text-xl font-semibold leading-none text-default-600 dark:text-white">
+                Welcome Guest
+              </h4>
+              <p className="text-sm text-default-500 dark:text-white">
+                Manage Cart, Orders
+                <span aria-label="confetti" className="px-2" role="img">
+                  🎉
+                </span>
+              </p>
+            </div>
+          </header>
+
+          <footer className="flex gap-4">
+            <Link className="w-full" href="/customer/login">
+              <button
+                className={clsx(
+                  "w-full rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800",
+                  pathname === "/customer/login"
+                    ? " cursor-not-allowed"
+                    : " cursor-pointer"
+                )}
+                disabled={pathname === "/customer/login"}
+                type="button"
+                onClick={() => setOpen(!isOpen)}
+              >
+                Sign In
+              </button>
+            </Link>
+
+            <Link className="w-full" href="/customer/register">
+              <button
+                className={clsx(
+                  "w-full rounded-full bg-gray-800 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700",
+                  pathname === "/customer/register"
+                    ? " cursor-not-allowed"
+                    : " cursor-pointer"
+                )}
+                disabled={pathname === "/customer/register"}
+                type="button"
+                onClick={() => setOpen(!isOpen)}
+              >
+                Sign Up
+              </button>
+            </Link>
+          </footer>
+        </div>
+      )}
+    </PopoverContent>
+  );
+
+  return (
+    <Popover
+      backdrop="opaque"
+      isOpen={isOpen}
+      onOpenChange={() => setOpen(!isOpen)}
+      defaultOpen={false}
+      color="default"
+      placement="bottom-end"
+    >
+      <PopoverTrigger>
+        <button aria-label="Open cart" className="cursor-pointer">
+          <OpenAuth />
+        </button>
+      </PopoverTrigger>
+      {content}
     </Popover>
   );
 }

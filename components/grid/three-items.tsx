@@ -1,46 +1,33 @@
-import { GridTileImage } from 'components/grid/tile';
-import { getCollectionProducts } from 'lib/bagisto';
-import type { Product } from 'lib/bagisto/types';
-import Link from 'next/link';
+export const revalidate = 60; // cached
+import type { FilterDataTypes } from "@/lib/bagisto/types";
+import { FC } from "react";
 
-async function ThreeItemGridItem({
-  item,
-  size,
-  priority
-}: {
-  item: Product;
-  size: 'full' | 'half';
-  priority?: boolean;
-}) {
-  return (
-    <div
-      className={size === 'full' ? 'md:col-span-4 md:row-span-2' : 'md:col-span-2 md:row-span-1'}
-    >
-      <Link className="relative block aspect-square h-full w-full" href={`/product/${item.urlKey}`}>
-        <GridTileImage
-          src={item.images?.[0]?.url || 'product image'}
-          fill
-          sizes={
-            size === 'full' ? '(min-width: 768px) 66vw, 100vw' : '(min-width: 768px) 33vw, 100vw'
-          }
-          priority={priority}
-          alt={item?.name || 'Images'}
-          label={{
-            position: size === 'full' ? 'center' : 'bottom',
-            title: item?.name as string,
-            amount: item.priceHtml?.finalPrice || item.priceHtml?.regularPrice || '0',
-            currencyCode: item.priceHtml?.currencyCode
-          }}
-        />
-      </Link>
-    </div>
-  );
-}
+import { getCollectionHomeProducts } from "@/lib/bagisto";
+import { isArray, isObject } from "@/lib/type-guards";
+import { isCleanFilter } from "@/lib/utils";
+import ThreeItemGridItem from "./three-item-grid";
 
-export async function ThreeItemGrid() {
+export const ThreeItemGrid: FC<{
+  name: string;
+  data: {
+    options: {
+      filters: FilterDataTypes[];
+    };
+  }[];
+}> = async ({ name, data }) => {
+  if (!isObject(data[0])) {
+    return null;
+  }
+
+  const { options } = data[0];
+  // Get the filter to fetch Categories.
+  const filters = isArray(options?.filters)
+    ? isCleanFilter(options?.filters || [], "filter")
+    : [];
   // Collections that start with `hidden-*` are hidden from the search page.
-  const homepageItems = await getCollectionProducts({
-    collection: ''
+  const homepageItems = await getCollectionHomeProducts({
+    filters,
+    tag: "ThreeItemGridItem",
   });
 
   if (!homepageItems[0] || !homepageItems[1] || !homepageItems[2]) return null;
@@ -48,10 +35,24 @@ export async function ThreeItemGrid() {
   const [firstProduct, secondProduct, thirdProduct] = homepageItems;
 
   return (
-    <section className="mx-auto grid max-w-screen-2xl gap-4 px-4 pb-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
-      <ThreeItemGridItem size="full" item={firstProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={secondProduct} priority={true} />
-      <ThreeItemGridItem size="half" item={thirdProduct} />
+    <section>
+      <div className="md:max-w-4.5xl mx-auto mb-10 w-auto px-0 text-center md:px-36">
+        <h1 className="mb-4 font-outfit text-4xl font-semibold text-black dark:text-white">
+          {name}
+        </h1>
+        <p className="text-lg font-normal text-black/60 dark:text-neutral-300">
+          Soft, stylish, and made to last. This classic tee is perfect for
+          everyday wear—pair it with anything. Available in all sizes and
+          colors.
+        </p>
+      </div>
+      <div className="grid gap-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
+        <ThreeItemGridItem item={firstProduct} priority={true} size="full" />
+        <ThreeItemGridItem item={secondProduct} priority={true} size="half" />
+        <ThreeItemGridItem item={thirdProduct} size="half" />
+      </div>
     </section>
   );
-}
+};
+
+export default ThreeItemGrid;

@@ -1,5 +1,5 @@
-import imageFragment from './image';
-import seoFragment from './seo';
+import imageFragment from "./image";
+import seoFragment from "./seo";
 
 const productFragment = /* GraphQL */ `
   fragment product on Product {
@@ -8,8 +8,138 @@ const productFragment = /* GraphQL */ `
     availableForSale
     title
     description
+    shortDescription
     descriptionHtml
     isSaleable
+    booking {
+      id
+      type
+      qty
+      location
+      showLocation
+      availableEveryWeek
+      availableFrom
+      availableTo
+      productId
+      defaultSlot {
+        id
+        bookingType
+        duration
+        breakTime
+        slotManyDays {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+        }
+        slotOneDay {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+        }
+        bookingProductId
+      }
+      appointmentSlot {
+        id
+        duration
+        breakTime
+        sameSlotAllDays
+        slotManyDays {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+          day
+        }
+        slotOneDay {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+          day
+        }
+        bookingProductId
+      }
+      eventTickets {
+        id
+        price
+        qty
+        name
+        description
+        specialPrice
+        specialPriceFrom
+        specialPriceTo
+        translations {
+          locale
+          name
+          description
+        }
+        bookingProductId
+      }
+      rentalSlot {
+        id
+        rentingType
+        dailyPrice
+        hourlyPrice
+        sameSlotAllDays
+        slotManyDays {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+          day
+        }
+        slotOneDay {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+          day
+        }
+        bookingProductId
+      }
+      tableSlot {
+        id
+        priceType
+        guestLimit
+        duration
+        breakTime
+        preventSchedulingBefore
+        sameSlotAllDays
+        slotManyDays {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+          day
+        }
+        slotOneDay {
+          id
+          to
+          toDay
+          from
+          fromDay
+          status
+          day
+        }
+        bookingProductId
+      }
+    }
     options {
       id
       name
@@ -75,16 +205,9 @@ export const productInfoFragment = /* GraphQL */ `
     metaKeywords
     metaDescription
     weight
+    status
     isInWishlist
     attributeFamilyId
-    additionalData {
-      id
-      code
-      label
-      value
-      admin_name
-      type
-    }
     priceHtml {
       id
       type
@@ -110,7 +233,6 @@ export const productInfoFragment = /* GraphQL */ `
     urlKey
     updatedAt
     parentId
-
     variants {
       id
       type
@@ -118,44 +240,17 @@ export const productInfoFragment = /* GraphQL */ `
       urlKey
       parentId
     }
-    parent {
-      id
-      type
-      attributeFamilyId
-      urlKey
-      parentId
-    }
-    attributeFamily {
-      id
-      code
-      name
-      status
-      isUserDefined
-    }
-    attributeValues {
-      id
-      productId
-      attributeId
-      locale
-      channel
-      textValue
-      booleanValue
-      integerValue
-      floatValue
-      dateTimeValue
-      dateValue
-      jsonValue
-      attribute {
-        id
-        code
-        adminName
-        type
-      }
+    cacheGalleryImages {
+      smallImageUrl
+      mediumImageUrl
+      largeImageUrl
+      originalImageUrl
     }
     relatedProducts {
       id
       name
       urlKey
+      type
       priceHtml {
         regularPrice
         currencyCode
@@ -163,44 +258,6 @@ export const productInfoFragment = /* GraphQL */ `
       images {
         url
       }
-    }
-    superAttributes {
-      id
-      code
-      adminName
-      type
-      position
-    }
-    categories {
-      id
-      name
-      description
-      slug
-      logoPath
-      bannerPath
-      metaTitle
-      metaDescription
-      metaKeywords
-      position
-      status
-      displayMode
-      parentId
-      filterableAttributes {
-        id
-        adminName
-        code
-        type
-        position
-      }
-      # translations {
-      #   id
-      #   name
-      #   description
-      #   localeId
-      #   locale
-      # }
-      createdAt
-      updatedAt
     }
     inventories {
       id
@@ -228,161 +285,14 @@ export const productInfoFragment = /* GraphQL */ `
         status
       }
     }
+
     images {
       id
       path
       url
       productId
     }
-    videos {
-      id
-      type
-      path
-      url
-      productId
-    }
-    orderedInventories {
-      id
-      qty
-      productId
-      channelId
-    }
-    # reviews {
-    #   id
-    #   title
-    #   rating
-    #   comment
-    #   status
-    #   productId
-    #   customerId
-    #   customerName
-    #   createdAt
-    #   updatedAt
-    # }
-    groupedProducts {
-      id
-      qty
-      sortOrder
-      productId
-      associatedProductId
-      associatedProduct {
-        id
-        type
-        attributeFamilyId
-        urlKey
-        priceHtml {
-          id
-          type
-          priceHtml
-          priceWithoutHtml
-          minPrice
-          regularPrice
-          formattedRegularPrice
-          finalPrice
-          formattedFinalPrice
-          currencyCode
-        }
-        parentId
-      }
-    }
-    downloadableSamples {
-      id
-      url
-      fileUrl
-      file
-      fileName
-      type
-      sortOrder
-      productId
-      createdAt
-      updatedAt
-      translations {
-        id
-        locale
-        title
-        productDownloadableSampleId
-      }
-    }
-    downloadableLinks {
-      id
-      title
-      price
-      url
-      fileUrl
-      file
-      fileName
-      type
-      sampleUrl
-      sampleFile
-      sampleFileUrl
-      sampleFileName
-      sampleType
-      sortOrder
-      productId
-      downloads
-      translations {
-        id
-        locale
-        title
-        productDownloadableLinkId
-      }
-    }
-    bundleOptions {
-      id
-      type
-      isRequired
-      sortOrder
-      productId
-      bundleOptionProducts {
-        id
-        qty
-        isUserDefined
-        sortOrder
-        isDefault
-        productBundleOptionId
-        productId
-        product {
-          priceHtml {
-            id
-            type
-            priceHtml
-            priceWithoutHtml
-            minPrice
-            regularPrice
-            formattedRegularPrice
-            finalPrice
-            formattedFinalPrice
-            currencyCode
-            bundlePrice {
-              finalPriceFrom
-              formattedFinalPriceFrom
-              regularPriceFrom
-              formattedRegularPriceFrom
-              finalPriceTo
-              formattedFinalPriceTo
-              regularPriceTo
-              formattedRegularPriceTo
-            }
-          }
-        }
-      }
-      translations {
-        id
-        locale
-        label
-        productBundleOptionId
-      }
-    }
-    customerGroupPrices {
-      id
-      qty
-      valueType
-      value
-      productId
-      customerGroupId
-      createdAt
-      updatedAt
-    }
+
     configutableData {
       attributes {
         id
@@ -409,29 +319,17 @@ export const productInfoFragment = /* GraphQL */ `
         id
         regularPrice {
           price
-          formatedPrice
+          formattedPrice
         }
         finalPrice {
           price
-          formatedPrice
+          formattedPrice
         }
       }
-      variantImages {
-        id
-        images {
-          smallImageUrl
-          mediumImageUrl
-          largeImageUrl
-          originalImageUrl
-        }
-      }
-      variantVideos {
-        id
-        videos
-      }
+
       chooseText
       regularPrice {
-        formatedPrice
+        formattedPrice
         price
       }
     }

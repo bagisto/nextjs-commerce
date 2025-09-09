@@ -1,193 +1,242 @@
-'use client';
-import { Dialog, Transition } from '@headlessui/react';
-import { ShoppingCartIcon } from '@heroicons/react/24/outline';
-import LoadingDots from 'components/loading-dots';
-import Price from 'components/price';
-import type { Cart } from 'lib/bagisto/types';
-import { DEFAULT_OPTION } from 'lib/constants';
-import { createUrl } from 'lib/utils';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { useFormStatus } from 'react-dom';
-import { redirectToCheckout } from './actions';
-import CloseCart from './close-cart';
-import { DeleteItemButton } from './delete-item-button';
-import { EditItemQuantityButton } from './edit-item-quantity-button';
-import OpenCart from './open-cart';
+"use client";
+import type { CartItem } from "@/lib/bagisto/types";
+import Image from "next/image";
+import Link from "next/link";
+import { useFormStatus } from "react-dom";
+import clsx from "clsx";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+} from "@heroui/drawer";
+import { useDisclosure } from "@heroui/react";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { useCartDetail } from "../hooks/use-cart-detail";
+
+import { redirectToCheckout } from "./actions";
+import CloseCart from "./close-cart";
+import { DeleteItemButton } from "./delete-item-button";
+import { EditItemQuantityButton } from "./edit-item-quantity-button";
+import OpenCart from "./open-cart";
+
+import { isObject } from "@/lib/type-guards";
+import { createUrl, isCheckout } from "@/lib/utils";
+import { DEFAULT_OPTION, NOT_IMAGE } from "@/lib/constants";
+import Price from "@/components/price";
+import LoadingDots from "@/components/loading-dots";
+import { useAppSelector } from "@/store/hooks";
+import { EMAIL, getLocalStorage } from "@/store/local-storage";
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
 
-export default function CartModal({ cart }: { cart: Cart | undefined }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const quantityRef = useRef(cart?.itemsQty);
-  const openCart = () => setIsOpen(true);
-  const closeCart = () => setIsOpen(false);
+export default function CartModal() {
+  const { isLoading } = useCartDetail();
+  const cartDetail = useAppSelector((state) => state.cartDetail);
 
-  useEffect(() => {
-    // Open cart modal when quantity changes.
-    if (cart?.itemsQty !== quantityRef.current && typeof window !== 'undefined') {
-      // But only if it's not already open (quantity also changes when editing items in cart).
-      if (!isOpen && !(window as any).isLogOutLoading) {
-        setIsOpen(true);
-      }
-      // Always update the quantity reference
-      quantityRef.current = cart?.itemsQty;
-    }
-  }, [isOpen, cart?.itemsQty, quantityRef]);
+  const cart = cartDetail?.cart;
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <>
-      <button aria-label="Open cart" onClick={openCart}>
+      <button
+        aria-label="Open cart"
+        className={clsx(isLoading ? "cursor-wait" : "cursor-pointer")}
+        disabled={isLoading}
+        onClick={onOpen}
+      >
         <OpenCart quantity={cart?.itemsQty} />
       </button>
-      <Transition show={isOpen}>
-        <Dialog onClose={closeCart} className="relative z-50">
-          <Transition.Child
-            as={Fragment}
-            enter="transition-all ease-in-out duration-300"
-            enterFrom="opacity-0 backdrop-blur-none"
-            enterTo="opacity-100 backdrop-blur-[.5px]"
-            leave="transition-all ease-in-out duration-200"
-            leaveFrom="opacity-100 backdrop-blur-[.5px]"
-            leaveTo="opacity-0 backdrop-blur-none"
-          >
-            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-          </Transition.Child>
-          <Transition.Child
-            as={Fragment}
-            enter="transition-all ease-in-out duration-300"
-            enterFrom="translate-x-full"
-            enterTo="translate-x-0"
-            leave="transition-all ease-in-out duration-200"
-            leaveFrom="translate-x-0"
-            leaveTo="translate-x-full"
-          >
-            <Dialog.Panel className="fixed bottom-0 right-0 top-0 flex h-full w-full flex-col border-l border-neutral-200 bg-white/80 p-6 text-black backdrop-blur-xl md:w-[390px] dark:border-neutral-700 dark:bg-black/80 dark:text-white">
-              <div className="flex items-center justify-between">
-                <p className="text-lg font-semibold">My Cart</p>
-
-                <button aria-label="Close cart" onClick={closeCart}>
-                  <CloseCart />
-                </button>
-              </div>
-
-              {!cart || cart.lines?.length === 0 ? (
-                <div className="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
-                  <ShoppingCartIcon className="h-16" />
-                  <p className="mt-6 text-center text-2xl font-bold">Your cart is empty.</p>
+      <Drawer
+        backdrop="blur"
+        hideCloseButton={true}
+        classNames={{ backdrop: "bg-white/50 dark:bg-black/50" }}
+        isOpen={isOpen}
+        radius="none"
+        onOpenChange={onOpenChange}
+      >
+        <DrawerContent>
+          {(onClose) => (
+            <>
+              <DrawerHeader className="flex flex-col gap-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-lg font-semibold">My Cart</p>
+                  <button
+                    aria-label="Close cart"
+                    className="cursor-pointer"
+                    onClick={onClose}
+                  >
+                    <CloseCart />
+                  </button>
                 </div>
-              ) : (
-                <div className="flex h-full flex-col justify-between overflow-hidden p-1">
-                  <ul className="flex-grow overflow-auto py-4">
-                    {cart?.items?.map((item, i) => {
-                      const merchandiseSearchParams = {} as MerchandiseSearchParams;
-                      const merchandiseUrl = createUrl(
-                        `/product/${item?.product.sku}`,
-                        new URLSearchParams(merchandiseSearchParams)
-                      );
-
-                      return (
-                        <li
-                          key={i}
-                          className="flex w-full flex-col border-b border-neutral-300 dark:border-neutral-700"
-                        >
-                          <div className="relative flex w-full flex-row justify-between px-1 py-4">
-                            <div className="absolute z-40 -mt-2 ml-[55px]">
-                              <DeleteItemButton item={item} />
-                            </div>
-                            <Link
-                              href={merchandiseUrl}
-                              onClick={closeCart}
-                              className="z-30 flex flex-row space-x-4"
-                            >
-                              <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
-                                <Image
-                                  className="h-full w-full object-cover"
-                                  width={64}
-                                  height={64}
-                                  alt={item?.product.images?.at(0)?.path || item?.product?.name}
-                                  src={item?.product.images?.at(0)?.url as any}
-                                  onError={(e) => (e.currentTarget.src = '/image/placeholder.webp')}
-                                />
-                              </div>
-
-                              <div className="flex flex-1 flex-col text-base">
-                                <span className="leading-tight">{item.product.name}</span>
-                                {item.name !== DEFAULT_OPTION ? (
-                                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                    {item.name}
-                                  </p>
-                                ) : null}
-                              </div>
-                            </Link>
-                            <div className="flex h-16 flex-col justify-between">
-                              <Price
-                                className="flex justify-end space-y-2 text-right text-sm"
-                                amount={item.total}
-                                currencyCode={'USD'}
-                              />
-                              <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
-                                <EditItemQuantityButton item={item} type="minus" />
-                                <p className="w-6 text-center">
-                                  <span className="w-full text-sm">{item.quantity}</span>
-                                </p>
-                                <EditItemQuantityButton item={item} type="plus" />
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 dark:border-neutral-700">
-                      <p>Taxes</p>
-                      <Price
-                        className="text-right text-base text-black dark:text-white"
-                        amount={cart.taxTotal}
-                        currencyCode={'USD'}
-                      />
-                    </div>
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-                      <p>Shipping</p>
-                      <p className="text-right">Calculated at checkout</p>
-                    </div>
-                    <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
-                      <p>Total</p>
-                      <Price
-                        className="text-right text-base text-black dark:text-white"
-                        amount={cart.grandTotal}
-                        currencyCode={'USD'}
-                      />
-                    </div>
+              </DrawerHeader>
+              <DrawerBody className="py-0">
+                {typeof cart === "undefined" || !isObject(cart) ? (
+                  <div className="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
+                    <ShoppingCartIcon className="h-16" />
+                    <p className="mt-6 text-center text-2xl font-bold">
+                      Your cart is empty.
+                    </p>
                   </div>
-                  <form action={redirectToCheckout}>
-                    <CheckoutButton />
-                  </form>
-                </div>
-              )}
-            </Dialog.Panel>
-          </Transition.Child>
-        </Dialog>
-      </Transition>
+                ) : (
+                  <div className="flex h-full flex-col justify-between overflow-hidden">
+                    <ul className="my-0 flex-grow overflow-auto py-0">
+                      {cart?.items?.map((item: CartItem, i: number) => {
+                        const merchandiseSearchParams =
+                          {} as MerchandiseSearchParams;
+                        const merchandiseUrl = createUrl(
+                          `/product/${item?.product.urlKey}?type=${item?.product?.type}`,
+                          new URLSearchParams(merchandiseSearchParams)
+                        );
+
+                        return (
+                          <li key={i} className="flex w-full flex-col">
+                            <div className="flex w-full flex-row justify-between px-1 py-4">
+                              <Link
+                                className="z-30 flex flex-row space-x-4"
+                                href={merchandiseUrl}
+                                onClick={onClose}
+                              >
+                                <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                                  <Image
+                                    alt={
+                                      item?.product.images?.at(0)?.path ||
+                                      item?.product?.name
+                                    }
+                                    className="h-full w-full object-cover"
+                                    height={64}
+                                    src={
+                                      item?.product.cacheBaseImage?.at(0)
+                                        ?.smallImageUrl ??
+                                      (item?.product.images?.at(0)?.url as any)
+                                    }
+                                    width={74}
+                                    onError={(e) =>
+                                      (e.currentTarget.src = NOT_IMAGE)
+                                    }
+                                  />
+                                </div>
+
+                                <div className="flex flex-1 flex-col text-base">
+                                  <span className="line-clamp-1 font-outfit text-base font-medium">
+                                    {item.product.name}
+                                  </span>
+                                  {item.name !== DEFAULT_OPTION ? (
+                                    <p className="text-sm text-black dark:text-neutral-400">
+                                      {item.sku}
+                                    </p>
+                                  ) : null}
+                                </div>
+                              </Link>
+                              <div className="flex h-16 flex-col justify-between">
+                                <Price
+                                  amount={item.total}
+                                  className="flex justify-end space-y-2 text-right font-outfit text-base font-medium"
+                                  currencyCode={cart?.cartCurrencyCode}
+                                />
+                                <div className="flex items-center gap-x-2">
+                                  <DeleteItemButton item={item} />
+                                  <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
+                                    <EditItemQuantityButton
+                                      item={item}
+                                      type="minus"
+                                    />
+                                    <p className="w-6 text-center">
+                                      <span className="w-full text-sm">
+                                        {item.quantity}
+                                      </span>
+                                    </p>
+                                    <EditItemQuantityButton
+                                      item={item}
+                                      type="plus"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <div className="border-0 border-t border-solid border-neutral-200 py-4 text-sm text-neutral-500 dark:text-neutral-400">
+                      <div className="mb-3 flex items-center justify-between">
+                        <p className="text-base font-normal text-black/[60%] dark:text-white">
+                          Taxes
+                        </p>
+                        <Price
+                          amount={cart?.taxTotal}
+                          className="text-right text-base font-medium text-black dark:text-white"
+                          currencyCode={"USD"}
+                        />
+                      </div>
+                      <div className="mb-3 flex items-center justify-between pb-1">
+                        <p className="text-base font-normal text-black/[60%] dark:text-white">
+                          Shipping
+                        </p>
+                        <p className="text-right text-base font-medium text-black dark:text-white">
+                          Calculated at Next Step
+                        </p>
+                      </div>
+                      <div className="mb-3 flex items-center justify-between pb-1">
+                        <p className="text-base font-normal text-black/[60%] dark:text-white">
+                          Total
+                        </p>
+                        <Price
+                          amount={cart?.grandTotal}
+                          className="text-right text-base font-medium text-black dark:text-white"
+                          currencyCode={"USD"}
+                        />
+                      </div>
+                    </div>
+                    <form action={redirectToCheckout}>
+                      <CheckoutButton
+                        cartDetails={cart?.items}
+                        isGuest={cart?.isGuest}
+                        isEmail={cart?.customerEmail ?? getLocalStorage(EMAIL)}
+                      />
+                    </form>
+                  </div>
+                )}
+              </DrawerBody>
+              <DrawerFooter className="flex flex-col gap-1" />
+            </>
+          )}
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }
 
-function CheckoutButton() {
+function CheckoutButton({
+  cartDetails,
+  isGuest,
+  isEmail,
+}: {
+  cartDetails: Array<CartItem>;
+  isGuest: boolean;
+  isEmail: string;
+}) {
   const { pending } = useFormStatus();
+  const email = isEmail;
 
   return (
     <>
-      <input type="hidden" name="url" value="/checkout/information" />
+      <input
+        name="url"
+        type="hidden"
+        value={isCheckout(cartDetails, isGuest, email)}
+      />
       <button
-        className="block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100"
-        type="submit"
+        className={clsx(
+          "block w-full rounded-full bg-blue-600 p-3 text-center text-sm font-medium text-white opacity-90 hover:opacity-100",
+          pending ? "cursor-wait" : "cursor-pointer"
+        )}
         disabled={pending}
+        type="submit"
       >
-        {pending ? <LoadingDots className="bg-white" /> : 'Proceed to Checkout'}
+        {pending ? <LoadingDots className="bg-white" /> : "Proceed to Checkout"}
       </button>
     </>
   );

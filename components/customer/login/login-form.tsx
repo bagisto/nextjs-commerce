@@ -1,134 +1,156 @@
-'use client';
-import { ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import InputText from 'components/checkout/cart/input';
-import { signIn } from 'next-auth/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useFormState } from 'react-dom';
-import { z } from 'zod';
-import { LoadingButton } from './loading-button';
+"use client";
 
-const loginDefaultValue = {
-  username: '',
-  password: ''
+import clsx from "clsx";
+import { signIn } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { Button } from "./loading-button";
+
+import { SIGNIN_IMG } from "@/lib/constants";
+import InputText from "@/components/checkout/cart/input";
+import { useCustomToast } from "@/components/hooks/use-toast";
+
+type LoginFormInputs = {
+  username: string;
+  password: string;
 };
-const loginSchema = z.object({
-  username: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-  password: z
-    .string()
-    .min(8, { message: 'Be at least 8 characters long' })
-    .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
-    .regex(/[0-9]/, { message: 'Contain at least one number.' })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: 'Contain at least one special character.'
-    })
-    .trim()
-});
 
-export function LoginForm() {
+export default function LoginForm() {
+  const { showToast } = useCustomToast();
   const router = useRouter();
-  async function authenticate(prevState: any, formData: FormData) {
-    try {
-      const data = {
-        username: formData.get('username'),
-        password: formData.get('password')
-      };
-      const validatedFields = loginSchema.safeParse(data);
-      if (!validatedFields.success) {
-        return {
-          errors: validatedFields.error.flatten().fieldErrors
-        };
-      }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormInputs>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+  });
 
-      return await signIn('credentials', {
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    try {
+      const result = await signIn("credentials", {
         redirect: false,
         ...data,
-        callbackUrl: '/'
-      })
-        .then((result) => {
-          if (result?.ok) {
-            router.push('/');
-          }
-          return {
-            errors: {
-              apiError: result?.error
-            }
-          };
-        })
-        .catch((errr) => {
-          console.log(errr);
-        });
+        callbackUrl: "/",
+      });
+
+      if (result?.ok) {
+        showToast("Welcome! Successfuly login with Next-Commerce", "success");
+        router.replace("/");
+      } else {
+        // Set API error on root (form-level error)
+        showToast(result?.error || "Invalid login credentials.", "warning");
+      }
     } catch (error) {
-      console.error('Something went wrong :', error);
+      showToast("Something went wrong. Please try again.", "danger");
     }
-  }
-  const [status, dispatch] = useFormState(authenticate, loginDefaultValue);
+  };
 
   return (
-    <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
-      <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10 dark:bg-black">
-        {status?.errors?.apiError && (
-          <div className="text-md flex items-center justify-center gap-1 text-danger">
-            <ExclamationCircleIcon className="h-5 w-5" /> {status?.errors?.apiError}
-          </div>
-        )}
-        <div className="pb-6 sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="py-1 text-center text-2xl font-bold">Sign in to your account</h2>
-          <p className="mt-2 text-center text-sm">
+    <div className="my-8 flex w-full items-center justify-between gap-4 lg:my-16 xl:my-28">
+      <div className="flex w-full max-w-[583px] flex-col gap-y-4 lg:gap-y-12">
+        <div className="font-outfit">
+          <h2 className="py-1 text-3xl font-semibold lg:text-4xl">
+            Sign in to your account
+          </h2>
+          <p className="mt-2 text-lg font-normal text-black/[60%] dark:text-neutral-300">
             If you have an account, sign in with your email address.
           </p>
         </div>
-        <form className="space-y-4" action={dispatch}>
-          <div>
+
+        <form
+          noValidate
+          className="flex flex-col gap-y-4 lg:gap-y-12"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="flex flex-col gap-y-2.5 lg:gap-[18px]">
             <InputText
-              className=""
-              name="username"
+              {...register("username", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email.",
+                },
+              })}
+              errorMsg={errors.username ? [errors.username.message] : undefined}
               label="Email"
+              labelPlacement="outside"
+              name="username"
               placeholder="Enter your email address"
-              typeName="text"
-              defaultValue={status?.username}
-              errorMsg={status?.errors?.username}
+              rounded="md"
+              size="lg"
+              typeName="email"
             />
-          </div>
-          <div>
+
             <InputText
-              className=""
-              name="password"
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 2,
+                  message: "Be at least 2 characters long",
+                },
+                validate: (value) => {
+                  if (!/[0-2]/.test(value))
+                    return "Contain at least one number.";
+
+                  return true;
+                },
+              })}
+              errorMsg={errors.password ? [errors.password.message] : undefined}
               label="Password"
+              labelPlacement="outside"
+              name="password"
               placeholder="Enter your password"
+              rounded="md"
+              size="lg"
               typeName="password"
-              defaultValue={status?.password}
-              errorMsg={status?.errors?.password}
             />
+
+            <Link
+              className="text-end text-sm font-medium text-blue-600 hover:text-blue-500"
+              href="/customer/forget-password"
+            >
+              Forgot your password?
+            </Link>
           </div>
-          <div className="flex items-center justify-end">
-            <div className="text-sm">
+
+          <div className="flex flex-col gap-2 lg:gap-y-3">
+            <Button
+              className="cursor-pointer"
+              disabled={isSubmitting}
+              loading={isSubmitting}
+              title="Sign In"
+              type="submit"
+            />
+            <span className="font-outfit">
+              New customer?{" "}
               <Link
-                href="/customer/forget-password"
                 className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                Forgot your password?
-              </Link>
-            </div>
-          </div>
-          <div>
-            <LoadingButton buttonName="Sign In" />
-          </div>
-        </form>
-        <div className="mt-6">
-          <div className="text-sm">
-            <span className="px-2">
-              New customer?{' '}
-              <Link
                 href="/customer/register"
-                className="font-medium text-blue-600 hover:text-blue-500"
               >
-                {' '}
                 Create your account
               </Link>
             </span>
           </div>
-        </div>
+        </form>
+      </div>
+
+      <div className="relative hidden aspect-[0.9] max-h-[692px] w-full max-w-[790px] sm:block md:aspect-[1.14]">
+        <Image
+          fill
+          priority
+          alt="Sign In Image"
+          className={clsx(
+            "relative h-full w-full object-fill",
+            "transition duration-300 ease-in-out group-hover:scale-105",
+          )}
+          sizes={"(min-width: 768px) 66vw, 100vw"}
+          src={SIGNIN_IMG}
+        />
       </div>
     </div>
   );

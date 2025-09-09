@@ -1,53 +1,93 @@
-'use client';
-import clsx from 'clsx';
-import Image from 'next/image';
-import Label from '../label';
+"use client";
+
+import clsx from "clsx";
+import Image from "next/image";
+import { useEffect, useState, useRef } from "react";
+import { useInView } from "framer-motion";
+
+import Label from "../label";
+import { NOT_IMAGE } from "@/lib/constants";
 
 export function GridTileImage({
   isInteractive = true,
   active,
   label,
+  src,
+  alt,
   ...props
 }: {
   isInteractive?: boolean;
   active?: boolean;
   label?: {
     title: string;
+    page?: string;
     amount: string;
     currencyCode: string;
-    position?: 'bottom' | 'center';
+    position?: "bottom" | "center" | "left";
   };
 } & React.ComponentProps<typeof Image>) {
-  const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = '/image/placeholder.webp'; // Fallback image on error
+  const [imgSrc, setImgSrc] = useState<string | undefined>(undefined);
+  const [isLoading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  useEffect(() => {
+    if (!imgSrc && !error) {
+      setImgSrc(src as string);
+    }
+  }, [imgSrc, src, error]);
+
+  const loadDone = () => {
+    setTimeout(() => {
+      if (!src) {
+        setImgSrc(NOT_IMAGE);
+      }
+    }, 500);
+    setLoading(false);
   };
+
+  useEffect(() => {
+    error && setImgSrc(NOT_IMAGE);
+  }, [error]);
+
   return (
     <div
       className={clsx(
-        'group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-slate-100  hover:border-blue-600 dark:bg-black',
+        "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg dark:bg-black",
         {
           relative: label,
-          'border-2 border-blue-600': active,
-          'border-neutral-200 dark:border-neutral-800': !active
+          "border-2 border-blue-600": active,
+          "border-neutral-200 dark:border-neutral-800": !active,
         }
       )}
     >
-      {/* eslint-disable-next-line jsx-a11y/alt-text -- `alt` is inherited from `props`, which is
-      being enforced with TypeScript */}
-      <Image
-        className={clsx('relative h-full w-full object-contain', {
-          'transition duration-300 ease-in-out group-hover:scale-105': isInteractive
-        })}
-        onError={handleError}
-        {...props}
-      />
+      {imgSrc ? (
+        <Image
+          src={imgSrc}
+          alt={alt ?? ""}
+          placeholder="blur"
+          blurDataURL={NOT_IMAGE}
+          onError={() => setError(true)}
+          onLoadingComplete={() => loadDone()}
+          className={clsx(
+            props.className,
+            "duration-700 truncate h-full transition group-hover:scale-105 w-full object-contain ease-in-out align-[none]",
+            error ? "!bg-contain" : "",
+            isLoading
+              ? "grayscale blur-2xl rounded-md truncate"
+              : "grayscale-0 blur-0"
+          )}
+          {...props}
+        />
+      ) : (
+        <div className="h-full w-full animate-pulse bg-gray-100" />
+      )}
 
       {label ? (
         <Label
-          title={label.title}
           amount={label.amount}
           currencyCode={label.currencyCode}
+          page={label.page}
           position={label.position}
+          title={label.title}
         />
       ) : null}
     </div>

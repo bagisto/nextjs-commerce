@@ -1,93 +1,70 @@
-'use server';
-import { createUserToLogin, recoverUserLogin } from 'lib/bagisto';
-import { isObject } from 'lib/type-guards';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { z } from 'zod';
+"use server";
+import { redirect } from "next/navigation";
 
-/**
- *  Define schema and method for create form validation
- * @param prevState
- * @param formData
- * @returns
- */
+// import { z } from "zod";
+import { RecoverPasswordFormState } from "./types";
 
-const schema = z
-  .object({
-    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
-    firstName: z.string().min(2, { message: 'Name must be at least 2 characters long.' }).trim(),
-    password: z
-      .string()
-      .min(8, { message: 'Be at least 8 characters long' })
-      .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
-      .regex(/[0-9]/, { message: 'Contain at least one number.' })
-      .regex(/[^a-zA-Z0-9]/, {
-        message: 'Contain at least one special character.'
-      })
-      .trim(),
-    passwordConfirmation: z
-      .string()
-      .min(8, { message: 'Be at least 8 characters long' })
-      .regex(/[A-Z]/, { message: 'Contain at least one letter.' })
-      .regex(/[0-9]/, { message: 'Contain at least one number.' })
-      .regex(/[!@#$%^&*>.<]/, {
-        message: 'Contain at least one special character.'
-      })
-      .trim()
-  })
-  .refine((data) => data.password === data.passwordConfirmation, {
-    message: "Password and confirm password don't match",
-    path: ['confirm']
-  });
+import { isObject } from "@/lib/type-guards";
+import {
+  createUserToLogin,
+  // createUserToLogin,
+  recoverUserLogin,
+  subsCribeUser,
+} from "@/lib/bagisto";
+import { RegisterInputs } from "../login/registration-form";
 
-export async function createUser(prevState: any, formData: FormData) {
-  // Ensure formData is defined
-  const createUserValues = {
-    firstName: formData.get('firstName'),
-    lastName: formData.get('lastName'),
-    email: formData.get('email'),
-    password: formData.get('password'),
-    passwordConfirmation: formData.get('passwordConfirmation')
+export type RegisterFormState = {
+  errors?: {
+    firstName?: string[];
+    lastName?: string[];
+    email?: string[];
+    password?: string[];
+    passwordConfirmation?: string[];
+    apiError?: string;
+    agreement?: string[];
   };
+};
 
-  const validatedFields = schema.safeParse(createUserValues);
+export async function createUser(formData: RegisterInputs) {
+  try {
+    const { firstName, lastName, email, password, passwordConfirmation } =
+      formData;
 
-  if (!validatedFields.success) {
+    const user = await createUserToLogin({
+      firstName,
+      lastName,
+      email,
+      password,
+      passwordConfirmation,
+      agreement: true,
+    });
+
+    if (isObject(user?.error)) {
+      return {
+        error: { message: user?.error?.message },
+        success: false,
+        customerSignUp: {},
+      };
+    }
+
     return {
-      errors: validatedFields.error.flatten().fieldErrors
+      error: {},
+      success: true,
+      customerSignUp: user?.customerSignUp,
     };
-  }
-
-  const result = await createUserToLogin(createUserValues);
-  if (isObject(result?.error)) {
+  } catch (err: any) {
     return {
-      errors: { apiError: result?.error?.message }
+      error: { message: err?.message },
+      success: false,
+      customerSignUp: {},
     };
-  } else {
-    redirect('/customer/login');
   }
 }
 
-/**
- *  Define schema and method for forget Password validation
- * @param prevState
- * @param formData
- * @returns
- */
-const forgetSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email.' }).trim()
-});
-export async function recoverPassword(prevState: any, formData: FormData) {
-  const data = {
-    email: formData.get('email')
-  };
-  const validatedFields = forgetSchema.safeParse(data);
-
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors
-    };
-  }
+export async function recoverPassword(formData: {
+  email: string;
+}): Promise<RecoverPasswordFormState> {
+  const data = { email: formData?.email };
 
   const result = await recoverUserLogin(data);
 
@@ -96,32 +73,73 @@ export async function recoverPassword(prevState: any, formData: FormData) {
       errors: {
         apiRes: {
           status: false,
-          msg: result?.error?.message
-        }
-      }
+          msg: result?.error?.message ?? "Something went wrong",
+        },
+      },
     };
   }
+
   return {
     errors: {
       apiRes: {
         status: true,
-        msg: result?.body?.data?.forgotPassword?.success
-      }
-    }
+        msg:
+          result?.body?.data?.forgotPassword?.success ??
+          "Recovery email sent successfully.",
+      },
+    },
   };
 }
 
-export async function userLogoOut() {
+// Action for subsribe
+export async function userSubscribe(
+  prevState: RecoverPasswordFormState,
+  formData: FormData
+): Promise<RecoverPasswordFormState> {
+  const email = formData.get("email");
+
+  const data = {
+    email: typeof email === "string" ? email.trim() : "",
+  };
+
+  // const validatedFields = forgetSchema.safeParse(data);
+
+  // if (!validatedFields.success) {
+  //   return {
+  //     errors: validatedFields.error.flatten().fieldErrors,
+  //   };
+  // }
+
   try {
-    cookies().delete('token');
+    const result = await subsCribeUser(data);
+
+    if (result?.error) {
+      return {
+        errors: {
+          apiRes: {
+            status: false,
+            msg: result.error.message || "Something went wrong",
+          },
+        },
+      };
+    }
+
     return {
-      error: false,
-      success: true
+      errors: {
+        apiRes: {
+          status: true,
+          msg: result?.body?.data?.message || "Subscription successful!",
+        },
+      },
     };
-  } catch (e) {
+  } catch (error) {
     return {
-      error: true,
-      success: false
+      errors: {
+        apiRes: {
+          status: false,
+          msg: "Unexpected error occurred. Please try again.",
+        },
+      },
     };
   }
 }

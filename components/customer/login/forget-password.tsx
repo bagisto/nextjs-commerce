@@ -1,67 +1,138 @@
-'use client';
-import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
-import InputText from 'components/checkout/cart/input';
-import { isObject } from 'lib/type-guards';
-import Link from 'next/link';
-import { useFormState } from 'react-dom';
-import { recoverPassword } from '../lib/action';
-import { LoadingButton } from './loading-button';
-const forgetDefaultValue = {
-  email: ''
+"use client";
+import React, { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import Image from "next/image";
+import Link from "next/link";
+
+import { recoverPassword } from "../lib/action";
+
+import { Button } from "./loading-button";
+
+import { FORGET_PASSWORD_IMG } from "@/lib/constants";
+import InputText from "@/components/checkout/cart/input";
+import { useCustomToast } from "@/components/hooks/use-toast";
+
+type ForgetPasswordInputs = {
+  email: string;
 };
-export function ForgetPasswordForm() {
-  const [errorStatus, formAction] = useFormState(recoverPassword, forgetDefaultValue);
+
+export default function ForgetPasswordForm() {
+  const { showToast } = useCustomToast();
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgetPasswordInputs>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+  });
+
+  const onSubmit: SubmitHandler<ForgetPasswordInputs> = async (data: {
+    email: string;
+  }) => {
+    setLoading(true);
+
+    const formData = new FormData();
+
+    formData.append("email", data.email);
+
+    try {
+      const result = await recoverPassword({
+        email: data?.email,
+      });
+
+      // Show success/error API response
+      if (result.errors?.apiRes) {
+        showToast(result.errors.apiRes?.msg, "danger");
+      }
+
+      // Field-specific errors
+      if (result.errors?.email) {
+        showToast(
+          Array.isArray(result.errors.email)
+            ? result.errors.email[0]
+            : result.errors.email,
+          "danger"
+        );
+      }
+    } catch (err) {
+      showToast("Something went wrong. Please try again later.", "danger");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
-      <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10 dark:bg-black">
-        {isObject(errorStatus?.errors?.apiRes) && (
-          <div
-            className={`text-md flex items-start gap-1 pb-2 ${
-              errorStatus?.errors?.apiRes?.status ? 'text-success' : 'text-danger'
-            } `}
-          >
-            {errorStatus?.errors?.apiRes?.status ? (
-              <CheckCircleIcon className="h-6 w-6" />
-            ) : (
-              <ExclamationCircleIcon className="h-4 w-4" />
-            )}
-            {errorStatus?.errors?.apiRes?.msg?.split(':')?.[1]}
-          </div>
-        )}
-        <div className="pb-2 sm:mx-auto sm:w-full sm:max-w-md">
-          <h2 className="py-1 text-center text-2xl font-bold">Recover Password</h2>
-          <p className="mt-2 text-center text-sm">
-            If you forgot your password, recover it by entering your email address.
+    <div className="my-8 flex w-full items-center justify-between gap-4 lg:my-16 xl:my-32">
+      <div className="flex w-full flex-col gap-y-4 lg:max-w-[583px] lg:gap-y-12">
+        <div className="font-outfit">
+          <h2 className="py-1 text-3xl font-semibold sm:text-4xl">
+            Recover Password
+          </h2>
+          <p className="mt-2 text-lg font-normal text-black/[60%] dark:text-neutral-300">
+            If you forgot your password, recover it by entering your email
+            address.
           </p>
         </div>
-        <form className="space-y-4" action={formAction} method="POST">
-          <div className="mt-1">
-            <InputText
-              className=""
-              name="email"
-              typeName="text"
-              label="Email "
-              placeholder="Enter your email address"
-              errorMsg={errorStatus?.errors?.email}
+
+        <form
+          noValidate
+          className="flex flex-col gap-y-12"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <InputText
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: "Please enter a valid email address.",
+              },
+            })}
+            errorMsg={errors.email ? [errors.email.message] : undefined}
+            label="Email"
+            labelPlacement="outside"
+            name="email"
+            placeholder="Enter your email address"
+            size="lg"
+            typeName="email"
+          />
+
+          <div className="flex flex-col gap-y-2">
+            <Button
+              disabled={loading || isSubmitting}
+              loading={loading || isSubmitting}
+              title="Reset Password"
+              type="submit"
             />
-          </div>
-
-          <div>
-            <LoadingButton buttonName="Reset password" />
-          </div>
-        </form>
-
-        <div className="mt-6">
-          <div className="text-sm">
-            <span className="px-2">
-              Back to sign In ?{' '}
-              <Link href="/customer/login" className="text-blue-600">
-                {' '}
+            <span className="px-1">
+              Back to sign in?{" "}
+              <Link className="text-blue-600" href="/customer/login">
                 Sign In
               </Link>
             </span>
           </div>
-        </div>
+        </form>
+      </div>
+
+      <div className="relative hidden aspect-[1] max-h-[692px] w-full max-w-[790px] sm:block md:aspect-[1.14]">
+        <Image
+          fill
+          priority
+          alt="Forget Password Illustration"
+          className={clsx(
+            "relative h-full w-full object-fill",
+            "transition duration-300 ease-in-out group-hover:scale-105"
+          )}
+          sizes={"(min-width: 768px) 66vw, 100vw"}
+          src={FORGET_PASSWORD_IMG}
+        />
       </div>
     </div>
   );

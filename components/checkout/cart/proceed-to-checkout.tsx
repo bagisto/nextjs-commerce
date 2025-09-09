@@ -1,18 +1,21 @@
-'use client';
-import clsx from 'clsx';
-import LoadingDots from 'components/loading-dots';
-import { useFormStatus } from 'react-dom';
+"use client";
+import clsx from "clsx";
+import { useFormStatus } from "react-dom";
+
+import LoadingDots from "@/components/loading-dots";
 function SubmitButton({
   availableForSale,
-  buttonName
+  buttonName,
+  className,
 }: {
   availableForSale: boolean;
   buttonName: string;
+  className?: string;
 }) {
   const { pending } = useFormStatus();
   const buttonClasses =
-    'relative w-full text-sm font-bold border-white items-center justify-center rounded-md bg-blue-600 py-4 px-4 sm:px-4 tracking-wide text-white';
-  const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
+    "relative text-base w-fit cursor-pointer rounded-full px-8 py-3 font-bold border-white items-center justify-center bg-blue-600 tracking-wide text-white";
+  const disabledClasses = "cursor-wait opacity-60 hover:opacity-60";
 
   if (!availableForSale) {
     return (
@@ -24,15 +27,19 @@ function SubmitButton({
 
   return (
     <button
+      aria-disabled={pending}
+      aria-label="Proceed to checkout"
+      className={clsx(
+        buttonClasses,
+        {
+          "hover:opacity-90": true,
+          disabledClasses: pending,
+        },
+        className,
+      )}
       onClick={(e: React.FormEvent<HTMLButtonElement>) => {
         if (pending) e.preventDefault();
       }}
-      aria-label="Proceed to checkout"
-      aria-disabled={pending}
-      className={clsx(buttonClasses, {
-        'hover:opacity-90': true,
-        disabledClasses: pending
-      })}
     >
       <div className="absolute left-0 ml-4">
         {pending && <LoadingDots className="mb-3 bg-white" />}
@@ -42,7 +49,20 @@ function SubmitButton({
   );
 }
 
-export function ProceedToCheckout({ buttonName }: { buttonName: string }) {
-  const { pending } = useFormStatus();
-  return <SubmitButton buttonName={buttonName} availableForSale={!pending} />;
+export function ProceedToCheckout({
+  buttonName,
+  className,
+  pending = false,
+}: {
+  buttonName: string;
+  className?: string;
+  pending: boolean;
+}) {
+  return (
+    <SubmitButton
+      availableForSale={!pending}
+      buttonName={buttonName}
+      className={className}
+    />
+  );
 }

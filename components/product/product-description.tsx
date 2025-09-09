@@ -1,44 +1,80 @@
-import { AddToCart } from 'components/cart/add-to-cart';
-import Price from 'components/price';
-import Prose from 'components/prose';
-import { BagistoProductInfo } from 'lib/bagisto/types';
-import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import { VariantSelector } from './variant-selector';
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { ProductMoreDetails } from "./producr-more-detail";
+import { VariantSelector } from "./variant-selector";
+import Rating from ".";
+import { AddToCart } from "@/components/cart/add-to-cart";
+import Price from "@/components/price";
+import Prose from "@/components/prose";
+import { getCollectionReviewProducts } from "@/lib/bagisto";
+import { BagistoProductInfo } from "@/lib/bagisto/types";
 
-export function ProductDescription({ product }: { product: BagistoProductInfo[] }) {
+export async function ProductDescription({
+  product,
+  slug,
+}: {
+  product: BagistoProductInfo[];
+  slug: string;
+}) {
   if (!product.length) return notFound();
   const data = product[0];
   const configurableProductData = data?.configutableData?.attributes || [];
   const configurableProductIndexData = data?.configutableData?.index || [];
-  const quantity = Number(data?.inventories?.[0]?.qty);
+  const moreDetails = await getCollectionReviewProducts({
+    collection: slug,
+    page: "product",
+  });
+
   return (
     <>
-      <div className="mb-6 flex flex-col border-b pb-6 dark:border-neutral-700">
-        <h1 className="mb-2 text-5xl font-medium">{data?.name}</h1>
-        <div className="mr-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white">
+      <div className="mb-6 flex flex-col border-b border-neutral-200 pb-6 dark:border-neutral-700">
+        <h1 className="font-outfit text-4xl font-semibold">{data?.name}</h1>
+        <div className="flex w-auto flex-col justify-between gap-y-2 py-4 xs:flex-row xs:gap-y-0 sm:py-6">
           <Price
-            amount={data?.priceHtml?.finalPrice || data?.priceHtml?.regularPrice || '0'}
-            currencyCode={data?.priceHtml?.currencyCode || ''}
+            amount={
+              data?.priceHtml?.finalPrice ||
+              data?.priceHtml?.regularPrice ||
+              "0"
+            }
+            className="font-outfit text-2xl font-semibold"
+            currencyCode={data?.priceHtml?.currencyCode || ""}
           />
+          {moreDetails?.reviews?.length > 0 ? (
+            <Rating
+              length={5}
+              reviewCount={moreDetails?.averageRating}
+              star={moreDetails?.averageRating}
+              totalReview={moreDetails?.reviews?.length}
+            />
+          ) : null}
         </div>
       </div>
-      <Suspense fallback={null}>
-        <VariantSelector variants={configurableProductData} index={configurableProductIndexData} />
+      <Suspense fallback={<p>Loading...</p>}>
+        <VariantSelector
+          index={configurableProductIndexData}
+          variants={configurableProductData}
+        />
       </Suspense>
-      {data?.description ? (
+      {data?.shortDescription ? (
         <Prose
-          className="mb-6 text-sm leading-tight dark:text-white/[60%]"
-          html={data?.description}
+          className="mb-6 text-base text-black/60 dark:text-white/60"
+          html={data?.shortDescription}
         />
       ) : null}
-
-      <Suspense fallback={null}>
+      <Suspense fallback={<p>Loading...</p>}>
         <AddToCart
-          variants={configurableProductData || []}
+          availableForSale={data?.status || false}
           index={configurableProductIndexData}
-          productId={data?.id || ''}
-          availableForSale={quantity > 0 ? true : false}
+          productId={data?.id || ""}
+          variants={configurableProductData || []}
+        />
+      </Suspense>
+      <Suspense fallback={<p>Loading...</p>}>
+        <ProductMoreDetails
+          additionalData={moreDetails?.additionalData || []}
+          description={moreDetails?.description || ""}
+          reviews={moreDetails?.reviews || []}
+          totalReview={moreDetails?.reviews?.length}
         />
       </Suspense>
     </>

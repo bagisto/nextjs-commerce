@@ -13,56 +13,16 @@ A Next.js 14 and App Router-ready ecommerce template featuring:
 - Checkout and payments with Bagisto
 - Automatic light/dark mode based on system settings
 
-Demo live at: [Bagisto NextJs Commerce](https://v2-bagisto-demo.vercel.app)
+<h3 id="v1-note"></h3>
 
 ## Configuration
 
 ### Setup Bagisto Store
 
-1) Install Bagisto
- 
-    Begin by [installing the Bagisto](https://devdocs.bagisto.com/) eCommerce platform on your server or local environment.
-
-2) Install the Bagisto Headless Extension
-
-    After installing Bagisto, install the [Bagisto Headless Extension](https://github.com/bagisto/headless-ecommerce/) to expose the required APIs for your frontend.
-
-3) Configure `.env.local` in the Next.js Project
-
-   In your Next.js frontend project, create or update your `.env.local` file with the following variables:
-
-```env
-BAGISTO_PROTOCOL=http or https
-BAGISTO_STORE_DOMAIN=your-store-domain.com
-```
-4) Update next.config.js with Required Runtime Config
-
-   Add the following configuration inside your next.config.js file:
-```env
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    remotePatterns: [
-    {
-        protocol: 'http or https',
-        hostname: 'your-store-domain.com'
-      }
-    ]
-  },
-  env: {
-    NEXTAUTH_SECRET: 'your-nextauth-secret-key'
-  }
-};
-
-module.exports = nextConfig;
-```
-5) Generate a NEXTAUTH_SECRET
-```bash
-openssl rand -base64 32
-```
+- For `BAGISTO_PROTOCOL`, `BAGISTO_STOREFRONT_ACCESS_TOKEN`, `BAGISTO_REVALIDATION_SECRET` and `BAGISTO_STORE_DOMAIN`, you need to install the [Bagisto](https://github.com/bagisto/bagisto).
+- Then, you need to install the [Bagisto Headless Extension](https://github.com/bagisto/headless-ecommerce) in the Bagisto.
 - Now you need to host the full application so that you have store endpoint and if you are in development mode then you can use Ngrok also.
 - After that you can proceed with setting up Next.js commerce.
-
 
 ## Running locally
 

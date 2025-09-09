@@ -1,6 +1,6 @@
-import clsx from 'clsx';
+import clsx from "clsx";
 
-const dots = 'mx-[1px] inline-block h-1 w-1 animate-blink rounded-md';
+const dots = "mx-[1px] inline-block h-1 w-1 animate-blink rounded-md";
 
 const LoadingDots = ({ className }: { className: string }) => {
   return (
@@ -9,7 +9,10 @@ const LoadingDots = ({ className }: { className: string }) => {
       {Array(2)
         .fill(0)
         .map((_, i) => (
-          <span key={i} className={clsx(dots, 'animation-delay-[200ms]', className)} />
+          <span
+            key={i}
+            className={clsx(dots, "animation-delay-[200ms]", className)}
+          />
         ))}
     </span>
   );

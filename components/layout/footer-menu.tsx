@@ -1,39 +1,38 @@
-'use client';
+"use client";
 
-import clsx from 'clsx';
-import { ThemeCustomization, ThemeOptions } from 'lib/bagisto/types';
-import { isArray } from 'lib/type-guards';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import clsx from "clsx";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { ThemeCustomizationTypes, ThemeOptions } from "@/lib/bagisto/types";
+import { isArray } from "@/lib/type-guards";
 const getUrlparams = (url: string) => {
-  const splitUrl = url.split('/');
+  const splitUrl = url.split("/");
+
   if (isArray(splitUrl)) {
     const urlLenght = splitUrl.length;
+
     if (urlLenght >= 1) {
       return `/${splitUrl.at(urlLenght - 1)}`;
     }
   }
-  return '/';
+
+  return "/";
 };
 const FooterMenuItem = ({ item }: { item: ThemeOptions }) => {
   const pathname = usePathname();
-  const [active, setActive] = useState(pathname === item.url);
-
-  useEffect(() => {
-    setActive(pathname === item.url);
-  }, [pathname, item.url]);
 
   return (
     <li>
       <Link
-        href={`${getUrlparams(item.url)}`}
         className={clsx(
-          'block p-2 text-lg underline-offset-4 hover:text-black hover:underline md:inline-block md:text-sm dark:hover:text-neutral-300',
+          "block px-0 py-1 md:p-2 text-nowrap text-sm underline-offset-4 hover:text-black hover:underline md:inline-block dark:hover:text-neutral-300",
           {
-            'text-black dark:text-neutral-300': active
+            "text-black dark:text-neutral-300": pathname === item.url,
           }
         )}
+        href={`${getUrlparams(item.url)}`}
+        prefetch={true}
       >
         {item.title}
       </Link>
@@ -41,34 +40,49 @@ const FooterMenuItem = ({ item }: { item: ThemeOptions }) => {
   );
 };
 
-export default function FooterMenu({ menu }: { menu: ThemeCustomization[] }) {
+export default function FooterMenu({
+  menu,
+}: {
+  menu: ThemeCustomizationTypes[];
+}) {
   if (!menu) return null;
-  const menuList = menu.find((item) => item?.type === 'footer_links');
+  const menuList = menu.find((item) => item?.type === "footer_links");
   const channels = menuList?.translations?.at(0)?.options;
 
   return (
-    <>
-      <nav>
-        <ul>
-          {channels?.column_1?.map((item: ThemeOptions, index: number) => {
-            return <FooterMenuItem key={index} item={item} />;
-          })}
-        </ul>
-      </nav>
-      <nav>
-        <ul>
-          {channels?.column_2?.map((item: ThemeOptions, index: number) => {
-            return <FooterMenuItem key={index} item={item} />;
-          })}
-        </ul>
-      </nav>
-      <nav>
-        <ul>
-          {channels?.column_3?.map((item: ThemeOptions, index: number) => {
-            return <FooterMenuItem key={index} item={item} />;
-          })}
-        </ul>
-      </nav>
-    </>
+    <div className="flex justify-between gap-x-8 lg:gap-x-[50px]">
+      {/* Render columns 1 */}
+      {isArray(channels?.column_2) ? (
+        <nav className="w-full lg:min-w-[160px] xl:min-w-[200px]">
+          <ul>
+            {channels?.column_1?.map((item, index) => {
+              return <FooterMenuItem key={index} item={item} />;
+            })}
+          </ul>
+        </nav>
+      ) : null}
+
+      {/* Render columns 2 */}
+      {isArray(channels?.column_2) ? (
+        <nav className="w-full lg:min-w-[160px] xl:min-w-[200px]">
+          <ul>
+            {channels?.column_2?.map((item, index) => {
+              return <FooterMenuItem key={index} item={item} />;
+            })}
+          </ul>
+        </nav>
+      ) : null}
+
+      {/* Render columns 3 */}
+      {isArray(channels?.column_3) ? (
+        <nav className="w-full lg:min-w-[160px] xl:min-w-[200px]">
+          <ul>
+            {channels?.column_3?.map((item, index) => {
+              return <FooterMenuItem key={index} item={item} />;
+            })}
+          </ul>
+        </nav>
+      ) : null}
+    </div>
   );
 }
