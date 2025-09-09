@@ -92,7 +92,7 @@ export default function Pagination({
     <li
       key={pageIndex}
       onClick={() => handlePageClick(pageIndex)}
-      className={`rounded-sm max-w-10 max-h-10 bg-white text-gray-500 font-normal duration-300 hover:text-black text-lg dark:border-gray-700  dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white [&.active]:font-normal [&.active]:text-black [&.active]:border [&.active]:border-gray-200 cursor-pointer${
+      className={`rounded-sm max-w-10 max-h-10  text-gray-500 font-normal duration-300 hover:text-black text-lg dark:border-gray-700  dark:text-gray-400  dark:hover:text-white [&.active]:font-normal dark:[&.active]:text-white [&.active]:text-black [&.active]:border [&.active]:border-gray-200 cursor-pointer ${
         pageIndex === currentPage ? " active " : ""
       }`}
     >
@@ -119,7 +119,7 @@ export default function Pagination({
         key="prev"
         onClick={() => handlePageClick(currentPage - 1)}
         className={clsx(
-          "cursor-pointer rounded-lg bg-white text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white",
+          "cursor-pointer rounded-lg  text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white",
           currentPage > 0 ? " block cursor-pointer" : " "
         )}
       >
@@ -140,7 +140,7 @@ export default function Pagination({
         key="next"
         onClick={() => handlePageClick(currentPage + 1)}
         className={clsx(
-          "rounded-lg bg-white text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white",
+          "rounded-lg text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white",
           currentPage < pageCount - 1 ? " block cursor-pointer" : " "
         )}
       >

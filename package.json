@@ -1,16 +1,18 @@
 {
   "name": "next-app-template",
   "private": true,
-  "version": "2.2.0",
+  "packageManager": "pnpm@9.0.5",
+  "version": "2.3.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "pnpm": ">=8"
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint --fix",
-    "test": "npm lint && npm prettier:check"
+    "test": "pnpm lint && pnpm prettier:check"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

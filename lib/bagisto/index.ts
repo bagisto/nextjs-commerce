@@ -86,6 +86,8 @@ import {
 import { CustomerRegister } from "./mutations/customer/customer-register";
 import { RegisterInputs } from "@/components/customer/login/registration-form";
 import { getProductsUrlQuery } from "./queries/product/product-urls";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/auth";
 
 const domain = process.env.BAGISTO_STORE_DOMAIN || "";
 
@@ -119,7 +121,9 @@ export async function bagistoFetch<T>({
       bagistoCartId = cookieStore.get(BAGISTO_SESSION)?.value ?? "";
     }
 
-    const accessToken = cookieStore.get(TOKEN)?.value ?? "";
+    const sessions = await getServerSession(authOptions);
+
+    const accessToken = sessions?.user?.accessToken;
 
     const result = await fetch(endpoint, {
       method: "POST",

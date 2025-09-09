@@ -22,7 +22,7 @@ export default function Cart({ cart }: { cart: any }) {
           <h1 className="p-6 font-outfit text-xl font-medium text-black dark:text-neutral-300">
             Order Summary
           </h1>
-          <ul className="m-0 flex max-h-[calc(100dvh-292px)] flex-col gap-y-6 overflow-y-auto px-4 py-6">
+          <ul className="m-0 flex max-h-[calc(100dvh-292px)] flex-col gap-y-6 overflow-y-auto px-4 py-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 dark:scrollbar-thumb-neutral-300 lg:h-[calc(100dvh-124px)] lg:overflow-hidden lg:overflow-y-auto">
             {cart?.items?.map((item: any, i: number) => {
               const merchandiseSearchParams = {} as MerchandiseSearchParams;
               const merchandiseUrl = createUrl(

@@ -154,27 +154,50 @@ export function formatDate(dateStr: string): string {
 export const isCheckout = (
   items: Array<CartItem>,
   isGuest: boolean,
-  email: string
+  email: string,
+  isSelectShipping: boolean,
+  isSelectPayment: boolean
 ): string => {
-  if (isGuest) {
-    if (isArray(items)) {
-      // Check if any product does NOT allow guest checkout
-      const hasRestrictedProduct = items.some(
-        ({ product }) =>
-          product?.guestCheckout === false || product.guestCheckout === null
-      );
-
-      return hasRestrictedProduct
-        ? "/customer/login"
-        : email === "" || typeof email === "object"
-          ? "/checkout"
-          : "/checkout?step=address";
-    } else {
-      return "/";
-    }
+  if (!isArray(items) || items.length === 0) {
+    return "/"; // empty cart
   }
 
-  return "/checkout?step=address";
+  if (isGuest) {
+    const hasRestrictedProduct = items.some(
+      ({ product }) =>
+        product?.guestCheckout === false || product?.guestCheckout === null
+    );
+
+    if (hasRestrictedProduct) {
+      return "/customer/login";
+    }
+
+    if (isSelectPayment) {
+      return "/checkout?step=review";
+    }
+
+    if (isSelectShipping) {
+      return "/checkout?step=payment"; // ✅ redirect to shipping if selected
+    }
+
+    if (!email || typeof email === "object") {
+      return "/checkout"; // step: email entry
+    }
+    return "/checkout?step=address";
+  } else {
+    if (isSelectPayment) {
+      return "/checkout?step=review";
+    }
+
+    if (isSelectShipping) {
+      return "/checkout?step=payment"; // ✅ redirect to shipping if selected
+    }
+
+    if (!email || typeof email === "object") {
+      return "/checkout"; // step: email entry
+    }
+    return "/checkout?step=address";
+  }
 };
 
 export const delay = (ms: number) => {

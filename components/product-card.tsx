@@ -92,7 +92,7 @@ export const ProductCard: FC<{
     >
       <div className="group relative overflow-hidden rounded-lg">
         <Link href={`/product/${product.urlKey}?type=${product.type}`}>
-          <div className="group aspect-[353/283] h-auto truncate rounded-lg">
+          <div className="aspect-[353/283] h-auto truncate rounded-lg">
             <GridTileImage
               alt={product?.name || "Product image"}
               blurDataURL={NOT_IMAGE}
@@ -106,7 +106,7 @@ export const ProductCard: FC<{
           </div>
         </Link>
         <div
-          className={`absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-none bg-white/50 px-4 py-1.5 text-xs font-semibold text-black opacity-0 backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
+          className={`absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-none bg-white/50 px-4 py-1.5 text-xs font-semibold text-black opacity-0 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
         >
           <SubmitButton
             hanleAddTocartAction={handleAddToCart}
@@ -116,7 +116,7 @@ export const ProductCard: FC<{
           />
         </div>
       </div>
-
+      {/* m-0 flex max-h-[calc(100dvh-292px)] flex-col gap-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 dark:scrollbar-thumb-neutral-300 lg:h-[calc(100dvh-124px)] lg:overflow-hidden lg:overflow-y-auto px-4 py-6 */}
       <div>
         <h2 className="mb-2.5 text-base font-medium md:text-lg">
           {product?.name}

@@ -35,7 +35,7 @@ const SortOrder: FC<{
   };
 
   return (
-    <section className="flex w-48 items-center gap-x-2.5 dark:text-white">
+    <section className="flex w-64 items-center gap-x-2.5 dark:text-white">
       <p
         id="sort-label"
         className="leading-0 text-nowrap min-[1300]:block hidden"

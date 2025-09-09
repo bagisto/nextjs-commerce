@@ -175,9 +175,17 @@ export default function CartModal() {
                         <p className="text-base font-normal text-black/[60%] dark:text-white">
                           Shipping
                         </p>
-                        <p className="text-right text-base font-medium text-black dark:text-white">
-                          Calculated at Next Step
-                        </p>
+                        {isObject(cart?.selectedShippingRate) ? (
+                          <Price
+                            amount={cart?.selectedShippingRate?.price || "0"}
+                            className="text-right text-base text-black dark:text-white"
+                            currencyCode={"USD"}
+                          />
+                        ) : (
+                          <p className="text-right text-base">
+                            Calculated at Next Step
+                          </p>
+                        )}
                       </div>
                       <div className="mb-3 flex items-center justify-between pb-1">
                         <p className="text-base font-normal text-black/[60%] dark:text-white">
@@ -195,6 +203,8 @@ export default function CartModal() {
                         cartDetails={cart?.items}
                         isGuest={cart?.isGuest}
                         isEmail={cart?.customerEmail ?? getLocalStorage(EMAIL)}
+                        isSelectShipping={isObject(cart?.selectedShippingRate)}
+                        isSelectPayment={isObject(cart?.payment)}
                       />
                     </form>
                   </div>
@@ -213,10 +223,14 @@ function CheckoutButton({
   cartDetails,
   isGuest,
   isEmail,
+  isSelectShipping,
+  isSelectPayment,
 }: {
   cartDetails: Array<CartItem>;
   isGuest: boolean;
   isEmail: string;
+  isSelectShipping: boolean;
+  isSelectPayment: boolean;
 }) {
   const { pending } = useFormStatus();
   const email = isEmail;
@@ -226,7 +240,13 @@ function CheckoutButton({
       <input
         name="url"
         type="hidden"
-        value={isCheckout(cartDetails, isGuest, email)}
+        value={isCheckout(
+          cartDetails,
+          isGuest,
+          email,
+          isSelectShipping,
+          isSelectPayment
+        )}
       />
       <button
         className={clsx(

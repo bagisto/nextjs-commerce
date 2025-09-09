@@ -4,7 +4,7 @@ import { FieldValues, useForm, Controller } from "react-hook-form";
 import { cn, Radio, RadioGroup } from "@heroui/react";
 import { ProceedToCheckout } from "../cart/proceed-to-checkout";
 import { useCheckout } from "@/components/hooks/use-checkout";
-import { isArray } from "@/lib/type-guards";
+import { isArray, isObject } from "@/lib/type-guards";
 import { ShippingArrayDataType } from "@/lib/bagisto/types";
 import { useCustomToast } from "@/components/hooks/use-toast";
 import { useState } from "react";
@@ -50,7 +50,7 @@ export default function ShippingMethod({
 
   return (
     <div>
-      {selectedShippingRate !== undefined ? (
+      {isObject(selectedShippingRate) ? (
         isOpen ? (
           <div className="mt-4 flex flex-col justify-between sm:flex-row">
             <div className="flex">

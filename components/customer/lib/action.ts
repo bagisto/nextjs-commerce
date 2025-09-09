@@ -1,17 +1,16 @@
 "use server";
-import { redirect } from "next/navigation";
 
-// import { z } from "zod";
 import { RecoverPasswordFormState } from "./types";
 
 import { isObject } from "@/lib/type-guards";
 import {
   createUserToLogin,
-  // createUserToLogin,
   recoverUserLogin,
   subsCribeUser,
 } from "@/lib/bagisto";
 import { RegisterInputs } from "../login/registration-form";
+import { cookies } from "next/headers";
+import { TOKEN } from "@/lib/constants";
 
 export type RegisterFormState = {
   errors?: {
@@ -101,14 +100,6 @@ export async function userSubscribe(
   const data = {
     email: typeof email === "string" ? email.trim() : "",
   };
-
-  // const validatedFields = forgetSchema.safeParse(data);
-
-  // if (!validatedFields.success) {
-  //   return {
-  //     errors: validatedFields.error.flatten().fieldErrors,
-  //   };
-  // }
 
   try {
     const result = await subsCribeUser(data);
