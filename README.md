@@ -20,7 +20,7 @@ Through layered caching and optimized rendering strategies, it consistently achi
 Before you begin, ensure you have the following installed:
 
 - **Node.js** 18+ and **pnpm**
-- Check Bagisto [backend requirment detail](https://bagisto.com/en/download/)
+- Check Bagisto [backend requirment detail](https://devdocs.bagisto.com/2.3/introduction/requirements.html#server-configuration)
 
 ---
 
