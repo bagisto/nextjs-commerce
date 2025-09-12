@@ -37,7 +37,7 @@ export default async function Navbar() {
                 {menuData.slice(0, 3).map((item) => (
                   <li key={item?.id + item.title}>
                     <Link
-                      className="text-nowrap text-neutral-500 underline-offset-4 hover:text-black hover:underline dark:text-neutral-400 dark:hover:text-neutral-300"
+                      className="text-nowrap relative text-neutral-500 before:absolute before:bottom-0 before:left-0 before:h-px before:w-0 before:bg-current before:transition-all before:duration-300 before:content-[''] hover:text-black hover:before:w-full dark:text-neutral-400 dark:hover:text-neutral-300"
                       href={`${item.path}`}
                       prefetch={true}
                     >

@@ -2,7 +2,6 @@
 import clsx from "clsx";
 import Link from "next/link";
 import { FC } from "react";
-
 import Grid from "./grid";
 import { GridTileImage } from "./grid/tile";
 import { useAddProduct } from "./hooks/use-add-to-cart";
@@ -24,7 +23,7 @@ export function SubmitButton({
   hanleAddTocartAction: () => void;
 }) {
   const buttonClasses =
-    " flex w-full cursor-pointer items-center justify-center px-4 rounded-full min-h-8  tracking-wide ";
+    " flex w-full cursor-pointer items-center  justify-center px-4 rounded-full min-h-8  tracking-wide ";
   const disabledClasses = "cursor-wait opacity-60 hover:opacity-60";
 
   return productType !== "simple" ? (
@@ -39,7 +38,7 @@ export function SubmitButton({
       href={`/product/${urlKey}?type=${productType}`}
       type="submit"
     >
-      <ShoppingCartIcon className="-rotate-6 stroke-neutral-900" />
+      <ShoppingCartIcon className="size-6 -rotate-6 stroke-black stroke-[1.5]" />
     </Link>
   ) : (
     <button
@@ -55,7 +54,7 @@ export function SubmitButton({
       {isLoading ? (
         <LoadingDots className="bg-black" />
       ) : (
-        <ShoppingCartIcon className="-rotate-6 stroke-neutral-900" />
+        <ShoppingCartIcon className="size-6 -rotate-6 stroke-black stroke-[1.5]" />
       )}
     </button>
   );
@@ -106,7 +105,7 @@ export const ProductCard: FC<{
           </div>
         </Link>
         <div
-          className={`absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-none bg-white/50 px-4 py-1.5 text-xs font-semibold text-black opacity-0 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
+          className={`absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-0 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
         >
           <SubmitButton
             hanleAddTocartAction={handleAddToCart}
@@ -116,7 +115,6 @@ export const ProductCard: FC<{
           />
         </div>
       </div>
-      {/* m-0 flex max-h-[calc(100dvh-292px)] flex-col gap-y-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 dark:scrollbar-thumb-neutral-300 lg:h-[calc(100dvh-124px)] lg:overflow-hidden lg:overflow-y-auto px-4 py-6 */}
       <div>
         <h2 className="mb-2.5 text-base font-medium md:text-lg">
           {product?.name}

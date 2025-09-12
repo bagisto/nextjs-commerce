@@ -41,7 +41,10 @@ const Label = ({
           {title}
         </p>
         {page === "category" ? (
-          <button aria-label="Go back" className="rounded-full bg-blue-600 p-3">
+          <button
+            aria-label="Go back"
+            className="cursor-pointer rounded-full bg-blue-600 p-3 transition-transform duration-300 hover:translate-x-1"
+          >
             <LeftArrow />
           </button>
         ) : (

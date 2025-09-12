@@ -9,6 +9,7 @@ import { getFilterAttributes, getProducts } from "@/lib/bagisto";
 import MobileFilter from "@/components/layout/search/filter/modile-filter";
 import { isArray } from "@/lib/type-guards";
 import Pagination from "@/components/elements/pagination";
+import CategoryDetail from "@/components/layout/search/category-detail.tsx";
 const ProductGridItems = dynamic(
   () => import("@/components/layout/product-grid-items"),
   {
@@ -62,6 +63,12 @@ export default async function SearchPage({
 
   return (
     <>
+      <CategoryDetail
+        categoryItem={{
+          description: `<h1>All Top Products</h1> <p>${searchValue ? searchValue : ""}</p>`,
+        }}
+      />
+
       <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between">
         <Suspense fallback={<FilterListSkeleton />}>
           <FilterList filterAttributes={filterAttributes} />

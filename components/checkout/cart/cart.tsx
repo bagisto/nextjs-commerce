@@ -10,10 +10,20 @@ import Prose from "@/components/prose";
 import { DEFAULT_OPTION } from "@/lib/constants";
 import { isObject } from "@/lib/type-guards";
 import { createUrl } from "@/lib/utils";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { BagistoCart } from "@/lib/bagisto/types";
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
-export default function Cart({ cart }: { cart: any }) {
+export default function Cart({ cart }: { cart: BagistoCart }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isObject(cart)) {
+      router.replace("/");
+    }
+  }, []);
   return (
     <>
       <CartItemAccordion cartItem={cart} />

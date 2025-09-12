@@ -35,7 +35,7 @@ const Rating = ({
         ))}
       </div>
       {totalReview ? (
-        <span className="h-fit font-outfit text-sm font-light">{`(${totalReview} Reviews)`}</span>
+        <span className="text-nowrap h-fit font-outfit text-sm font-light">{`(${totalReview} Reviews)`}</span>
       ) : null}
     </div>
   );

@@ -160,7 +160,10 @@ export default function CredentialModal() {
       placement="bottom-end"
     >
       <PopoverTrigger>
-        <button aria-label="Open cart" className="cursor-pointer">
+        <button
+          aria-label="Open cart"
+          className="cursor-pointer bg-transparent"
+        >
           <OpenAuth />
         </button>
       </PopoverTrigger>

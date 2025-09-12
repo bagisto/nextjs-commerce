@@ -20,7 +20,7 @@ const Theme: FC<{
       </div>
 
       <div className="w-full pb-6 pt-1">
-        <ul className="m-0 grid grid-cols-1 justify-center gap-6 p-0 xss:grid-cols-2 md:grid-cols-3 md:gap-[46px] lg:grid-cols-4">
+        <ul className="m-0 grid grid-cols-1 justify-center gap-6 p-0 xss:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-6 xl:gap-[46px]">
           {products.map((product, index) => {
             const imageUrl =
               product?.cacheGalleryImages?.[0]?.originalImageUrl ??

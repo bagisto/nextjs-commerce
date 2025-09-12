@@ -3,7 +3,7 @@ import ShoppingCartIcon from "@/components/icons/shopping-cart";
 import Price from "@/components/price";
 // import { Disclosure, Transition } from "@headlessui/react";
 
-import type { Cart } from "@/lib/bagisto/types";
+import type { BagistoCart, Cart } from "@/lib/bagisto/types";
 import { DEFAULT_OPTION } from "@/lib/constants";
 import { isObject } from "@/lib/type-guards";
 import { createUrl } from "@/lib/utils";
@@ -19,7 +19,7 @@ type MerchandiseSearchParams = {
 export default function CartItemAccordion({
   cartItem,
 }: {
-  cartItem: Cart | undefined;
+  cartItem: BagistoCart;
 }) {
   return (
     <div className="mobile-heading mx-auto block w-full dark:bg-transparent lg:hidden">

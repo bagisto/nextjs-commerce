@@ -1,5 +1,38 @@
 # Change Log
 
+## [2.2.0] - 2025-09-09
+
+### Added
+
+- Added `BAGISTO_SESSION` key.
+- Added `NEXTAUTH_URL` key.
+- Added `NEXTAUTH_SECRET` key.
+- Added `REVALIDATION_DURATION` key.
+- Added `IMAGE_DOMAIN` key.
+- Added the new the query field.
+- Added the Authentication pages (Sign Up, Sign In and Forget Password).
+- Added Customer Checkout.
+- Added more banner on the home page.
+- Added the pagination and Product Attributes.
+
+
+### Removed
+
+- Removed `BAGISTO_PROTOCOL` key.
+- Removed `BAGISTO_STOREFRONT_ACCESS_TOKEN` key.
+- Removed `BAGISTO_REVALIDATION_SECRET` key.
+
+### Changed
+
+- Updated the latest changes of the UI.
+- Manged the state with Redux.
+
+### Fixed
+
+- Resolved the UI issues.
+- Improved performance.
+- Made compatible with the latest Bagisto APIs (version 2.3.0).
+
 ## [2.1.0] - 2025-02-24
 
 ### Added

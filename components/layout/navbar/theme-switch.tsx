@@ -47,7 +47,7 @@ const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => {
     <Component
       {...getBaseProps({
         className: clsx(
-          "flex size-9 lg:size-11 max-w-auto cursor-pointer items-center justify-center rounded-sm border border-solid border-neutral-200 transition-opacity hover:opacity-80 dark:border-neutral-700",
+          "flex size-9 lg:size-11 max-w-auto cursor-pointer items-center justify-center rounded-sm border border-solid border-neutral-200 transition-opacity  dark:border-neutral-700",
           className,
           classNames?.base
         ),
@@ -65,7 +65,7 @@ const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => {
               "mx-0 h-auto w-auto rounded-lg bg-transparent px-0 pt-px",
               "flex items-center justify-center",
               "group-data-[selected=true]:bg-transparent",
-              "!text-default-500",
+              "fill-black/60 stroke-black/60 dark:stroke-white/60 dark:fill-white/60",
             ],
             classNames?.wrapper
           ),
@@ -73,9 +73,9 @@ const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => {
       >
         {mounted ? (
           !isSelected || isSSR ? (
-            <SunFilledIcon size={22} />
+            <SunFilledIcon size={20} />
           ) : (
-            <MoonFilledIcon size={22} />
+            <MoonFilledIcon size={20} />
           )
         ) : (
           <div className="h-5 w-5 rounded-full bg-gray-400 dark:bg-gray-700"></div>

@@ -25,11 +25,11 @@ function SubmitButton({
         type === "plus" ? "Increase item quantity" : "Reduce item quantity"
       }
       className={clsx(
-        "ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80",
+        "ease flex h-full cursor-pointer min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full px-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80",
         {
           "cursor-wait": pending,
           "ml-auto": type === "minus",
-        },
+        }
       )}
       type="button"
       onClick={() => handleUpdateCart(type)}

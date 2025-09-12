@@ -10,7 +10,7 @@ export default async function RootLayout({
   return (
     <main>
       <Navbar />
-      <div className="mx-auto min-h-[calc(100vh-450px)] w-full max-w-screen-2xl px-[15px] xss:px-7.5">
+      <div className="mx-auto min-h-[calc(100vh-580px)] w-full max-w-screen-2xl px-[15px] xss:px-7.5">
         {children}
       </div>
       <Footer />

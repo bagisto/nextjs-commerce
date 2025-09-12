@@ -46,7 +46,7 @@ export default function HeroCarousel({
         </motion.div>
         {images?.length > 1 ? (
           <div className="absolute bottom-[5%] flex w-full justify-center">
-            <div className="mx-auto flex h-11 items-center rounded-full border border-white bg-neutral-50/80 text-neutral-500 backdrop-blur dark:border-black dark:bg-neutral-900/80">
+            <div className="mx-auto flex h-11 items-center rounded-full border border-gray-500/70 bg-gray-500/70 text-white/80 backdrop-blur transition-all duration-300 dark:border-black dark:bg-neutral-900/80">
               <button
                 aria-label="Previous product image"
                 className={buttonClassName}
@@ -54,7 +54,7 @@ export default function HeroCarousel({
               >
                 <ArrowLeftIcon className="h-5" />
               </button>
-              <div className="mx-1 h-6 w-px bg-neutral-500" />
+              <div className="mx-1 h-6 w-px bg-white/80" />
               <button
                 aria-label="Next product image"
                 className={buttonClassName}

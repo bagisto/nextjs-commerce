@@ -39,14 +39,12 @@ export async function ProductDescription({
             className="font-outfit text-2xl font-semibold"
             currencyCode={data?.priceHtml?.currencyCode || ""}
           />
-          {moreDetails?.reviews?.length > 0 ? (
-            <Rating
-              length={5}
-              reviewCount={moreDetails?.averageRating}
-              star={moreDetails?.averageRating}
-              totalReview={moreDetails?.reviews?.length}
-            />
-          ) : null}
+          <Rating
+            length={5}
+            reviewCount={moreDetails?.averageRating}
+            star={moreDetails?.averageRating}
+            totalReview={moreDetails?.reviews?.length}
+          />
         </div>
       </div>
       <Suspense fallback={<p>Loading...</p>}>
