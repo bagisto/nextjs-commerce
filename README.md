@@ -91,7 +91,6 @@ const nextConfig = {
     ],
   },
   env: {
-    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     BAGISTO_STORE_DOMAIN: process.env.BAGISTO_STORE_DOMAIN,
     REVALIDATION_DURATION: process.env.REVALIDATION_DURATION,
