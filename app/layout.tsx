@@ -77,7 +77,7 @@ export default function RootLayout({
           <NextAuthProvider>
             <TanstackProvider>
               <Providers
-                themeProps={{ attribute: "class", defaultTheme: "dark" }}
+                themeProps={{ attribute: "class", defaultTheme: "light" }}
               >
                 <ReduxProvider>
                   <ToastProvider>
