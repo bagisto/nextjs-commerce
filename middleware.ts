@@ -1,15 +1,15 @@
-import { withAuth } from 'next-auth/middleware';
-import { NextResponse } from 'next/server';
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 const checkAuthPages = (pathName: string) => {
   return (
-    pathName.endsWith('/login') ||
-    pathName.endsWith('/forget-password') ||
-    pathName.endsWith('/register')
+    pathName.endsWith("/login") ||
+    pathName.endsWith("/forget-password") ||
+    pathName.endsWith("/register")
   );
 };
 
 export const config = {
-  matcher: ['/customer/:path*']
+  matcher: ["/customer/:path*"],
 };
 
 export default withAuth(
@@ -18,7 +18,7 @@ export default withAuth(
     const url = req.nextUrl.clone();
     const token = req.nextauth.token;
     if (token && checkAuthPages(pathName)) {
-      url.pathname = '/';
+      url.pathname = "/";
       return NextResponse.redirect(url);
     }
     return NextResponse.next();
@@ -27,7 +27,7 @@ export default withAuth(
     callbacks: {
       authorized: async () => {
         return true;
-      }
-    }
+      },
+    },
   }
 );
