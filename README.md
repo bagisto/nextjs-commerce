@@ -1,6 +1,6 @@
 #  Bagisto Next.js Commerce
 
-A **headless eCommerce framework** built with **Next.js** and powered by **Bagisto**, designed for modern scalability and flexibility.
+A [**headless eCommerce framework**](https://bagisto.com/en/headless-ecommerce/) built with **Next.js** and powered by **Bagisto**, designed for modern scalability and flexibility.
 Through layered caching and optimized rendering strategies, it consistently achieves a **100/100 Core Web Vitals score**, delivering lightning-fast performance and seamless shopping experiences.
 
 ![Bagisto Headless Commerce Image](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-home.png)
