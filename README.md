@@ -13,11 +13,10 @@ Through layered caching and optimized rendering strategies, it consistently achi
 - Secure authentication via **NextAuth.js**.  
 - Powered by **Bagisto** GraphQL APIs for robust commerce functionality.  
 - **Incremental Static Regeneration (ISR)** with revalidation.
-- 
-Bagisto Next.js Commerce is optimized to deliver a **100/100 Core Web Vitals score** across devices, ensuring top-tier performance and user experience.
+  
+Bagisto Open Source Headless eCommerce is optimized to deliver a **100/100 Core Web Vitals score** across devices, ensuring top-tier performance and user experience.
 
 ![Bagisto Headless Commerce Image](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-performance.png)
----
 
 ## Prerequisites
 
@@ -151,9 +150,9 @@ Access the store at:[http://localhost:3000](http://localhost:3000)
 
 ## Products
 
-The storefront allows users to browse a wide range of products with built-in pagination and search functionality. Each product has its own detailed page showcasing images, descriptions, pricing, reviews, and availability.
+The Open Source Headless eCommerce allows users to browse a wide range of products with built-in pagination and search functionality. Each product has its own detailed page showcasing images, descriptions, pricing, reviews, and availability.
 
-Bagisto APIs support multiple product types, including simple, configurable, bundled, and downloadable products, ensuring flexibility for different business needs.
+Bagisto Headless Commerce APIs support multiple product types, including simple, configurable, bundled, and downloadable products, ensuring flexibility for different business needs.
 
 ![Bagisto Headless Commerce Image](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-product-page.png)
 
@@ -161,12 +160,10 @@ Bagisto APIs support multiple product types, including simple, configurable, bun
 
 Products are neatly organized into hierarchical categories, making it easy for customers to navigate the store. Each category page displays relevant product listings with filtering and sorting options for a better shopping experience.
 
-The platform also ensures SEO-friendly category URLs with meta titles, descriptions, and breadcrumbs for improved discoverability.
+The Open Source Headless eCommerce also ensures SEO-friendly category URLs with meta titles, descriptions, and breadcrumbs for improved discoverability.
 
 ![Bagisto Headless Commerce Image](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commercecategory.png)
  
-Bagisto APIs support multiple product types, including simple, configurable, bundled, and downloadable products, ensuring flexibility for different business needs.
-
 ## Checkout
 
 The checkout process is fully functional, featuring complete cart management where customers can add, update, or remove items.
@@ -181,7 +178,7 @@ Once the order is placed, it is instantly synchronized with the Bagisto backend,
 Get Bagisto Headless Commerce support on [Facebook Group](https://www.facebook.com/groups/bagisto) and [Forum](https://forums.bagisto.com/)
 
 ## License
-Bagisto Headles eCommerce framework that will always remain free under the [MIT License](https://github.com/bagisto/nextjs-commerce/blob/main/license.md).
+Bagisto headless eCommerce framework that will always remain free under the [MIT License](https://github.com/bagisto/nextjs-commerce/blob/main/license.md).
 
 ## Security Vulnerabilities
 If you think that you have found a security issue in Bagisto Headless Commerce, please do not use the issue tracker and do not post it publicly. Instead, all security issues must be sent to [mailto:support@bagisto.com](mailto:support@bagisto.com).
