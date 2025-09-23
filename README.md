@@ -23,7 +23,7 @@ Bagisto Open Source Headless eCommerce is optimized to deliver a **100/100 Core 
 Before you begin, ensure you have the following installed:
 
 - **Node.js** 18+ and **pnpm**
-- Check Bagisto [backend requirment detail](https://devdocs.bagisto.com/2.3/introduction/requirements.html#server-configuration)
+- Check Bagisto [backend requirement detail](https://devdocs.bagisto.com/2.3/introduction/requirements.html#server-configuration)
 
 ---
 
