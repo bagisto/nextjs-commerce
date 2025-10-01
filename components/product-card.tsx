@@ -1,64 +1,10 @@
-"use client";
-import clsx from "clsx";
 import Link from "next/link";
 import { FC } from "react";
 import Grid from "./grid";
 import { GridTileImage } from "./grid/tile";
-import { useAddProduct } from "./hooks/use-add-to-cart";
-import ShoppingCartIcon from "./icons/shopping-cart";
-import LoadingDots from "./loading-dots";
 import Price from "./price";
-
+import AddToCartButton from "./add-to-cart-button";
 import { NOT_IMAGE } from "@/lib/constants";
-
-export function SubmitButton({
-  productType,
-  urlKey,
-  isLoading,
-  hanleAddTocartAction,
-}: {
-  productType?: string;
-  urlKey?: string;
-  isLoading: boolean;
-  hanleAddTocartAction: () => void;
-}) {
-  const buttonClasses =
-    " flex w-full cursor-pointer items-center  justify-center px-4 rounded-full min-h-8  tracking-wide ";
-  const disabledClasses = "cursor-wait opacity-60 hover:opacity-60";
-
-  return productType !== "simple" ? (
-    <Link
-      aria-disabled="true"
-      aria-label="Link to product page"
-      rel="prefetch"
-      prefetch={true}
-      className={clsx(buttonClasses, {
-        "hover:opacity-90": true,
-      })}
-      href={`/product/${urlKey}?type=${productType}`}
-      type="submit"
-    >
-      <ShoppingCartIcon className="size-6 -rotate-6 stroke-black stroke-[1.5]" />
-    </Link>
-  ) : (
-    <button
-      aria-disabled={isLoading}
-      aria-label="Add to cart"
-      className={clsx(buttonClasses, {
-        "hover:opacity-90": true,
-        [disabledClasses]: isLoading,
-      })}
-      type="button"
-      onClick={hanleAddTocartAction}
-    >
-      {isLoading ? (
-        <LoadingDots className="bg-black" />
-      ) : (
-        <ShoppingCartIcon className="size-6 -rotate-6 stroke-black stroke-[1.5]" />
-      )}
-    </button>
-  );
-}
 
 export const ProductCard: FC<{
   currency: string;
@@ -71,19 +17,6 @@ export const ProductCard: FC<{
     type: string;
   };
 }> = ({ currency, price, imageUrl, product }) => {
-  const { isCartLoading, onAddToCart } = useAddProduct();
-
-  const handleAddToCart = () => {
-    onAddToCart({
-      input: {
-        productId: product.id,
-        isBuyNow: false,
-        selectedConfigurableOption: 0,
-        quantity: 1,
-      },
-    });
-  };
-
   return (
     <Grid.Item
       key={product.urlKey}
@@ -104,17 +37,18 @@ export const ProductCard: FC<{
             />
           </div>
         </Link>
+        
         <div
           className={`absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-0 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
         >
-          <SubmitButton
-            hanleAddTocartAction={handleAddToCart}
-            isLoading={isCartLoading}
+          <AddToCartButton
             productType={product.type}
             urlKey={product.urlKey}
+            productId={product.id}
           />
         </div>
       </div>
+      
       <div>
         <h2 className="mb-2.5 text-base font-medium md:text-lg">
           {product?.name}

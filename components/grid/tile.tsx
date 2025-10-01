@@ -3,7 +3,6 @@
 import clsx from "clsx";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { useInView } from "framer-motion";
 
 import Label from "../label";
 import { NOT_IMAGE } from "@/lib/constants";

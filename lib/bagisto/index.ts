@@ -582,6 +582,7 @@ export async function getCollectionHomePage(
   const res: any = await bagistoFetchNoSession<BagistoCollectionHomeOperation>({
     query: getHomeCustomizationQuery,
     tags: [handle, TAGS.themeCustomize],
+    cache: "force-cache",
   });
   if (!isArray(res.body.data?.themeCustomization)) {
     return [];
