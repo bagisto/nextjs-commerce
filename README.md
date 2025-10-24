@@ -3,6 +3,8 @@
 A [**headless eCommerce framework**](https://bagisto.com/en/headless-ecommerce/) built with **Next.js** and powered by **Bagisto**, designed for modern scalability and flexibility.
 Through layered caching and optimized rendering strategies, it consistently achieves a **100/100 Core Web Vitals score**, delivering lightning-fast performance and seamless shopping experiences.
 
+Check the [Documentation](https://bagisto.com/en/bagisto-headless-ecommerce-installation-guide/) to quickly set up your Headless eCommerce store.
+
 **Bagisto Version:** v2.3.0
 
 **Bagisto GraphQL API:** v2.3.0
