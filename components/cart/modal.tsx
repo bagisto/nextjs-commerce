@@ -204,6 +204,7 @@ export default function CartModal() {
                         isGuest={cart?.isGuest}
                         isEmail={cart?.customerEmail ?? getLocalStorage(EMAIL)}
                         isSelectShipping={isObject(cart?.selectedShippingRate)}
+                        isSeclectAddress={isObject(cart?.billingAddress)}
                         isSelectPayment={isObject(cart?.payment)}
                       />
                     </form>
@@ -223,12 +224,14 @@ function CheckoutButton({
   cartDetails,
   isGuest,
   isEmail,
+  isSeclectAddress,
   isSelectShipping,
   isSelectPayment,
 }: {
   cartDetails: Array<CartItem>;
   isGuest: boolean;
   isEmail: string;
+  isSeclectAddress : boolean;
   isSelectShipping: boolean;
   isSelectPayment: boolean;
 }) {
@@ -244,6 +247,7 @@ function CheckoutButton({
           cartDetails,
           isGuest,
           email,
+          isSeclectAddress,
           isSelectShipping,
           isSelectPayment
         )}

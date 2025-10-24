@@ -6,9 +6,6 @@ import { useCartDetail } from "@/components/hooks/use-cart-detail";
 import { useAppSelector } from "@/store/hooks";
 import { BagistoCart, CountryArrayDataType } from "@/lib/bagisto/types";
 import CheckoutSkeleton from "../place-holder";
-import { useEffect } from "react";
-import { isObject } from "@/lib/type-guards";
-import { useRouter } from "next/navigation";
 interface CheckOutProps {
   countries: CountryArrayDataType[];
   step: string;

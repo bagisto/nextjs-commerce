@@ -24,7 +24,7 @@ function SubmitButton({
 }) {
   const buttonClasses =
     "relative flex w-full max-w-[16rem] cursor-pointer h-fit items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white";
-  const disabledClasses = "cursor-wait opacity-60 hover:opacity-60";
+  const disabledClasses = "cursor-wait opacity-60";
 
   if (!availableForSale) {
     return (
@@ -39,9 +39,10 @@ function SubmitButton({
       <button
         aria-disabled
         aria-label="Please select an option"
-        className={clsx(buttonClasses, disabledClasses)}
+        disabled={!selectedVariantId}
+        className={clsx(buttonClasses, " opacity-60 !cursor-not-allowed")}
       >
-        Add To Cart
+        Add To Cart ddd
       </button>
     );
   }

@@ -1,6 +1,6 @@
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
-import "@/styles/globals.css";
+import "./globals.css";
 import NextAuthProvider from "./providers/next-auth-provider";
 import { TanstackProvider } from "./providers/tanstack-provider";
 import { ReduxProvider } from "./providers/redux-provider";

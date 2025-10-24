@@ -155,6 +155,7 @@ export const isCheckout = (
   items: Array<CartItem>,
   isGuest: boolean,
   email: string,
+  isSeclectAddress: boolean,
   isSelectShipping: boolean,
   isSelectPayment: boolean
 ): string => {
@@ -180,9 +181,14 @@ export const isCheckout = (
       return "/checkout?step=payment"; // ✅ redirect to shipping if selected
     }
 
+    if(isSeclectAddress){
+      return "/checkout?step=shipping";
+    }
+
     if (!email || typeof email === "object") {
       return "/checkout"; // step: email entry
     }
+    
     return "/checkout?step=address";
   } else {
     if (isSelectPayment) {

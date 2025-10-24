@@ -91,6 +91,7 @@ export const getCollectionProductsQuery = /* GraphQL */ `
         id
         type
         name
+        updatedAt
         priceHtml {
           id
           type

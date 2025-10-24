@@ -9,8 +9,6 @@ import {
   subsCribeUser,
 } from "@/lib/bagisto";
 import { RegisterInputs } from "../login/registration-form";
-import { cookies } from "next/headers";
-import { TOKEN } from "@/lib/constants";
 
 export type RegisterFormState = {
   errors?: {

@@ -110,19 +110,17 @@ export async function bagistoFetch<T>({
   query: string;
   tags?: string[];
   variables?: ExtractVariables<T>;
-  cartId?: boolean;
   isCookies?: boolean;
 }): Promise<{ status: number; body: T } | never> {
   try {
-    const cookieStore = await cookies();
+   
     let bagistoCartId = "";
-
     if (isCookies) {
+      const cookieStore = await cookies();
       bagistoCartId = cookieStore.get(BAGISTO_SESSION)?.value ?? "";
     }
 
     const sessions = await getServerSession(authOptions);
-
     const accessToken = sessions?.user?.accessToken;
 
     const result = await fetch(endpoint, {
@@ -137,7 +135,7 @@ export async function bagistoFetch<T>({
         ...(bagistoCartId && {
           Cookie: `${BAGISTO_SESSION}=${bagistoCartId}`,
         }),
-        ...headers,
+        ...(isCookies && {...headers})
       },
       body: JSON.stringify({
         ...(query && { query }),
@@ -224,7 +222,7 @@ export async function bagistoFetchNoSession<T>({
     throw { error: e, query };
   }
 }
-const removeEdgesAndNodes = (array: Array<any>) => {
+export const removeEdgesAndNodes = (array: Array<any>) => {
   return array?.map((edge) => edge);
 };
 
@@ -273,11 +271,12 @@ const reshapeCollection = (
 
   return {
     ...collection,
-    path: `/search/${collection.handle || collection.urlPath}`,
+    updatedAt: new Date().toISOString(),
+    path: `/search/${collection.slug || collection.urlPath}`,
   };
 };
 
-const reshapeCollections = (collections: BagistoCollection[]) => {
+export const reshapeCollections = (collections: BagistoCollection[]) => {
   const reshapedCollections = [];
 
   for (const collection of collections) {
@@ -326,7 +325,7 @@ const reshapeProduct = (
   };
 };
 
-const reshapeProducts = (products: BagistoProductInfo[]) => {
+export const reshapeProducts = (products: BagistoProductInfo[]) => {
   const reshapedProducts = [];
 
   for (const product of products) {
@@ -778,7 +777,7 @@ export async function getHomeCategories(): Promise<any[]> {
   const res = await bagistoFetch<any>({
     query: getMenuQuery,
     tags: [TAGS.collections],
-    cartId: false,
+    isCookies: false,
   });
   const bagistoCollections = removeEdgesAndNodes(
     res.body?.data?.homeCategories
@@ -796,10 +795,9 @@ export async function getHomeCategories(): Promise<any[]> {
       updatedAt: new Date().toISOString(),
     },
 
-    // Filter out the `hidden` collections.
     // Collections that start with `hidden-*` need to be hidden on the search page.
     ...reshapeCollections(bagistoCollections).filter(
-      (collection) => !collection.handle?.startsWith("hidden")
+      (collection) => !collection.slug?.startsWith("hidden")
     ),
   ];
 
@@ -915,6 +913,7 @@ export async function getPage(
   const res = await bagistoFetch<BagistoPageOperation>({
     query: getPageQuery,
     cache: "no-store",
+    isCookies: false,
     variables: { input },
   });
 
@@ -924,8 +923,8 @@ export async function getPage(
 export async function getPages(): Promise<Page> {
   const res = await bagistoFetch<BagistoPagesOperation>({
     query: getPagesQuery,
-    cartId: false,
     cache: "no-store",
+    isCookies: false,
   });
 
   return res.body.data?.cmsPages;
@@ -964,7 +963,7 @@ export async function getProducts({
   const res = await bagistoFetch<BagistoCollectionProductsOperation>({
     query: getCollectionProductsQuery,
     tags: [tag, TAGS.products],
-    cartId: false,
+    isCookies: false,
     variables: {
       input,
     },
@@ -995,7 +994,6 @@ export async function getFilterAttributes({
 }): Promise<any> {
   const res = await bagistoFetch<BagistoCollectionCategoriesOperation>({
     query: getFilterAttributesQuery,
-    cartId: false,
     variables: {
       categorySlug,
     },
