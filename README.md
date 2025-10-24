@@ -41,7 +41,13 @@ Before you begin, ensure you have the following installed:
 
     After installing Bagisto, install the [Bagisto Headless Extension](https://github.com/bagisto/headless-ecommerce/) to expose the required APIs for your frontend.
 
-3) Configure `.env.local` in the Next.js Project
+3) Get your storefront up and running in one command:
+   
+   ```bash
+   npx -y @bagisto-headless/create your-storefront
+   ```
+   
+4) Configure `.env.local` in the Next.js Project
 
    In your Next.js frontend project, create or update your `.env.local` file with the following variables:
 
@@ -81,49 +87,7 @@ Download your environment variables:
 ```bash
 vercel env pull
 ```
-4) Update next.config.js with Required Runtime Config
 
-   This project customizes the Next.js configuration to optimize performance, images, and caching.
-```env
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  allowedDevOrigins: ["local-origin.dev", "*.local-origin.dev"],
-  images: {
-    unoptimized: false,
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: process.env.IMAGE_DOMAIN,
-      },
-    ],
-  },
-  env: {
-    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-    BAGISTO_STORE_DOMAIN: process.env.BAGISTO_STORE_DOMAIN,
-    REVALIDATION_DURATION: process.env.REVALIDATION_DURATION,
-    SITE_NAME: process.env.SITE_NAME,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  async headers() {
-    return [
-      {
-        source: "/",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, s-maxage=3600, stale-while-revalidate=8640",
-          },
-        ],
-      },
-    ];
-  },
-};
-
-module.exports = nextConfig;
-
-```
 ---
 
 **Run the development server:**
