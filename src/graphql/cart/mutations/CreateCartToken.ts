@@ -5,27 +5,8 @@ export const CREATE_CART_TOKEN = gql`
     createCartToken(input: {}) {
       cartToken {
          id
-      _id
       cartToken
       customerId
-      channelId
-      itemsCount
-      subtotal
-      baseSubtotal
-      discountAmount
-      baseDiscountAmount
-      taxAmount
-      baseTaxAmount
-      shippingAmount
-      baseShippingAmount
-      grandTotal
-      baseGrandTotal
-      formattedSubtotal
-      formattedDiscountAmount
-      formattedTaxAmount
-      formattedShippingAmount
-      formattedGrandTotal
-      couponCode
       success
       message
       sessionToken

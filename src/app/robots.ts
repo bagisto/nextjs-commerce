@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow:  ['/customer/*', '/checkout'],
     },
-    sitemap: `${process.env.NEXTAUTH_URL}/sitemap.xml`,
+    sitemap: `${process.env.NEXT_PUBLIC_NEXT_AUTH_URL}/sitemap.xml`,
   }
 }

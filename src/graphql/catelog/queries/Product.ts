@@ -78,24 +78,25 @@ export const GET_PRODUCT_SWATCH_REVIEW = gql`
       id
       name
       sku
+      type
       urlKey
       price
       isSaleable
       index
       attributeValues {
-edges {
-cursor
-node {
-value
-attribute {
-adminName
-code
-isFilterable
-isVisibleOnFront
-}
-}
-}
-}
+        edges {
+          cursor
+          node {
+            value
+            attribute {
+              adminName
+              code
+              isFilterable
+              isVisibleOnFront
+            }
+          }
+        }
+      }
       superAttributes {
         edges {
           node {

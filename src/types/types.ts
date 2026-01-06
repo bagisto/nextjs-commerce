@@ -79,7 +79,7 @@ export type BagistoPaymentDataType = {
     baseDiscountAmount: number;
     isGuest: boolean;
     isActive: boolean;
-    channelId: string;
+    channelId?: string;
     formattedPrice: {
       grandTotal: string;
       baseGrandTotal: string;
@@ -669,7 +669,7 @@ export type ThemeCustomizationTypes = {
   name: string;
   sortOrder: string;
   status: string;
-  channelId: string;
+  channelId?: string;
   createdAt: string;
   updatedAt: string;
   translations: TranslationsTypes[];

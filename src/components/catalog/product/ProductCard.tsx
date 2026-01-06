@@ -23,7 +23,7 @@ export const ProductCard: FC<{
       className="animate-fadeIn gap-y-4.5 flex flex-col"
     >
       <div className="group relative overflow-hidden rounded-lg">
-        <Link href={`/product${product.id}?type=${product?.type}`}>
+        <Link href={`/product${product.id}`}>
           <div className="aspect-[353/283] h-auto truncate rounded-lg">
             <NextImage
               alt={product?.name || "Product image"}

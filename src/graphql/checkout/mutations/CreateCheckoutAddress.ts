@@ -52,23 +52,10 @@ export const CREATE_CHECKOUT_ADDRESS = gql`
     }
   ) {
     checkoutAddress {
-      _id
       success
       message
       id
       cartToken
-      billingFirstName
-      billingLastName
-      billingAddress
-      billingCity
-      billingState
-      billingPostcode
-      billingPhoneNumber
-      shippingFirstName
-      shippingLastName
-      shippingCity
-      shippingCompanyName
-      
     }
   }
 }

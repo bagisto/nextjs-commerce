@@ -36,7 +36,7 @@ export default function HeroCarousel({
           <Image
             fill
             alt={images[current]?.altText as string}
-            className={`h-full w-full object-cover transition duration-300 ease-in-out group-hover:scale-105`}
+             className={`h-full w-full object-cover transition duration-300 ease-in-out group-hover:scale-105`}
             priority={true}
             sizes="(min-width: 1024px) 66vw, 100vw"
             src={images[current]?.src as string}
@@ -67,33 +67,33 @@ export default function HeroCarousel({
       </div>
 
       {images?.length > 1 ? (
-        <ul className="fade-in my-3 flex flex-nowrap gap-2 overflow-x-auto overflow-y-hidden py-1 sm:my-7 lg:mb-0">
-          {images.map((image, index) => {
-            const isActive = index === current;
+     <ul className="fade-in my-3 flex flex-nowrap gap-2 overflow-x-auto overflow-y-hidden py-1 sm:my-7 lg:mb-0">
+  {images.map((image, index) => {
+    const isActive = index === current;
 
-            return (
-              <li
-                key={image.src}
-                className="relative aspect-square w-32 flex-shrink-0"
-              >
-                <button
-                  className="h-full w-full"
-                  onClick={() => {
-                    setCurrent(index);
-                  }}
-                >
-                  <GridTileImage
-                    active={isActive}
-                    alt={image.altText}
-                    fill
-                    objectFit="cover"
-                    src={image.src}
-                  />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+    return (
+      <li
+        key={image.src}
+        className="relative aspect-square w-32 flex-shrink-0"
+      >
+        <button
+          className="h-full w-full"
+          onClick={() => {
+            setCurrent(index);
+          }}
+        >
+          <GridTileImage
+            active={isActive}
+            alt={image.altText}
+            fill
+            objectFit="cover"
+            src={image.src}
+          />
+        </button>
+      </li>
+    );
+  })}
+</ul>
 
       ) : null}
     </>

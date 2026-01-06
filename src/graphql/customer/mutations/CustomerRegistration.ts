@@ -5,13 +5,10 @@ export const CUSTOMER_REGISTRATION = gql`
     createCustomer(input: $input) {
       customer {
         id
-        _id
         firstName
         lastName
         email
         phone
-        gender
-        dateOfBirth
         status
         apiToken
         customerGroupId

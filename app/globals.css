@@ -1,9 +1,0 @@
-@import "tailwindcss";
-
-@config "../tailwind.config.js";
-
-@layer components {
-  .mobile-heading h2 {
-    @apply sticky bg-white z-50 dark:bg-background top-0;
-  }
-}

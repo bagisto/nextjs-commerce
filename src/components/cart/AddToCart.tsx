@@ -84,7 +84,7 @@ export function AddToCart({
   };
 
   const searchParams = useSearchParams();
-  const type = searchParams.get("type");
+  const type = productSwatchReview?.type
 
   const superAttributes =
     productSwatchReview?.superAttributes?.edges?.map((e: { node: any }) => e.node) || [];

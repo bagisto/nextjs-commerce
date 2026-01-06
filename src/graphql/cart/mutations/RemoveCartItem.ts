@@ -13,7 +13,6 @@ export const REMOVE_CART_ITEM = gql`
     ) {
        removeCartItem {
       id
-      _id
       cartToken
        taxAmount
         shippingAmount

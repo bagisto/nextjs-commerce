@@ -17,7 +17,6 @@ export const CREATE_ADD_PRODUCT_IN_CART = gql`
     ) {
       addProductInCart {
         id
-        _id
         cartToken
         subtotal
         itemsCount

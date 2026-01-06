@@ -42,12 +42,12 @@ export const PRODUCT_OFFER_TYPE = "AggregateOffer";
  */
 export const BAGISTO_SESSION = process.env.BAGISTO_SESSION ?? "bagisto_session";
 export const TOKEN = "token";
-export const BASE_URL = process.env.NEXTAUTH_URL;
-export const baseUrl = process.env.NEXT_SERVER_BAGISTO_ENDPOINT;
+export const BASE_URL = process.env.NEXT_PUBLIC_NEXT_AUTH_URL;
+export const baseUrl = process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT;
 export const GRAPHQL_URL = typeof window === 'undefined'
-  ? `${process.env.NEXT_SERVER_BAGISTO_ENDPOINT}/api/graphql`
-  : `${process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT || process.env.NEXT_SERVER_BAGISTO_ENDPOINT}/api/graphql`;
-export const NEXT_AUTH_SECRET=process.env.NEXTAUTH_SECRET;
+  ? `${process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT}/api/graphql`
+  : `${process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT}`;
+export const NEXT_AUTH_SECRET=process.env.NEXT_PUBLIC_NEXT_AUTH_SECRET;
 
 
 // -----Pagination--------//

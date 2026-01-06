@@ -85,7 +85,6 @@ export interface AddToCartItemsConnection {
 
 export interface AddProductInCart {
   id: string;
-  _id: string;
   cartToken: string;
   subtotal: number;
   taxAmount: number;
@@ -124,27 +123,8 @@ export interface AddToCartOperation {
 // Guest Cart Token 
 export interface CartToken {
   id: string;
-  _id: string;
   cartToken: string;
   customerId: string | null;
-  channelId: string;
-  itemsCount: number;
-  subtotal: number;
-  baseSubtotal: number;
-  discountAmount: number;
-  baseDiscountAmount: number;
-  taxAmount: number;
-  baseTaxAmount: number;
-  shippingAmount: number;
-  baseShippingAmount: number;
-  grandTotal: number;
-  baseGrandTotal: number;
-  formattedSubtotal: string;
-  formattedDiscountAmount: string;
-  formattedTaxAmount: string;
-  formattedShippingAmount: string;
-  formattedGrandTotal: string;
-  couponCode: string | null;
   success: boolean;
   message: string;
   sessionToken: string;

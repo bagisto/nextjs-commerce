@@ -89,7 +89,7 @@ export default async function ProductPage({
     : [];
 
   const VariantImages = isArray(product?.variants?.edges)
-    ? product?.variants.edges.map((edge: { node: ProductVariant }) => edge.node)
+    ? product?.variants.edges.map((edge: { node : ProductVariant }) => edge.node)
     : [];
 
   return (
@@ -103,27 +103,27 @@ export default async function ProductPage({
       <div className="flex flex-col gap-y-4 rounded-lg pb-0 pt-4 sm:gap-y-6 md:py-7.5 lg:flex-row w-full max-w-screen-2xl mx-auto px-[15px] xss:px-7.5 lg:gap-8">
         <div className="h-full w-full max-w-[885px]">
           <Suspense fallback={<ProductDetailSkeleton />}>
-            {isArray(VariantImages) ? (
-              <HeroCarousel
-                images={
-                  VariantImages?.map(
-                    (image: { baseImageUrl: string; name: unknown }) => ({
-                      src: getImageUrl(image.baseImageUrl, baseUrl, NOT_IMAGE) || "",
-                      altText: image?.name || "",
-                    })
-                  ) || []
-                }
-              />
-            ) : (
-              <HeroCarousel
-                images={[
-                  {
-                    src: imageUrl || "",
-                    altText: product?.name || "product image",
-                  },
-                ]}
-              />
-            )}
+          {isArray(VariantImages) ? (
+            <HeroCarousel
+              images={
+                VariantImages?.map(
+                  (image: { baseImageUrl: string; name: unknown }) => ({
+                    src: getImageUrl(image.baseImageUrl, baseUrl, NOT_IMAGE) || "",
+                    altText: image?.name || "",
+                  })
+                ) || []
+              }
+            />
+          ) : (
+            <HeroCarousel
+              images={[
+                {
+                  src: imageUrl || "",
+                  altText: product?.name || "product image",
+                },
+              ]}
+            />
+          )}
           </Suspense>
         </div>
         <div className="basis-full lg:basis-4/6">
