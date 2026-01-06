@@ -137,7 +137,7 @@ export default async function CategoryPage({
   if (brandIds.length > 0) filterObject.brand = brandIds.join(",");
 
   const filterInput = JSON.stringify(filterObject);
-
+  
   const [data] = await Promise.all([
     graphqlRequest<ProductsResponse>(GET_FILTER_PRODUCTS, {
       query: searchValue || "",

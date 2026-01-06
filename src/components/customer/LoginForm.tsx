@@ -4,17 +4,16 @@ import clsx from "clsx";
 import { getSession, signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@components/common/button/Button";
-import { SIGNIN_IMG } from '@/utils/constants';
-import InputText from '@components/common/form/Input';
-import { useCustomToast } from '@/utils/hooks/useToast';
+import { SIGNIN_IMG } from "@/utils/constants";
+import InputText from "@components/common/form/Input";
+import { useCustomToast } from "@/utils/hooks/useToast";
 import { useMergeCart } from "@utils/hooks/useMergeCart";
 import { getCookie } from "@utils/getCartToken";
 import { setCookie } from "@utils/helper";
 import { setLocalStorage } from "@/store/local-storage";
-import { useCartDetail } from '@utils/hooks/useCartDetail';
+import { useCartDetail } from "@utils/hooks/useCartDetail";
 import { GUEST_CART_ID, GUEST_CART_TOKEN, IS_GUEST } from "@/utils/constants";
 
 type LoginFormInputs = {
@@ -24,10 +23,8 @@ type LoginFormInputs = {
 
 export default function LoginForm() {
   const { showToast } = useCustomToast();
-  const router = useRouter();
   const { getCartDetail } = useCartDetail()
   const { mergeCart } = useMergeCart();
-
 
   const {
     register,
@@ -38,9 +35,12 @@ export default function LoginForm() {
     reValidateMode: "onChange",
   });
 
-
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
+      // First, handle cart merging before sign in
+      const guestCartId = getCookie(GUEST_CART_ID);
+      const guestCartToken = getCookie(GUEST_CART_TOKEN);
+
       const result = await signIn("credentials", {
         redirect: false,
         ...data,
@@ -53,38 +53,39 @@ export default function LoginForm() {
       }
       showToast("Welcome! Successfully logged in.", "success");
       setLocalStorage("email", data?.username)
-
+      
       const session = await getSession();
-
-      const userToken: string | undefined = (session as any)?.user?.accessToken;
+      const userToken: string | undefined = session?.user?.accessToken;
 
       if (!userToken) {
         console.warn("No API token available in session after login");
       }
 
-      const guestCartId = getCookie(GUEST_CART_ID);
-
-      if (userToken && guestCartId) {
+      // Only merge cart if user had a guest cart before login
+      if (userToken && guestCartId && guestCartToken) {
         try {
           await mergeCart(userToken, parseInt(guestCartId, 10));
           setCookie(GUEST_CART_TOKEN, userToken);
           setCookie(IS_GUEST, "false");
-          await getCartDetail()
+          await getCartDetail();
         } catch (err) {
           console.error("mergeCart failed:", err);
         }
+      } else if (userToken) {
+        // User logged in without a guest cart, just set the token
+        setCookie(GUEST_CART_TOKEN, userToken);
+        setCookie(IS_GUEST, "false");
       }
-
-      router.replace("/");
+     setTimeout(() => {
+      window.location.href = "/";
+    }, 100);
+    
 
     } catch (error) {
       console.error(error);
       showToast("Something went wrong. Please try again.", "danger");
     }
   };
-
-
-
 
   return (
     <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-[15px]  xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-28">
@@ -112,7 +113,9 @@ export default function LoginForm() {
                   message: "Please enter a valid email.",
                 },
               })}
-              errorMsg={errors.username?.message ? [errors.username.message] : undefined}
+              errorMsg={
+                errors.username?.message ? [errors.username.message] : undefined
+              }
               label="Email"
               labelPlacement="outside"
               name="username"
@@ -136,7 +139,9 @@ export default function LoginForm() {
                   return true;
                 },
               })}
-              errorMsg={errors.password?.message ? [errors.password.message] : undefined}
+              errorMsg={
+                errors.password?.message ? [errors.password.message] : undefined
+              }
               label="Password"
               labelPlacement="outside"
               name="password"
@@ -182,7 +187,7 @@ export default function LoginForm() {
           alt="Sign In Image"
           className={clsx(
             "relative h-full w-full object-fill",
-            "transition duration-300 ease-in-out group-hover:scale-105",
+            "transition duration-300 ease-in-out group-hover:scale-105"
           )}
           sizes={"(min-width: 768px) 66vw, 100vw"}
           src={SIGNIN_IMG}

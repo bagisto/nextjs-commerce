@@ -3,12 +3,12 @@ import { useRouter } from "next/navigation";
 import { useCustomToast } from "./useToast";
 import { isObject } from "../type-guards";
 import { fetchHandler } from "../fetch-handler";
-import { getCartToken } from "@utils/getCartToken";
+import { getCartToken, getCookie } from "@utils/getCartToken";
 import { setCookie } from "@utils/helper";
 import { useGuestCartToken } from './useGuestCartToken';
 import { useDispatch } from "react-redux";
 import { clearCart } from "@/store/slices/cart-slice";
-import { ORDER_ID } from "@/utils/constants";
+import { ORDER_ID, IS_GUEST } from "@/utils/constants";
 
 export interface InputDataTypes {
   input: {
@@ -217,7 +217,11 @@ export const useCheckout = () => {
     await placeOrder({
       token: token || ""
     });
-    await resetGuestToken();
+    
+    const isGuest = getCookie(IS_GUEST);
+    if (isGuest) {
+      await resetGuestToken();
+    }
   };
 
   return {

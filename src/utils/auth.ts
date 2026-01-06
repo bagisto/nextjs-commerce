@@ -4,6 +4,11 @@ import { bagistoFetch } from "@/utils/bagisto";
 import { CUSTOMER_LOGIN } from "@/graphql/customer/mutations";
 
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+  },
+
   providers: [
     CredentialsProvider({
       name: "Credentials",

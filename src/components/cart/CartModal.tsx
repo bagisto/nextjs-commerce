@@ -90,7 +90,7 @@ export default function CartModal() {
                             {} as MerchandiseSearchParams;
 
                           const merchandiseUrl = createUrl(
-                            `/product/${item?.node.productId}?type=${item?.node.type}`,
+                            `/product/${item?.node.productUrlKey}`,
                             new URLSearchParams(merchandiseSearchParams)
                           );
                           const baseImage = JSON.parse(item?.node?.baseImage);
