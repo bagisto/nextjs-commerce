@@ -41,6 +41,7 @@ body::-webkit-scrollbar-thumb {
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1610px;
   --breakpoint-3xl: 1640px;
+  --breakpoint-1366: 1366px;
   /* Custom spacing */
   --spacing-7_5: 30px;
   --spacing-30: 120px;
@@ -74,6 +75,7 @@ body::-webkit-scrollbar-thumb {
   --screen-xl: 1280px;
   --screen-2xl: 1610px;
   --screen-3xl: 1640px;
+  --screen-1366: 1366px;
 }
 
 .dark {

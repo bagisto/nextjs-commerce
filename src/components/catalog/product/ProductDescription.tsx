@@ -52,7 +52,7 @@ export function ProductDescription({
           {product?.name || ""}
         </h1>
 
-        <div className="flex w-auto justify-between gap-y-2 py-4 xs:flex-row xs:gap-y-0 sm:py-6">
+        <div className="flex w-auto justify-between gap-y-2 py-4 xs:flex-row xs:gap-y-0 sm:py-6 flex-wrap">
           <div className="flex gap-4 items-center">
             {product?.type === "configurable" && (
               <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400">
