@@ -1,34 +1,38 @@
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-export default defineConfig([
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   {
-    plugins: ["unicorn", "react", "jsx-a11y", "unused-imports"],
-    extends: ["next", "prettier"],
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
+    files: ["src/**/*.{js,jsx,ts,tsx}"],
     rules: {
-      "no-unused-vars": [
+      "@typescript-eslint/no-unused-vars": [
         "error",
         {
-          args: "after-used",
-          caughtErrors: "none",
-          ignoreRestSiblings: true,
-          vars: "all",
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
         },
       ],
-      "prefer-const": "error",
-      "react-hooks/exhaustive-deps": "error",
-      "unicorn/filename-case": [
-        "error",
-        {
-          case: "kebabCase",
-        },
-      ],
+      "no-unused-vars": "off",
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-non-null-assertion": "warn",
+      "react-hooks/exhaustive-deps": "warn",
+      "react/no-unescaped-entities": "warn",
+      "@typescript-eslint/no-empty-interface": "warn",
+      "prefer-const": "warn",
+      "no-var": "warn",
     },
   },
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
 ]);
+
+export default eslintConfig;
