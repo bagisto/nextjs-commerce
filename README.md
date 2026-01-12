@@ -64,7 +64,7 @@ Before you begin, ensure you have the following installed:
 
 2) Install the Bagisto Headless Extension
 
-    After installing Bagisto, install the [Bagisto Headless Extension](https://github.com/bagisto/headless-ecommerce/) to expose the required APIs for your frontend.
+    After installing Bagisto, install the [Bagisto Headless Extension](https://github.com/bagisto/bagisto-api) to expose the required APIs for your frontend.
 
 3) Get your storefront up and running in one command:
    
