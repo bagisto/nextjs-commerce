@@ -153,7 +153,7 @@ export const useAddProduct = () => {
           const message =
             responseData?.message || "Cart item removed successfully";
           dispatch(addItem(responseData?.removeCartItem as any));
-          showToast(message as string, "success");
+          showToast(message as string, "warning");
 
           if (!responseData?.removeCartItem?.itemsQty) {
             dispatch(clearCart());

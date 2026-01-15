@@ -11,7 +11,7 @@ interface InputTextProps
   defaultValue?: string;
   typeName?: string;
   placeholder?: string;
-  size?: "sm" | "md" | "lg"; 
+  size?: "sm" | "md" | "lg";
   labelPlacement?: "inside" | "outside" | "outside-left";
   rounded?: "sm" | "md" | "lg";
 }
@@ -92,7 +92,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
                   </li>
                 ))
               ) : (
-                <li className="flex items-center gap-1 text-sm">
+                <li className="flex items-center gap-1 text-xs sm:text-sm">
                   <ExclamationCircleIcon className="size-[18px]" />
                   {typeof errorMsg === "string"
                     ? errorMsg

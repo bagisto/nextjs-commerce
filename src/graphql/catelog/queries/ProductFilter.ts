@@ -34,6 +34,7 @@ export const GET_FILTER_PRODUCTS = gql`
     $sortKey: String
     $reverse: Boolean
     $first: Int
+    $last: Int
     $after: String
     $before: String
   ) {
@@ -42,6 +43,7 @@ export const GET_FILTER_PRODUCTS = gql`
       sortKey: $sortKey
       reverse: $reverse
       first: $first
+      last: $last
       after: $after
       before: $before
     ) {

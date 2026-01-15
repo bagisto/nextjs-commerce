@@ -19,7 +19,7 @@ const OrderDetail = dynamic(() => import("@/components/cart/OrderDetail"), {
 });
 const EmptyCartPage = () => {
   return (
-    <div className="flex min-h-[calc(100vh-450px)] px-[15px] items-center">
+    <div className="flex min-h-[calc(100vh-450px)] px-4 items-center">
       <div className="flex w-full flex-col items-center justify-center overflow-hidden">
         <CheckSign className="sm:h-38 sm:w-38 h-28 w-28" />
         <OrderDetail />

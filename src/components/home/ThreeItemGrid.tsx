@@ -1,6 +1,9 @@
+"use client"
+
 import { FC } from "react";
 import Link from "next/link";
 import { GridTileImage } from "@/components/theme/ui/grid/Tile";
+import { useMediaQuery } from "@utils/hooks/useMediaQueryHook";
 
 interface ThreeItemGridProps {
     title: string;
@@ -30,12 +33,15 @@ function ThreeItemGridItem({ product, size, priority }: {
             }
         >
             <Link
-                className="relative block aspect-square h-full w-full"
-                href={`/product/${product.urlKey}?type=${product.type}`}
+                className="relative block h-full w-full"
+                href={`/product/${product.urlKey}`}
+                style={{
+                    aspectRatio: size === 'full' ? '380 / 280' : '280 / 182'
+                }}
             >
                 <GridTileImage
                     src={product.baseImageUrl}
-                    className="object-cover"
+                    className="object-cover "
                     fill
                     sizes={
                         size === 'full'
@@ -56,10 +62,54 @@ function ThreeItemGridItem({ product, size, priority }: {
     );
 }
 
+
+function MobileThreeItemGridItem({ product, size, priority }: {
+    product: any;
+    size: 'full' | 'half';
+    priority?: boolean;
+}) {
+
+    return (
+        <div
+            className={
+                size === 'full' ? 'col-span-1 xs:col-span-2 order-2' : 'col-span-1'
+            }
+        >
+            <Link
+                className="relative block h-full w-full"
+                href={`/product/${product.urlKey}`}
+                style={{
+                    aspectRatio: size === 'full' ? '280 / 380' : '182 / 280'
+                }}
+            >
+                <GridTileImage
+                    src={product.baseImageUrl}
+                    className="object-cover "
+                    fill
+                    sizes={
+                        size === 'full'
+                            ? '(min-width: 768px) 66vw, 100vw'
+                            : '(min-width: 768px) 33vw, 100vw'
+                    }
+                    priority={priority}
+                    alt={product.name}
+                    label={{
+                        position: size === 'full' ? 'center' : 'bottom',
+                        title: product.name,
+                        amount: product.type === 'configurable' ? (product.minimumPrice || '0') : (product.price || '0'),
+                        currencyCode: 'USD',
+                    }}
+                />
+            </Link>
+        </div>
+    );
+}
 export const ThreeItemGrid: FC<ThreeItemGridProps> = ({ title, description, products }) => {
     if (!products || products.length < 3) return null;
 
     const [firstProduct, secondProduct, thirdProduct] = products;
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const isDesktop = useMediaQuery("(min-width: 768px)");
 
     return (
         <section className="pt-8 sm:pt-12 lg:pt-20">
@@ -71,11 +121,21 @@ export const ThreeItemGrid: FC<ThreeItemGridProps> = ({ title, description, prod
                     {description}
                 </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
-                <ThreeItemGridItem product={firstProduct} size="full" priority={true} />
-                <ThreeItemGridItem product={secondProduct} size="half" priority={true} />
-                <ThreeItemGridItem product={thirdProduct} size="half" />
-            </div>
+            {
+                isDesktop ?
+                    <div className="grid gap-4 md:grid-cols-6 md:grid-rows-2 lg:max-h-[calc(100vh-200px)]">
+                        <ThreeItemGridItem product={firstProduct} size="full" priority={true} />
+                        <ThreeItemGridItem product={secondProduct} size="half" priority={true} />
+                        <ThreeItemGridItem product={thirdProduct} size="half" />
+                    </div>
+                    :
+                    (
+                        <div className="grid  gap-4 grid-cols-1 xs:grid-cols-2 lg:max-h-[calc(100vh-200px)]">
+                            <MobileThreeItemGridItem product={firstProduct} size="full" priority={true} />
+                            <MobileThreeItemGridItem product={secondProduct} size="half" priority={true} />
+                            <MobileThreeItemGridItem product={thirdProduct} size="half" />
+                        </div>
+                    )}
         </section>
     );
 };

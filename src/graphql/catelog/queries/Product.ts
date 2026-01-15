@@ -24,6 +24,7 @@ export const GET_PRODUCTS = gql`
     $sortKey: String
     $reverse: Boolean
     $first: Int
+    $last: Int
     $after: String
     $before: String
     $channel: String
@@ -35,6 +36,7 @@ export const GET_PRODUCTS = gql`
       sortKey: $sortKey
       reverse: $reverse
       first: $first
+      last: $last
       after: $after
       before: $before
       channel: $channel
@@ -129,6 +131,7 @@ export const GET_PRODUCTS_PAGINATION = gql`
     $sortKey: String
     $reverse: Boolean
     $first: Int
+    $last: Int
     $channel: String
     $locale: String
     $after: String
@@ -139,6 +142,7 @@ export const GET_PRODUCTS_PAGINATION = gql`
       sortKey: $sortKey
       reverse: $reverse
       first: $first
+      last: $last
       channel: $channel
       locale: $locale
       after: $after

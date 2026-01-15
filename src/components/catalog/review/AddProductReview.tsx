@@ -80,7 +80,7 @@ export default function AddProductReview({
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 -right-[9px] text-gray-500 hover:text-gray-700 transition-colors"
+        className="absolute -top-7 -right-[9px] text-gray-500 hover:text-gray-700 transition-colors"
         aria-label="Close review form"
       >
         <svg

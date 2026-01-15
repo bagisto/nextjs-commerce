@@ -1,5 +1,6 @@
 "use client";
 import { ReactNode, createContext, useContext, useState } from "react";
+import { ToastContainer } from "@/components/theme/toast/ToastContainer";
 
 export type ToastType = "success" | "danger" | "warning" | "primary";
 
@@ -28,7 +29,6 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
     setToasts((prev) => [...prev, newToast]);
 
-    // Auto-remove toast after duration
     setTimeout(() => {
       removeToast(id);
     }, toast.duration || 5000);
@@ -40,6 +40,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ToastContext.Provider value={{ toasts, addToast, removeToast }}>
+      <ToastContainer />
       {children}
     </ToastContext.Provider>
   );

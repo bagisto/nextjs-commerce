@@ -45,4 +45,22 @@ const MobileSearch = () => {
   );
 };
 
+
+
+export const MobileSearchBar = ({
+  onClose,
+}: {
+  onClose?: () => void;
+}) => {
+  return (
+    <>
+      <div className="block w-full justify-center md:hidden px-4 mt-2 z-10">
+        <Suspense fallback={<SearchSkeleton />}>
+          <Search search={false} onClose={onClose} />
+        </Suspense>
+      </div>
+    </>
+  );
+};
+
 export default MobileSearch;

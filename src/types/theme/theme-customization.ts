@@ -1,31 +1,32 @@
 export interface ThemeTranslationNode {
-    id: string;
-    themeCustomizationId: string;
-    locale: string;
-    options: string;
+  id: string;
+  themeCustomizationId: string;
+  locale: string;
+  options: string;
 }
 
 export interface ThemeTranslationEdge {
-    node: ThemeTranslationNode;
+  node: ThemeTranslationNode;
 }
 
 export interface ThemeCustomizationNode {
-    id: string;
-    type: string;
-    name: string;
-    status: string;
-    themeCode?: string;
-    translations: {
-        edges: ThemeTranslationEdge[];
-    };
+  id: string;
+  type: string;
+  name: string;
+  status: string;
+  sortOrder: number;
+  themeCode?: string;
+  translations: {
+    edges: ThemeTranslationEdge[];
+  };
 }
 
 export interface ThemeCustomizationResponse {
-    themeCustomizations: {
-        edges: {
-            node: ThemeCustomizationNode;
-        }[];
-    };
+  themeCustomizations: {
+    edges: {
+      node: ThemeCustomizationNode;
+    }[];
+  };
 }
 
 

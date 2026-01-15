@@ -71,10 +71,19 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
     if (!Array.isArray(images) || images.length === 0) return null;
 
     return (
-        <section className="mt-7 w-full">
+        <section className="mt-7.5 w-full">
+            <style>{`
+                .image-carousel-aspect {
+                    aspect-ratio: 1.72;
+                }
+                @media (min-width: 768px) {
+                    .image-carousel-aspect {
+                        aspect-ratio: 1.98;
+                    }
+                }
+            `}</style>
             <div
-                className="group relative w-full overflow-hidden rounded-xl  md:rounded-2xl"
-                style={{ aspectRatio: '1.98' }}
+                className="group relative w-full overflow-hidden rounded-xl md:rounded-2xl image-carousel-aspect"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >

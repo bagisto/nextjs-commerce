@@ -11,10 +11,8 @@ import clsx from "clsx";
 import { FC, useState } from "react";
 import { ReviewDetailProps } from "../type";
 
-
 const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => {
   const [visibleCount, setVisibleCount] = useState(5);
-
   if (!Array.isArray(reviewDetails) || reviewDetails.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center pb-2">
@@ -43,16 +41,21 @@ const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => 
           />
         </div>
 
-        <div className="flex">
+        <div className="flex w-full max-w-[280px] overflow-hidden rounded-sm">
           {Object.entries(ratingCounts)
             .reverse()
+            .filter(([_, count]) => (count as number) > 0)
             .map(([star, count]) => (
-              <div key={star + count}>
+              <div
+                key={star}
+                style={{ flex: count as number }}
+                className="min-h-4"
+              >
                 <Tooltip
                   content={
                     <p className="text-center">
-                      {star} Star <br /> {count}{" "}
-                      {count >= 2 ? "Reviews" : "Review"}
+                      {star} Star <br /> {count as number}{" "}
+                      {(count as number) >= 2 ? "Reviews" : "Review"}
                     </p>
                   }
                   placement="top"
@@ -60,23 +63,16 @@ const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => 
                 >
                   <div
                     className={clsx(
-                      "min-h-4 !cursor-pointer",
-                      star === "5" && "min-w-24 rounded-l-sm",
-                      star === "4" && "min-w-16",
-                      star === "3" && "min-w-12",
-                      star === "2" && "min-w-12",
-                      star === "1" && "min-w-6 rounded-r-sm",
-                      count > 0
-                        ? star === "5"
-                          ? "bg-green-700"
-                          : star === "4"
-                            ? "bg-cyan-400"
-                            : star === "3"
-                              ? "bg-violet-600"
-                              : star === "2"
-                                ? "bg-yellow-400"
-                                : "bg-red-600"
-                        : "bg-gray-400"
+                      "h-full w-full !cursor-pointer",
+                      star === "5"
+                        ? "bg-green-700"
+                        : star === "4"
+                          ? "bg-cyan-400"
+                          : star === "3"
+                            ? "bg-violet-600"
+                            : star === "2"
+                              ? "bg-yellow-400"
+                              : "bg-red-600"
                     )}
                   />
                 </Tooltip>
@@ -99,7 +95,7 @@ const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => 
             ) => (
               <div
                 key={index}
-                className="flex flex-col gap-y-2 pb-6 border-b border-neutral-200 dark:border-neutral-700"
+                className="flex flex-col gap-y-2 py-3 border-b border-neutral-200 dark:border-neutral-700"
               >
                 <h1 className="font-outfit text-xl font-medium text-black/[80%] dark:text-white">
                   {title}

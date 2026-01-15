@@ -26,6 +26,7 @@ function SubmitButton({
       <button
         aria-disabled
         aria-label="Please select an option"
+        type="button"
         disabled={!selectedVariantId}
         className={clsx(buttonClasses, " opacity-60 !cursor-not-allowed")}
       >
@@ -38,11 +39,12 @@ function SubmitButton({
     <button
       aria-disabled={pending}
       aria-label="Add to cart"
+      type="submit"
       className={clsx(buttonClasses, {
         "hover:opacity-90": true,
         [disabledClasses]: pending,
       })}
-      onClick={(e: React.FormEvent<HTMLButtonElement>) => {
+      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
         if (pending) e.preventDefault();
       }}
     >
@@ -75,12 +77,16 @@ export function AddToCart({
 
   const quantity = watch("quantity");
 
-  const increment = () => {
-    setValue("quantity", quantity + 1);
+  const increment = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setValue("quantity", Number(quantity) + 1);
   };
 
-  const decrement = () => {
-    setValue("quantity", Math.max(1, quantity - 1));
+  const decrement = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setValue("quantity", Math.max(1, Number(quantity) - 1));
   };
 
   const searchParams = useSearchParams();
@@ -98,12 +104,12 @@ export function AddToCart({
     JSON.stringify(index)
   );
   const buttonStatus = !!selectedVariantId;
-  
-  const actionWithVariant = async () => {
+
+  const actionWithVariant = async (data: any) => {
     const pid = type === "configurable" ? String(selectedVariantId) : String(productId).split("/").pop() ?? "";
     onAddToCart({
       productId: pid,
-      quantity,
+      quantity: data.quantity,
     });
   };
 
@@ -117,14 +123,14 @@ export function AddToCart({
       <form className="flex gap-x-4" onSubmit={handleSubmit(actionWithVariant)}>
         <div className="flex items-center justify-center">
           <div className="flex items-center rounded-full border-2 border-blue-500">
-            <button
+            <div
               aria-label="Decrease quantity"
+              role="button"
               className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-l-full text-gray-600 transition-colors hover:text-gray-800 dark:text-white hover:dark:text-white/[80%]"
-              type="button"
               onClick={decrement}
             >
               <MinusIcon className="h-4 w-4" />
-            </button>
+            </div>
 
             <input
               type="hidden"
@@ -135,13 +141,14 @@ export function AddToCart({
               {quantity}
             </div>
 
-            <button
+            <div
               aria-label="Increase quantity"
+              role="button"
               className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-r-full text-gray-600 transition-colors hover:text-gray-800 dark:text-white hover:dark:text-white/[80%]"
               onClick={increment}
             >
               <PlusIcon className="h-4 w-4" />
-            </button>
+            </div>
           </div>
         </div>
         <SubmitButton

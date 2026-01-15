@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@components/common/button/Button";
-import { SIGNIN_IMG } from "@/utils/constants";
+import { EMAIL_REGEX, SIGNIN_IMG } from "@/utils/constants";
 import InputText from "@components/common/form/Input";
 import { useCustomToast } from "@/utils/hooks/useToast";
 import { useMergeCart } from "@utils/hooks/useMergeCart";
@@ -53,7 +53,7 @@ export default function LoginForm() {
       }
       showToast("Welcome! Successfully logged in.", "success");
       setLocalStorage("email", data?.username)
-      
+
       const session = await getSession();
       const userToken: string | undefined = session?.user?.accessToken;
 
@@ -76,10 +76,10 @@ export default function LoginForm() {
         setCookie(GUEST_CART_TOKEN, userToken);
         setCookie(IS_GUEST, "false");
       }
-     setTimeout(() => {
-      window.location.href = "/";
-    }, 100);
-    
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
+
 
     } catch (error) {
       console.error(error);
@@ -88,7 +88,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-[15px]  xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-28">
+    <div className="my-8 flex h-[80vh] w-full items-center w-full max-w-screen-2xl mx-auto px-4  xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-28">
       <div className="flex w-full max-w-[583px] flex-col gap-y-4 lg:gap-y-12">
         <div className="font-outfit">
           <h2 className="py-1 text-2xl font-semibold sm:text-4xl">
@@ -109,7 +109,7 @@ export default function LoginForm() {
               {...register("username", {
                 required: "Email is required",
                 pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  value: EMAIL_REGEX,
                   message: "Please enter a valid email.",
                 },
               })}
@@ -152,7 +152,7 @@ export default function LoginForm() {
             />
 
             <Link
-              className="text-end text-sm font-medium text-blue-600 hover:text-blue-500 underline"
+              className="text-end text-sm font-medium text-blue-600 underline hover:text-blue-500 underline"
               href="/customer/forget-password"
             >
               Forgot your password ?
@@ -170,7 +170,7 @@ export default function LoginForm() {
             <span className="font-outfit">
               New customer?{" "}
               <Link
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-blue-600 hover:text-blue-500 underline"
                 href="/customer/register"
               >
                 Create your account

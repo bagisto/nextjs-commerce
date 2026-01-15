@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import InputText from "@components/common/form/Input";
 import { useCustomToast } from "@/utils/hooks/useToast";
 import { useRouter } from "next/navigation";
-import { SIGNUP_IMG } from "@utils/constants";
+import { EMAIL_REGEX, SIGNUP_IMG } from "@utils/constants";
 import { createUser } from "@utils/actions";
 import { Button } from "@components/common/button/Button";
 
@@ -53,7 +53,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-[15px] xss:px-7.5 justify-between gap-0 md:gap-4 lg:my-16 xl:my-28">
+    <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-4 xss:px-7.5 justify-between gap-0 md:gap-4 lg:my-16 xl:my-28">
       <div className="relative flex w-full max-w-[583px] flex-col gap-y-4 lg:gap-y-12">
         <div className="font-outfit">
           <h2 className="py-1 text-2xl font-semibold sm:text-4xl">
@@ -107,7 +107,7 @@ export default function RegistrationForm() {
               {...register("email", {
                 required: "Email is required",
                 pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  value: EMAIL_REGEX,
                   message: "Please enter a valid email.",
                 },
               })}
@@ -180,7 +180,7 @@ export default function RegistrationForm() {
             />
             <span className="font-outfit">
               Already have an account?{" "}
-              <Link className="text-blue-600" href="/customer/login">
+              <Link className="text-blue-600 underline" href="/customer/login">
                 Sign In
               </Link>
             </span>

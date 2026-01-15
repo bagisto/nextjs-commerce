@@ -17,6 +17,7 @@ import {
   ProductFilterAttributeResponse,
   ProductsResponse,
 } from "@/components/catalog/type";
+import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
 const Pagination = dynamicImport(
   () => import("@/components/catalog/Pagination")
 );
@@ -102,6 +103,7 @@ export default async function SearchPage({
     q: searchValue,
     page,
     cursor,
+    before,
   } = (params || {}) as {
     [key: string]: string;
   };
@@ -112,6 +114,7 @@ export default async function SearchPage({
   const selectedSort =
     SortByFields.find((s) => s.key === sortValue) || SortByFields[0];
   const afterCursor: string | undefined = cursor;
+  const beforeCursor: string | undefined = before;
   const rawColor = params?.color;
   const rawSize = params?.size;
   const rawBrand = params?.brand;
@@ -159,12 +162,9 @@ export default async function SearchPage({
   if (colorIds.length > 0) filterObject.color = colorIds.join(",");
   if (sizeIds.length > 0) filterObject.size = sizeIds.join(",");
   if (brandIds.length > 0) filterObject.brand = brandIds.join(",");
-
   const isFilterApplied = Object.keys(filterObject).length > 0;
   const filterInput = isFilterApplied
-    ? Object.entries(filterObject)
-      .map(([key, value]) => JSON.stringify({ [key]: value }))
-      .join("")
+    ? JSON.stringify(filterObject)
     : undefined;
 
   let dataPromise;
@@ -172,10 +172,11 @@ export default async function SearchPage({
     dataPromise = graphqlRequest<ProductsResponse>(GET_FILTER_PRODUCTS, {
       query: searchValue,
       filter: filterInput,
-      first: itemsPerPage,
+      ...(beforeCursor
+        ? { last: itemsPerPage, before: beforeCursor }
+        : { first: itemsPerPage, after: afterCursor }),
       sortKey: selectedSort.sortKey,
       reverse: selectedSort.reverse,
-      ...(cursor && { after: cursor }),
     });
   } else {
     dataPromise = (async () => {
@@ -195,10 +196,11 @@ export default async function SearchPage({
 
       return graphqlRequest<ProductsResponse>(GET_PRODUCTS, {
         query: searchValue,
-        first: itemsPerPage,
+        ...(beforeCursor
+          ? { last: itemsPerPage, before: beforeCursor }
+          : { first: itemsPerPage, after: currentAfterCursor }),
         sortKey: selectedSort.sortKey,
         reverse: selectedSort.reverse,
-        ...(currentAfterCursor && { after: currentAfterCursor }),
       });
     })();
   }
@@ -241,16 +243,18 @@ export default async function SearchPage({
 
   return (
     <>
-      <h2 className="text-2xl sm:text-4xl font-semibold mx-auto mt-7.5 w-full max-w-screen-2xl my-3 mx-auto px-[15px] xss:px-7.5">
+
+      <MobileSearchBar />
+      <h2 className="text-2xl sm:text-4xl font-semibold mx-auto mt-7.5 w-full max-w-screen-2xl my-3 mx-auto px-4 xss:px-7.5">
         All Top Products
       </h2>
 
-      <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between w-full mx-auto max-w-screen-2xl px-[15px] xss:px-7.5">
+      <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between w-full mx-auto max-w-screen-2xl px-4 xss:px-7.5">
         <FilterList filterAttributes={filterAttributes} />
 
         <SortOrder sortOrders={SortByFields} title="Sort by" />
       </div>
-      <div className="flex items-center justify-between gap-4 py-8 md:hidden  mx-auto w-full max-w-screen-2xl px-[15px] xss:px-7.5">
+      <div className="flex items-center justify-between gap-4 py-8 md:hidden  mx-auto w-full max-w-screen-2xl px-4 xss:px-7.5">
         <MobileFilter filterAttributes={filterAttributes} />
 
         <SortOrder sortOrders={SortByFields} title="Sort by" />
@@ -259,15 +263,14 @@ export default async function SearchPage({
       {!isArray(products) && (
         <NotFound
           msg={`${searchValue
-              ? `There are no products that match Showing : ${searchValue}`
-              : "There are no products that match Showing"
+            ? `There are no products that match Showing : ${searchValue}`
+            : "There are no products that match Showing"
             } `}
         />
       )}
       {isArray(products) ? (
-        <Grid 
-        className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 w-full max-w-screen-2xl mx-auto md:grid-cols-3 lg:grid-cols-4 px-[15px] xss:px-7.5"
-         style={{ gap: "46px" }}
+        <Grid
+          className="grid grid-flow-row grid-cols-2 gap-5 md:gap-11.5 w-full max-w-screen-2xl mx-auto md:grid-cols-3 lg:grid-cols-4 px-4 xss:px-7.5"
         >
           <ProductGridItems products={products} />
         </Grid>
@@ -283,6 +286,7 @@ export default async function SearchPage({
             itemsTotal={totalCount || 0}
             currentPage={currentPage}
             nextCursor={pageInfo?.endCursor}
+            prevCursor={pageInfo?.startCursor}
           />
         </nav>
       )}
@@ -297,6 +301,7 @@ export default async function SearchPage({
             itemsTotal={totalCount || 0}
             currentPage={currentPage}
             nextCursor={pageInfo?.endCursor}
+            prevCursor={pageInfo?.startCursor}
           />
         </nav>
       )}

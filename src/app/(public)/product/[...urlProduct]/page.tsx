@@ -19,6 +19,7 @@ import { RelatedProductsSection } from "@components/catalog/product/RelatedProdu
 import ProductInfo from "@components/catalog/product/ProductInfo";
 import { LRUCache } from "@/utils/LRUCache";
 import { ProductVariant } from "@/types/category/type";
+import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
 
 const productCache = new LRUCache<ProductNode>(100, 10);
 export const dynamic = "force-static";
@@ -93,13 +94,14 @@ export default async function ProductPage({
 
   return (
     <>
+      <MobileSearchBar/>
       <script
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(productJsonLd),
         }}
         type="application/ld+json"
       />
-      <div className="flex flex-col gap-y-4 rounded-lg pb-0 pt-4 sm:gap-y-6 md:py-7.5 lg:flex-row w-full max-w-screen-2xl mx-auto px-[15px] xss:px-7.5 lg:gap-8">
+      <div className="flex flex-col gap-y-4 rounded-lg pb-0 pt-4 sm:gap-y-6 md:py-7.5 lg:flex-row w-full max-w-screen-2xl mx-auto px-4 xss:px-7.5 lg:gap-8">
         <div className="h-full w-full max-w-[885px] max-1366:max-w-[650px] max-lg:max-w-full">
           <Suspense fallback={<ProductDetailSkeleton />}>
             {isArray(VariantImages) ? (

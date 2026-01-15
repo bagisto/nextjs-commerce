@@ -44,7 +44,7 @@ export default function Stepper(
     setIsOpen
   }: CheckOutProps
 ) {
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const steps = useMemo<Step[]>(() => {
     return [
       {
@@ -124,16 +124,16 @@ export default function Stepper(
           <div className="flex items-center gap-3">
             <div
               className={`flex h-6 w-6 items-center justify-center rounded-full text-sm font-medium ${isCompleted
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-neutral-900"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-neutral-900"
                 }`}
             >
               {step.id}
             </div>
             <span
               className={`text-lg font-medium max-md:text-base ${isActive
-                  ? "font-medium text-neutral-900 dark:text-neutral-300"
-                  : "text-neutral-900 dark:text-white"
+                ? "font-medium text-neutral-900 dark:text-neutral-300"
+                : "text-neutral-900 dark:text-white"
                 }`}
             >
               {step.title}
@@ -151,15 +151,16 @@ export default function Stepper(
       <header className="pb-6 sm:py-6">
         <Link
           aria-label={SITE_NAME}
-          className="flex items-center gap-2 text-black dark:text-white md:pt-1"
+          className="flex items-center gap-2 text-black dark:text-white md:pt-1 hidden lg:block"
           href="/"
         >
           <LogoIcon />
         </Link>
+        <h1 className="text-xl px-2 font-semibold block lg:hidden">Checkout</h1>
       </header>
 
-      <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 dark:scrollbar-thumb-neutral-300 lg:h-[calc(100dvh-124px)] lg:overflow-hidden lg:overflow-y-auto">
-        <div className="flex h-full flex-col gap-y-8 px-3">
+      <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 dark:scrollbar-thumb-neutral-300 h-[calc(100dvh-300px)] overflow-y-auto lg:h-[calc(100dvh-124px)]">
+        <div className="flex h-full flex-col gap-y-8 px-2 sm:px-3">
           {steps.map((step) => (
             <StepItem key={step.id} step={step} />
           ))}

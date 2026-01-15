@@ -35,21 +35,21 @@ export const ProductCard: FC<{
           </div>
         </Link>
         <div
-          className={`hidden md:block absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-0 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
+          className={`hidden lg:block absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-0 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
         >
           <AddToCartButton productType={product.type} productId={product.id} productUrlKey={product.urlKey} />
         </div>
         <div
-          className={`block md:hidden absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-100 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
+          className={`block lg:hidden absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-100 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
         >
           <AddToCartButton productType={product.type} productId={product.id} productUrlKey={product.urlKey} />
         </div>
       </div>
 
       <div>
-        <h2 className="mb-2.5 text-base font-medium md:text-lg">
+        <h3 className="mb-2.5 text-base font-medium md:text-lg">
           {product?.name}
-        </h2>
+        </h3>
 
         <div className="flex items-center gap-2">
           {product?.type === "configurable" && (
@@ -60,12 +60,6 @@ export const ProductCard: FC<{
           {product?.type === "simple" && specialPrice ? (
             <>
               <div className="flex items-center gap-2">
-                {/* <Price
-                amount={price}
-                className="text-xs font-semibold text-gray-500 md:text-sm"
-                currencyCode={currency}
-                style={{ textDecoration: "line-through" }}
-              /> */}
                 <Price
                   amount={specialPrice}
                   className="text-xs font-semibold md:text-sm"

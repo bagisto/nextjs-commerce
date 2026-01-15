@@ -9,14 +9,13 @@ type MerchandiseSearchParams = {
   [key: string]: string;
 };
 
-export default function CheckoutCart({ cartItems, selectedShippingRate : _id }: { cartItems: any, selectedShippingRate?: any }) {
+export default function CheckoutCart({ cartItems, selectedShippingRate: _id }: { cartItems: any, selectedShippingRate?: any }) {
 
   const cart = Array.isArray(cartItems?.items?.edges)
     ? cartItems?.items?.edges
     : [];
   return (
     <>
-      <CartItemAccordion cartItems={cartItems} />
       <div className="hidden h-full min-h-[100dvh] flex-col justify-between py-4 pl-4 pr-8 lg:flex">
         <div className="">
           <h1 className="p-6 font-outfit text-xl font-medium text-black dark:text-neutral-300">
@@ -122,6 +121,7 @@ export default function CheckoutCart({ cartItems, selectedShippingRate : _id }: 
           </div>
         </div>
       </div>
+      <CartItemAccordion cartItems={cartItems} />
     </>
   );
 }

@@ -23,13 +23,13 @@ export const Rating = ({
               size,
               index < rating
                 ? "fill-yellow-500 dark:fill-yellow-500"
-                : "fill-gray-500 dark:fill-gray-900",
-              "fill-gray-500 dark:stroke-white"
+                : "fill-black dark:fill-gray-900",
+              "fill-black dark:stroke-white"
             )}
           />
         ))}
       </div>
-      <span className="text-nowrap h-fit font-outfit text-sm font-light">
+      <span className="text-nowrap h-fit font-outfit text-base font-light">
         ({reviewCountToShow} Review
         {reviewCountToShow !== 1 && reviewCountToShow !== 0 ? "s" : ""})
       </span>

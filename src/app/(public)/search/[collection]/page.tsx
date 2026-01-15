@@ -22,6 +22,7 @@ import { CategoryDetail } from "@components/theme/search/CategoryDetail";
 import { Suspense } from "react";
 import FilterListSkeleton from "@components/common/skeleton/FilterSkeleton";
 import { CategoryNode, TreeCategoriesResponse } from "@/types/theme/category-tree";
+import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
 
 function findCategoryBySlug(categories: CategoryNode[], slug: string): CategoryNode | null {
   for (const category of categories) {
@@ -104,6 +105,7 @@ export default async function CategoryPage({
     q: searchValue,
     page,
     cursor,
+    before,
   } = (resolvedParams || {}) as {
     [key: string]: string;
   };
@@ -136,16 +138,16 @@ export default async function CategoryPage({
   if (sizeIds.length > 0) filterObject.size = sizeIds.join(",");
   if (brandIds.length > 0) filterObject.brand = brandIds.join(",");
 
-  const filterInput = JSON.stringify(filterObject);
-  
+  const filterInput = JSON.stringify(filterObject)
   const [data] = await Promise.all([
     graphqlRequest<ProductsResponse>(GET_FILTER_PRODUCTS, {
       query: searchValue || "",
       filter: filterInput,
-      first: itemsPerPage,
+      ...(before
+        ? { last: itemsPerPage, before: before }
+        : { first: itemsPerPage, after: cursor }),
       sortKey: selectedSort.sortKey,
       reverse: selectedSort.reverse,
-      ...(cursor && { after: cursor }),
     }),
   ]);
 
@@ -169,51 +171,56 @@ export default async function CategoryPage({
   const pageInfo = data?.products?.pageInfo;
   const totalCount = data?.products?.totalCount;
   const translation = categoryItem.translations?.edges?.find(
-  (t) => t.node.slug === categorySlug
-)?.node;
+    (t) => t.node.slug === categorySlug
+  )?.node;
 
   return (
-    <section>
-      <Suspense fallback={<FilterListSkeleton />}>
-  <CategoryDetail
-    categoryItem={{ description: translation?.description ?? "", name: translation?.name ?? "" }}
-    
-  />
-</Suspense>
-      <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between w-full max-w-screen-2xl mx-auto px-[15px]">
-        <FilterList filterAttributes={filterAttributes} />
-        <SortOrder sortOrders={SortByFields} title="Sort by" />
-      </div>
-      <div className="flex items-center justify-between gap-4 py-8 md:hidden w-full max-w-screen-2xl mx-auto px-[15px]">
-        <MobileFilter filterAttributes={filterAttributes} />
-        <SortOrder sortOrders={SortByFields} title="Sort by" />
-      </div>
+    <>
+      <MobileSearchBar />
+      <section>
+        <Suspense fallback={<FilterListSkeleton />}>
+          <CategoryDetail
+            categoryItem={{ description: translation?.description ?? "", name: translation?.name ?? "" }}
 
-      {isArray(products) && products.length > 0 ? (
-        <Grid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 w-full max-w-screen-2xl mx-auto px-[15px]"
-         style={{ gap: "46px" }}
-        >
-          <ProductGridItems products={products} />
-        </Grid>
-      ) : (
-        <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-neutral-300">
-          <p className="text-neutral-500">No products found in this category.</p>
-        </div>
-      )}
-
-      {isArray(products) && (totalCount > itemsPerPage || pageInfo?.hasNextPage) && (
-        <nav
-          aria-label="Collection pagination"
-          className="my-10 block items-center sm:flex"
-        >
-          <Pagination
-            itemsPerPage={itemsPerPage}
-            itemsTotal={totalCount || 0}
-            currentPage={currentPage}
-            nextCursor={pageInfo?.endCursor}
           />
-        </nav>  
-      )}
-    </section>
+        </Suspense>
+        <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between w-full max-w-screen-2xl mx-auto px-4">
+          <FilterList filterAttributes={filterAttributes} />
+          <SortOrder sortOrders={SortByFields} title="Sort by" />
+        </div>
+        <div className="flex items-center justify-between gap-4 py-8 md:hidden w-full max-w-screen-2xl mx-auto px-4">
+          <MobileFilter filterAttributes={filterAttributes} />
+          <SortOrder sortOrders={SortByFields} title="Sort by" />
+        </div>
+
+        {isArray(products) && products.length > 0 ? (
+          <Grid className="grid-cols-2 lg:grid-cols-4 gap-5 md:gap-11.5 w-full max-w-screen-2xl mx-auto px-4"
+          >
+            <ProductGridItems products={products} />
+          </Grid>
+        ) : (
+          <div className="px-4">
+            <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-neutral-300">
+              <p className="text-neutral-500">No products found in this category.</p>
+            </div>
+          </div>
+        )}
+
+        {isArray(products) && (totalCount > itemsPerPage || pageInfo?.hasNextPage) && (
+          <nav
+            aria-label="Collection pagination"
+            className="my-10 block items-center sm:flex"
+          >
+            <Pagination
+              itemsPerPage={itemsPerPage}
+              itemsTotal={totalCount || 0}
+              currentPage={currentPage}
+              nextCursor={pageInfo?.endCursor}
+              prevCursor={pageInfo?.startCursor}
+            />
+          </nav>
+        )}
+      </section>
+    </>
   );
 }

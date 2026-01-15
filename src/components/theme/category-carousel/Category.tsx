@@ -14,7 +14,7 @@ const Category: FC<{
         <h2 className="mb-2 text-[28px] font-semibold text-black dark:text-white xss:mb-4 xss:text-4xl">
           {name}
         </h2>
-        <p className="text-base font-normal text-black/60 dark:text-neutral-300 xss:text-lg">
+        <p className="font-normal text-black/60 dark:text-neutral-300 text-lg">
           Discover the latest trends! Fresh products just added—shop new styles,
           tech, and essentials before they&apos;re gone.
         </p>

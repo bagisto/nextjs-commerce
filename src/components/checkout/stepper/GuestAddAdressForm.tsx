@@ -174,7 +174,7 @@ export const GuestAddAdressForm: FC<{
           {...register("billing.firstName", {
             required: "First name is required",
           })}
-          className="col-span-3 mb-4"
+          className="col-span-6 xxs:col-span-3 mb-4"
           errorMsg={errors?.billing?.firstName?.message}
           label="First Name *"
           size="md"
@@ -183,7 +183,7 @@ export const GuestAddAdressForm: FC<{
           {...register("billing.lastName", {
             required: "Last name is required",
           })}
-          className="col-span-3 mb-4"
+          className="col-span-6 xxs:col-span-3 mb-4"
           errorMsg={errors?.billing?.lastName?.message}
           label="Last Name *"
           size="md"
@@ -208,7 +208,7 @@ export const GuestAddAdressForm: FC<{
           {...register("billing.city", {
             required: "City field is required",
           })}
-          className="col-span-3 mb-4"
+          className="col-span-6 xxs:col-span-3 mb-4"
           errorMsg={errors?.billing?.city?.message}
           label="City *"
           size="md"
@@ -217,7 +217,7 @@ export const GuestAddAdressForm: FC<{
           {...register("billing.postcode", {
             required: "Postcode field is required",
           })}
-          className="col-span-3"
+          className="col-span-6 xxs:col-span-3"
           errorMsg={errors?.billing?.postcode?.message}
           label="Zip Code *"
           size="md"

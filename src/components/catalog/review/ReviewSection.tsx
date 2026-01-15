@@ -13,7 +13,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
     const router = useRouter();
 
     const handleAddReview = () => {
-        if (IsGuest === "true") {
+        if (IsGuest === "true" || IsGuest === null) {
             router.push("/customer/login");
         } else {
             setShowForm(true);
@@ -27,7 +27,7 @@ export default function ReviewSection({ productId }: { productId: string }) {
                     <Button
                         title="Add Review"
                         onClick={handleAddReview}
-                        className="relative flex w-full cursor-pointer h-fit items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white hover:opacity-90"
+                        className="relative flex w-full max-w-[20rem] cursor-pointer h-fit items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white"
                     />
                 </div>
             ) : (

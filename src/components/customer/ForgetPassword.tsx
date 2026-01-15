@@ -9,7 +9,7 @@ import { recoverPassword } from "@utils/actions";
 
 import { Button } from "@components/common/button/Button";
 
-import { FORGET_PASSWORD_IMG } from '@/utils/constants';
+import { EMAIL_REGEX, FORGET_PASSWORD_IMG } from '@/utils/constants';
 import InputText from '@components/common/form/Input';
 import { useCustomToast } from '@/utils/hooks/useToast';
 
@@ -68,7 +68,7 @@ export default function ForgetPasswordForm() {
   };
 
   return (
-    <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-[15px] xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-32">
+    <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-4 xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-32">
       <div className="flex w-full flex-col gap-y-4 lg:max-w-[583px] lg:gap-y-12">
         <div className="font-outfit">
           <h2 className="py-1 text-3xl font-semibold sm:text-4xl">
@@ -89,7 +89,7 @@ export default function ForgetPasswordForm() {
             {...register("email", {
               required: "Email is required",
               pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                value: EMAIL_REGEX,
                 message: "Please enter a valid email address.",
               },
             })}
@@ -111,7 +111,7 @@ export default function ForgetPasswordForm() {
             />
             <span className="px-1">
               Back to sign in?{" "}
-              <Link className="text-blue-600" href="/customer/login">
+              <Link className="text-blue-600 underline" href="/customer/login">
                 Sign In
               </Link>
             </span>

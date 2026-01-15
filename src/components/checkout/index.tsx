@@ -20,7 +20,7 @@ const CheckOut = ({ step }: CheckOutProps) => {
   const cartDetail = useAppSelector((state) => state.cartDetail);
   const cartItems = cartDetail?.cart;
   const selectedShippingRate = cartItems?.selectedShippingRate;
-   const selectedShippingRateTitle = cartItems?.selectedShippingRateTitle || cartItems?.selectedShippingRate;
+  const selectedShippingRateTitle = cartItems?.selectedShippingRateTitle || cartItems?.selectedShippingRate;
   // const selectedShippingRateTitle =  cartItems?.selectedShippingRate;
   const selectedPayment = cartItems?.paymentMethod;
   const selectedPaymentTitle = cartItems?.paymentMethodTitle;
@@ -42,7 +42,7 @@ const CheckOut = ({ step }: CheckOutProps) => {
 
   return (
     <>
-      <section className="flex flex-col-reverse items-start justify-between lg:flex-row lg:justify-between">
+      <section className="flex flex-col items-start justify-between lg:flex-row lg:justify-between">
         <div className="w-full px-0 py-2 sm:px-4 sm:py-4 lg:w-1/2 xl:px-16">
           {isLoading ? (
             <CheckoutSkeleton />
@@ -61,7 +61,7 @@ const CheckOut = ({ step }: CheckOutProps) => {
           )}
         </div>
 
-        <div className="h-full w-full justify-self-start border-0 border-l border-none border-black/[10%] dark:border-neutral-700 lg:w-1/2 lg:border-solid">
+        <div className="h-full w-full !z-0 justify-self-start border-0 border-l border-none border-black/[10%] dark:border-neutral-700 lg:w-1/2 lg:border-solid">
           {isLoading ? (
             <CartSkeleton className="w-full" />
           ) : (

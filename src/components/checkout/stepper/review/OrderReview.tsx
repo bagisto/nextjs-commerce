@@ -26,7 +26,7 @@ export default function OrderReview({
   };
 
   return (
-    <div className="mt-4 flex-col">
+    <div className="mt-4 flex-col mb-20 sm:mb-0">
       <div className="relative">
         {isObject(shippingAddress) && (
           <table className="w-full text-left text-sm text-gray-500 dark:text-gray-400">

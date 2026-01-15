@@ -6,12 +6,12 @@
 html,
 body {
   scrollbar-width: thin;
-  scrollbar-color: #6b7280 transparent; 
+  scrollbar-color: #6b7280 transparent;
 }
 
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
-  width: 6px; 
+  width: 6px;
   height: 6px;
 }
 
@@ -28,10 +28,12 @@ body::-webkit-scrollbar-thumb {
 
 .dark html::-webkit-scrollbar-thumb,
 .dark body::-webkit-scrollbar-thumb {
-  background-color: #d4d4d4; 
+  background-color: #d4d4d4;
 }
+
 @theme {
   /* Custom breakpoints */
+  --breakpoint-xxs: 375px;
   --breakpoint-xs: 425px;
   --breakpoint-xss: 525px;
   --breakpoint-400: 400px;
@@ -46,6 +48,8 @@ body::-webkit-scrollbar-thumb {
   --spacing-7_5: 30px;
   --spacing-30: 120px;
   --spacing-92_5: 23.125rem;
+  /* Font sizes */
+  --font-size-xxs: 13px;
   /* Font family */
   --font-family-outfit: var(--font-outfit), system-ui, sans-serif;
 }
@@ -59,13 +63,18 @@ body::-webkit-scrollbar-thumb {
 
   --hero-background: #ffffff;
   --hero-foreground: #000;
-
+  --dark-grey: #404040;
+  --selected-color: #E3ECFF;
+  --selected-color-dark: #555b69;
+  /* font size  */
+  --font-size-xxs: 13px;
   /* Spacing */
   --space-30: 120px;
   --space-7_5: 30px;
   --space-92_5: 23.125rem;
 
   /* Screens (breakpoints) */
+  --screen-xxs: 360px;
   --screen-xs: 425px;
   --screen-xss: 525px;
   --screen-400: 400px;
@@ -90,6 +99,9 @@ body::-webkit-scrollbar-thumb {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-dark-grey: var(--dark-grey);
+  --color-selected-color: var(--selected-color);
+  --color-selected-color-dark: var(--selected-color-dark);
 }
 
 
@@ -105,9 +117,15 @@ body {
   }
 
   .prose h1 {
-  font-size: 36px;
-  font-weight: 700;
-  margin: 12px 0;
-  font-family: "Outfit", sans-serif;
-}
+    margin: 12px 0 !important;
+    font-family: Outfit, sans-serif !important;
+    font-size: 24px !important;
+    font-weight: 600 !important;
+  }
+
+  .margin-t {
+    margin-top: -9px;
+  }
+
+
 }

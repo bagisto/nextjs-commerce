@@ -10,11 +10,13 @@ export default function Pagination({
   itemsTotal,
   currentPage,
   nextCursor,
+  prevCursor,
 }: {
   itemsPerPage: number;
   itemsTotal: number;
   currentPage: number;
   nextCursor?: string;
+  prevCursor?: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -23,7 +25,7 @@ export default function Pagination({
   const pageCount = Math.ceil(itemsTotal / itemsPerPage);
 
   const handlePageClick = (page: number) => {
-    if (page < 0 || page >= pageCount) return; 
+    if (page < 0 || page >= pageCount) return;
 
     const params = new URLSearchParams(currentParams.toString());
 
@@ -31,8 +33,13 @@ export default function Pagination({
 
     if (page === currentPage + 1 && nextCursor) {
       params.set("cursor", nextCursor);
+      params.delete("before");
+    } else if (page === currentPage - 1 && prevCursor) {
+      params.set("before", prevCursor);
+      params.delete("cursor");
     } else {
       params.delete("cursor");
+      params.delete("before");
     }
 
     const newUrl = createUrl(pathname, params);
@@ -87,10 +94,9 @@ export default function Pagination({
       <button
         className={`
           flex h-10 w-10 items-center justify-center text-lg rounded-sm duration-300 cursor-pointer
-          ${
-            pageIndex === currentPage
-              ? "border !border-gray-300 dark:border-gray-700"
-              : "text-gray-500 dark:!text-gray-400 hover:border-gray-500 dark:hover:border-gray-700"
+          ${pageIndex === currentPage
+            ? "border !border-gray-300 dark:border-gray-700"
+            : "text-gray-500 dark:!text-gray-400 hover:border-gray-500 dark:hover:border-gray-700"
           }
         `}
         aria-label={`Goto Page ${pageIndex + 1}`}

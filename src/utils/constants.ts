@@ -252,3 +252,4 @@ export const NEXTAUTH_SECURE_TOKEN = "__Secure-next-auth.session-token";
 
 export const ORDER_ID = "order_id";
 
+export const EMAIL_REGEX = /^(?![.-])(?!.*[.-]@)(?!.*\.\.)[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;

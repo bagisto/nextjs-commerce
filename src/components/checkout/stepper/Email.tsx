@@ -8,6 +8,7 @@ import InputText from "@components/common/form/Input";
 import { ProceedToCheckout } from "./ProceedToCheckout";
 import { delay } from "@utils/helper";
 import { EmailFormProps, EmailFormValues } from "../type";
+import { EMAIL_REGEX } from "@utils/constants";
 
 
 
@@ -58,7 +59,7 @@ const Email = () => {
               <p className="w-auto text-base font-normal text-black/60 dark:text-white/60 sm:w-[192px]">
                 Email Address
               </p>
-              <p className="font-normal block text-base">{email}</p>
+              <p className="font-normal block text-base text-black/60 dark:text-white/60">{email}</p>
             </div>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -68,11 +69,11 @@ const Email = () => {
             </button>
           </div>
           <div className=" relative mt-4 flex sm:hidden flex-col justify-end gap-y-2 sm:flex-row sm:justify-between sm:gap-y-0">
-            <div className="flex justify-between  flex-1 wrap">
+            <div className="flex justify-between  flex-1 flex-wrap">
               <p className="w-auto text-base font-normal text-black/60 dark:text-white/60 sm:w-[192px]">
                 Email Address
               </p>
-              <p className="font-normal block text-base">{email}</p>
+              <p className="font-normal block text-base text-black/60 dark:text-white/60">{email}</p>
             </div>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -105,7 +106,7 @@ function EmailForm({
         {...register("email", {
           required: "Email is required",
           pattern: {
-            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            value: EMAIL_REGEX,
             message: "Please enter a valid email address",
           }
         })}

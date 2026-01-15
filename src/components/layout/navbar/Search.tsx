@@ -8,9 +8,11 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 export default function Search({
   search = false,
   setSearch,
+  onClose,
 }: {
   search: boolean;
   setSearch?: (value: boolean) => void;
+  onClose?: () => void;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -25,17 +27,17 @@ export default function Search({
     const handler = setTimeout(() => {
       const newParams = new URLSearchParams(searchParams.toString());
       if (searchValue.trim() === "") {
-          newParams.delete("q");
+        newParams.delete("q");
       } else {
         newParams.set("q", searchValue);
       }
-      if(searchValue){
-      router.push(createUrl("/search", newParams));
+      if (searchValue) {
+        router.push(createUrl("/search", newParams));
       }
-    }, 400); 
+    }, 400);
 
     return () => clearTimeout(handler);
-  }, [searchValue ]);
+  }, [searchValue]);
 
   useEffect(() => {
     if (search && inputRef.current) {
@@ -46,8 +48,27 @@ export default function Search({
     }
   }, [search]);
 
+  const handleSubmit = () => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    if (searchValue.trim() === "") {
+      newParams.delete("q");
+    } else {
+      newParams.set("q", searchValue);
+    }
+    if (searchValue) {
+      router.push(createUrl("/search", newParams));
+      onClose?.();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSubmit();
+    }
+  };
+
   return (
-    <div className="w-max-[550px] relative w-full md:min-w-[386px] xl:min-w-[516px] outline-none hover:outline-none ">
+    <div className="max-w-[550px] relative w-full mx-auto md:min-w-[386px] xl:min-w-[516px] outline-none hover:outline-none ">
       {setSearch && (
         <button
           onClick={() => setSearch(!search)}
@@ -62,14 +83,18 @@ export default function Search({
         ref={inputRef}
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
+        onKeyDown={handleKeyDown}
         autoComplete="off"
-        className="input w-full rounded-lg border border-neutral-200 bg-white py-2 pl-12 pr-4 text-sm text-black outline-none placeholder:text-neutral-500 focus:ring-2 focus:ring-neutral-300 dark:border-neutral-800 dark:bg-transparent dark:text-white dark:placeholder:text-neutral-400 md:pl-4"
+        className="input w-full rounded-lg border border-neutral-200 bg-white py-2 pl-3 pr-10 text-sm text-black outline-none placeholder:text-neutral-500 focus:ring-2 focus:ring-neutral-300 dark:border-neutral-800 dark:bg-transparent dark:text-white dark:placeholder:text-neutral-400 md:pl-4"
         name="search"
         placeholder="Search for products..."
         type="text"
       />
 
-      <div className="absolute bottom-0 right-1 top-0 flex w-9 cursor-pointer items-center justify-center border-l border-neutral-200 dark:border-neutral-700 md:border-0">
+      <div
+        onClick={handleSubmit}
+        className="absolute bottom-0 right-1 top-0 flex w-9 cursor-pointer items-center justify-center border-l border-neutral-200 dark:border-neutral-700 md:border-0"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

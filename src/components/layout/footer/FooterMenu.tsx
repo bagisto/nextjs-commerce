@@ -22,7 +22,6 @@ const FooterMenuItem = ({ item }: { item: ThemeOptions }) => {
       <Link
         className="block px-0 py-1 md:p-2 text-nowrap text-sm underline-offset-4 hover:text-black hover:underline md:inline-block dark:hover:text-neutral-300"
         href={getUrlparams(item.url)}
-        prefetch={true}
       >
         {item.title}
       </Link>

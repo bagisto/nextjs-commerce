@@ -48,7 +48,7 @@ export function ProductDescription({
   return (
     <>
       <div className="mb-6 flex flex-col border-b border-neutral-200 pb-6 dark:border-neutral-700">
-        <h1 className="font-outfit text-xl sm:text-3xl md:text-3xl lg:text-4xl font-semibold">
+        <h1 className="font-outfit text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-semibold">
           {product?.name || ""}
         </h1>
 
@@ -61,16 +61,10 @@ export function ProductDescription({
             )}
             {product?.type === "simple" ? (
               <>
-                {/* <Price
-                  amount={String(priceValue)}
-                  currencyCode={currencyCode}
-                  className="font-outfit text-lg sm:text-xl md:text-2xl font-semibold text-gray-500"
-                  style={{ textDecoration: "line-through" }}
-                /> */}
                 <Price
                   amount={String(product?.minimumPrice)}
                   currencyCode={currencyCode}
-                  className="font-outfit text-xl sm:text-2xl md:text-3xl font-semibold"
+                  className="font-outfit text-xl sm:text-2xl font-semibold"
                 />
               </>
             ) : (

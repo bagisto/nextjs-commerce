@@ -21,8 +21,23 @@ export default function CartItemAccordion({
     : [];
 
   return (
-    <div className="mobile-heading mx-auto block w-full dark:bg-transparent lg:hidden">
-      <Accordion selectionMode="multiple" className="px-0" >
+    <div className="mobile-heading fixed bottom-0 left-0 z-50 w-full border-t border-neutral-200 bg-white pb-14
+     dark:border-neutral-700 dark:bg-black lg:hidden">
+      <Accordion
+        selectionMode="multiple"
+        className="px-4"
+        onSelectionChange={(e) => {
+          const keys = e as Set<string>;
+          if (keys.has("1")) {
+            setTimeout(() => {
+              window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth",
+              });
+            }, 300);
+          }
+        }}
+      >
         <AccordionItem
           key="1"
           indicator={({ isOpen }) =>
@@ -33,7 +48,7 @@ export default function CartItemAccordion({
             )
           }
           aria-label="Accordion 1"
-          title="Show order summary"
+          title="Order Summary"
           subtitle={
             <Price
               className=""
@@ -44,16 +59,16 @@ export default function CartItemAccordion({
         >
           <div className="flex h-full flex-col justify-between overflow-hidden">
             <ul className="flex-grow overflow-auto py-4">
-              {cart?.map((item : any, i : number) => {
+              {cart?.map((item: any, i: number) => {
                 const merchandiseSearchParams = {} as MerchandiseSearchParams;
-                                const merchandiseUrl = createUrl(
-                                  `/product/${item?.node.productId}?type=${item?.node.type}`,
-                                  new URLSearchParams(merchandiseSearchParams)
-                                );
-                                const baseImage = JSON.parse(item?.node?.baseImage);
+                const merchandiseUrl = createUrl(
+                  `/product/${item?.node.productId}?type=${item?.node.type}`,
+                  new URLSearchParams(merchandiseSearchParams)
+                );
+                const baseImage = JSON.parse(item?.node?.baseImage);
                 return (
                   <li key={i} className="flex w-full flex-col">
-                    <div className="relative flex w-full flex-row justify-between px-1 py-4">
+                    <div className="relative flex w-full flex-row justify-between gap-3 px-1 py-4">
                       <Link
                         href={merchandiseUrl}
                         className="z-30 flex flex-row items-center space-x-4"
@@ -63,21 +78,21 @@ export default function CartItemAccordion({
                             className="h-full w-full object-cover"
                             width={64}
                             height={64}
-                             alt={item?.node?.baseImage || item?.product?.name}
+                            alt={item?.node?.baseImage || item?.product?.name}
                             src={baseImage?.small_image_url || ""}
                           />
                         </div>
 
                         <div className="flex flex-1 flex-col text-base">
-                          <span className="leading-tight text-neutral-900 dark:text-white">
+                          <span className="leading-tight text-neutral-900 line-clamp-1 dark:text-white">
                             {item?.node?.name}
                           </span>
                           <span className="font-normal text-black dark:text-white">
                             Quantity : {item.node.quantity}
                           </span>
                           {item.name !== DEFAULT_OPTION ? (
-                            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                               {item?.node?.sku}
+                            <p className="text-sm lowercase line-clamp-1 text-neutral-500 dark:text-neutral-400">
+                              {item?.node?.sku}
                             </p>
                           ) : null}
                         </div>
@@ -85,7 +100,7 @@ export default function CartItemAccordion({
                       <div className="flex h-16 flex-col justify-between text-black/[60%] dark:!text-neutral-300">
                         <Price
                           className="flex justify-end space-y-2 text-right text-sm"
-                         amount={item?.node?.price}
+                          amount={item?.node?.price}
                           currencyCode={"USD"}
                         />
                       </div>

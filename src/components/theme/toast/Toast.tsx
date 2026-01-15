@@ -18,7 +18,9 @@ export const Toast = ({
   }, [toast, onRemove]);
 
   return (
-    <div className="z-10 mt-4 flex w-full items-center">
+    <div
+      className="z-10 mt-4 flex w-full items-center dark:backdrop-blur-md dark:bg-[#000000]/30 rounded-xl"
+    >
       <Alert
         color={toast?.type}
         isVisible={Boolean(toast.id)}

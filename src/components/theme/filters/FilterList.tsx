@@ -67,24 +67,30 @@ function FilterItemList({
         size="md"
         labelPlacement="inside"
         placeholder={placeHolder}
-
+        classNames={{
+          value: "text-neutral-800 dark:text-neutral-200",
+        }}
         renderValue={(items) => (
           <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1">
             {items.map((item) => (
-              <p className="text-nowrap" key={item.key}>
+              <p className="text-nowrap text-neutral-800 dark:text-neutral-200" key={item.key}>
                 {item.data?.adminName}
               </p>
             ))}
           </div>
         )}
-        selectedKeys={selectedFilters} // <-- controlled by params
+        selectedKeys={selectedFilters}
         selectionMode="multiple"
         variant="flat"
         onSelectionChange={(keys) => handleFilterChange(keys as Set<string>)}
         isLoading={isPending}
       >
         {(item) => (
-          <SelectItem key={item.id} textValue={item.id}>
+          <SelectItem
+            key={item.id}
+            textValue={item.id}
+            className="text-neutral-800 dark:text-neutral-200"
+          >
             <div className="flex items-center gap-2">
               <span className="text-small">{item.adminName}</span>
             </div>
@@ -109,6 +115,12 @@ export default function FilterList({
   const sort = currentParams.get(SORT) || "name-asc";
   const query = currentParams.get(QUERY) || "";
 
+  const hasActiveFilters = useMemo(() => {
+    return Array.from(currentParams.keys()).some(
+      (key) => ![PAGE, SORT, QUERY].includes(key)
+    );
+  }, [currentParams]);
+
   const handleClearAll = () => {
     const newUrl = createUrl(
       pathname,
@@ -125,7 +137,7 @@ export default function FilterList({
   };
 
   return (
-    <div className="grid grid-cols-1 gap-x-3 gap-y-2 md:grid-cols-2 min-[860px]:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
+    <div className="grid grid-cols-1 gap-x-3 gap-y-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
       {filterAttributes?.map((item: getFilterAttributeTypes) => {
         const hasOptions = isArray(item.options);
 
@@ -134,14 +146,16 @@ export default function FilterList({
         ) : null;
       })}
 
-      <button
-        disabled={isPending}
-        type="button"
-        onClick={handleClearAll}
-        className="text-nowrap relative top-0 my-2 inline-flex w-fit cursor-pointer items-center text-base underline ml-0 max-md:ml-auto  md:my-0"
-      >
-        Clear all filters
-      </button>
+      {hasActiveFilters ? (
+        <button
+          disabled={isPending}
+          type="button"
+          onClick={handleClearAll}
+          className="text-nowrap relative top-0 my-2 inline-flex w-fit cursor-pointer items-center text-base underline ml-0 max-md:ml-auto  md:my-0"
+        >
+          Clear all filters
+        </button>
+      ) : null}
     </div>
   );
 }

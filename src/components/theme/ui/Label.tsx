@@ -19,15 +19,15 @@ const Label = ({
     <div
       className={clsx("absolute w-fit px-4 ", {
         "bottom-0  pb-4": position === "center",
-        "bottom-0 pb-5 md:pb-8 lg:pb-10": position === "bottom",
+        "bottom-0 pb-5 md:pb-4": position === "bottom",
         "bottom-0 left-0  pb-4": position === "left",
       })}
     >
       <div
-        className={`flex gap-5 items-center rounded-full border border-neutral-200 bg-white/70 text-xs font-semibold text-black backdrop-blur-md dark:border-neutral-800 dark:bg-black/70 dark:text-white ${
+        className={`flex gap-5 items-center rounded-full px-4 py-2 border border-neutral-200 bg-white/70 text-xs font-semibold text-black backdrop-blur-md dark:border-neutral-800 dark:bg-black/70 dark:text-white ${
           page === "category"
-            ? "lg:px-6 md:py-2 px-4 py-2 md:px-4 lg:py-4"
-            : "px-6 py-5 "
+            ? "lg:px-6 md:py-2  md:px-4 lg:py-4"
+            : "md:py-5 md:px-6 "
         }`}
       >
         <p

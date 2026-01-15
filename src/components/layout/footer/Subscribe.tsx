@@ -7,6 +7,7 @@ import { RecoverPasswordFormState } from "@components/customer/types";
 import { Button } from "@components/common/button/LoadingButton";
 import { userSubscribe } from "@utils/actions";
 import { useCustomToast } from "@utils/hooks/useToast";
+import { EMAIL_REGEX } from "@utils/constants";
 
 type FormValues = {
   email: string;
@@ -75,7 +76,7 @@ const Subscribe = () => {
           {...register("email", {
             required: "Email is required",
             pattern: {
-              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+              value: EMAIL_REGEX,
               message: "Enter a valid email",
             },
           })}
