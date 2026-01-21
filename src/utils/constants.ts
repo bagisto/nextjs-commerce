@@ -47,7 +47,8 @@ export const baseUrl = process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT;
 export const GRAPHQL_URL = typeof window === 'undefined'
   ? `${process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT}/api/graphql`
   : `${process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT}`;
-export const NEXT_AUTH_SECRET=process.env.NEXT_PUBLIC_NEXT_AUTH_SECRET;
+export const NEXT_AUTH_SECRET = process.env.NEXT_PUBLIC_NEXT_AUTH_SECRET;
+export const STOREFRONT_KEY = process.env.NEXT_PUBLIC_BAGISTO_STOREFRONT_KEY || ""
 
 
 // -----Pagination--------//
@@ -253,3 +254,7 @@ export const NEXTAUTH_SECURE_TOKEN = "__Secure-next-auth.session-token";
 export const ORDER_ID = "order_id";
 
 export const EMAIL_REGEX = /^(?![.-])(?!.*[.-]@)(?!.*\.\.)[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+$/;
+
+export const IS_VALID_INPUT = /^[a-zA-Z0-9\s]*$/;
+export const IS_VALID_ADDRESS = /^[a-zA-Z0-9\s,\/-]*$/;
+export const IS_VALID_PHONE = /^[0-9]{10}$/;

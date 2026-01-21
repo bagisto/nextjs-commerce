@@ -7,10 +7,10 @@ const Theme = ({ title, description, products }: ProductsSectionProps) => {
   return (
     <section className="pt-8 sm:pt-12 lg:pt-20">
       <div className="md:max-w-4.5xl mx-auto mb-6 w-full px-0 text-center xss:mb-10 md:px-36">
-        <h2 className="mb-2 text-[28px] font-semibold text-black dark:text-white xss:mb-4 xss:text-4xl">
+        <h2 className="mb-4 font-outfit text-xl md:text-4xl font-semibold text-black dark:text-white">
           {title}
         </h2>
-        <p className="font-normal text-black/60 dark:text-neutral-300 text-lg">
+        <p className="text-sm md:text-base font-normal text-black/60 dark:text-neutral-300">
           {description}
         </p>
       </div>
@@ -35,6 +35,7 @@ const Theme = ({ title, description, products }: ProductsSectionProps) => {
                   name: item?.name || item.sku,
                   id: item.id,
                   type: item.type,
+                  isSaleable : item.isSaleable
                 }} specialPrice={""}            />
             );
           })}

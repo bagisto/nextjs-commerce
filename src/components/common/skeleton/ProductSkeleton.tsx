@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useScrollToTop } from "@/utils/hooks/useScrollTo";
 
 export const ProductPageSkeleton = () => {
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-  }, []);
+  useScrollToTop();
 
   return (
     <div className="min-h-screen py-8">

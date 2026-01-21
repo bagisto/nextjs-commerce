@@ -35,8 +35,9 @@ function ThreeItemGridItem({ product, size, priority }: {
             <Link
                 className="relative block h-full w-full"
                 href={`/product/${product.urlKey}`}
+                aria-label={`${product?.name}`}
                 style={{
-                    aspectRatio: size === 'full' ? '380 / 280' : '280 / 182'
+                    aspectRatio: size === 'full' ? '1018 / 800' : '502 / 393'
                 }}
             >
                 <GridTileImage
@@ -78,8 +79,9 @@ function MobileThreeItemGridItem({ product, size, priority }: {
             <Link
                 className="relative block h-full w-full"
                 href={`/product/${product.urlKey}`}
+                aria-label={`${product?.name}`}
                 style={{
-                    aspectRatio: size === 'full' ? '280 / 380' : '182 / 280'
+                    aspectRatio: size === 'full' ? '380 / 280' : '182 / 280'
                 }}
             >
                 <GridTileImage
@@ -114,10 +116,10 @@ export const ThreeItemGrid: FC<ThreeItemGridProps> = ({ title, description, prod
     return (
         <section className="pt-8 sm:pt-12 lg:pt-20">
             <div className="md:max-w-4.5xl mx-auto mb-10 w-auto px-0 text-center md:px-36">
-                <h1 className="mb-4 font-outfit text-4xl font-semibold text-black dark:text-white">
+                <h1 className="mb-4 font-outfit text-xl md:text-4xl font-semibold text-black dark:text-white">
                     {title}
                 </h1>
-                <p className="text-lg font-normal text-black/60 dark:text-neutral-300">
+                <p className="text-sm md:text-base font-normal text-black/60 dark:text-neutral-300">
                     {description}
                 </p>
             </div>

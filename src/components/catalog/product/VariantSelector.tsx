@@ -1,6 +1,6 @@
 "use client";
 
-import { AttributeData } from "@/types/types";
+import { AttributeData, AttributeOptionNode } from "@/types/types";
 import { createUrl, getValidTitle } from "@/utils/helper";
 import clsx from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -30,17 +30,11 @@ export function VariantSelector({
             </dt>
 
             <dd className="flex flex-wrap gap-3">
-              {option.options.edges.map(({ node }) => {
-                const _optionId = Number(node.id);
-                const isActive =
-                  searchParams.get(attributeCode) === node.id;
-                const _primaryAttributeCode =
-                  Array.from(searchParams.keys()).find(
-                    (key) => key !== "type"
-                  ) ?? null;
+              {(option.options as AttributeOptionNode[]).map((node) => {
+                const isActive = searchParams.get(attributeCode) === String(node.id);
                 const isAvailable = node?.isValid;
                 const nextParams = new URLSearchParams(searchParams.toString());
-                nextParams.set(attributeCode, node.id);
+                nextParams.set(attributeCode, String(node.id));
 
                 const optionUrl = createUrl(pathname, nextParams);
 
@@ -64,7 +58,7 @@ export function VariantSelector({
                       }
                     )}
                   >
-                    {node.adminName}
+                    {node.label || node.adminName}
                   </button>
                 );
               })}

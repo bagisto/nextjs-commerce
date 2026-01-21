@@ -9,7 +9,8 @@ import { getVariantInfo } from "@utils/hooks/useVariantInfo";
 import { useSearchParams } from "next/navigation";
 import Prose from "@components/theme/search/Prose";
 import { ProductData, ProductReviewNode } from "../type";
-import { safeCurrencyCode, safePriceValue } from "@utils/helper";
+import { safeCurrencyCode, safePriceValue, safeParse } from "@utils/helper";
+import Link from "next/link";
 
 export function ProductDescription({
   product,
@@ -25,19 +26,23 @@ export function ProductDescription({
 }) {
   const priceValue = safePriceValue(product);
   const currencyCode = safeCurrencyCode(product);
-  const configurableProductIndexData = (JSON.parse(
-    productSwatchReview?.index
+  const configurableProductIndexData = (safeParse(
+    productSwatchReview?.combinations
   ) || []) as never[];
   const searchParams = useSearchParams();
   const [userInteracted, setUserInteracted] = useState(false);
 
+  const superAttributes = productSwatchReview?.superAttributeOptions
+    ? safeParse(productSwatchReview.superAttributeOptions)
+    : productSwatchReview?.superAttributes?.edges?.map(
+      (e: { node: any }) => e.node
+    ) || [];
+
   const variantInfo = getVariantInfo(
     product?.type === "configurable",
     searchParams.toString(),
-    productSwatchReview?.superAttributes?.edges?.map(
-      (e: { node: any }) => e.node
-    ) || [],
-    productSwatchReview?.index
+    superAttributes,
+    productSwatchReview?.combinations
   );
 
   const additionalData =
@@ -48,6 +53,15 @@ export function ProductDescription({
   return (
     <>
       <div className="mb-6 flex flex-col border-b border-neutral-200 pb-6 dark:border-neutral-700">
+        {/* Breadcrumb */}
+        <div className="hidden lg:flex flex-col gap-3 shrink-0 mb-2">
+          <Link
+            href="/"
+            className="w-fit text-sm font-medium text-nowrap relative text-neutral-500 before:absolute before:bottom-0 before:left-0 before:h-px before:w-0 before:bg-current before:transition-all before:duration-300 before:content-[''] hover:text-black hover:before:w-full dark:text-neutral-400 dark:hover:text-neutral-300"
+          >
+            Home /
+          </Link>
+        </div>
         <h1 className="font-outfit text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-semibold">
           {product?.name || ""}
         </h1>
@@ -84,15 +98,17 @@ export function ProductDescription({
           />
         </div>
       </div>
-      {product?.shortDescription ? (
-        <Prose className="mb-6 text-base" html={product.shortDescription} />
-      ) : null}
 
       <VariantSelector
         variants={variantInfo?.variantAttributes}
         setUserInteracted={setUserInteracted}
         possibleOptions={variantInfo.possibleOptions}
       />
+
+      {product?.shortDescription ? (
+        <Prose className="mb-6 text-base text-selected-black dark:text-white font-light" html={product.shortDescription} />
+      ) : null}
+
       <AddToCart
         index={configurableProductIndexData}
         productId={product?.id || ""}

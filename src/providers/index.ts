@@ -7,4 +7,5 @@ export {  ReduxProvider } from "./ReduxProvider";
 export {  TanstackProvider } from "./TanstackProvider";
 export {  ThemeProvider } from "./ThemeProvider";
 export { ToastProvider } from "./ToastProvider";
-export {SessionProvider} from "./SessionProvider"
+export {SessionProvider} from "./SessionProvider";
+export {SessionSync} from "./SessionSync";

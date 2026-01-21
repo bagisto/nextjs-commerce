@@ -2,16 +2,14 @@ import { gql } from "@apollo/client";
 
 export const REMOVE_CART_ITEM = gql`
   mutation RemoveCartItem(
-    $token: String!
     $cartItemId: Int!
   ) {
     createRemoveCartItem(
       input: {
-        token: $token
         cartItemId: $cartItemId
       }
     ) {
-       removeCartItem {
+      removeCartItem {
       id
       cartToken
        taxAmount

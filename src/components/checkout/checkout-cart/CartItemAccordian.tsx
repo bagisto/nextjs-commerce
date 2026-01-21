@@ -1,8 +1,9 @@
 import { DEFAULT_OPTION } from "@/utils/constants";
+import { useScrollTo } from "@/utils/hooks/useScrollTo";
 import { Price } from "@components/theme/ui/Price";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { createUrl } from "@utils/helper";
+import { createUrl, safeParse } from "@utils/helper";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,6 +21,8 @@ export default function CartItemAccordion({
     ? cartItems?.items?.edges
     : [];
 
+  const scrollTo = useScrollTo();
+
   return (
     <div className="mobile-heading fixed bottom-0 left-0 z-50 w-full border-t border-neutral-200 bg-white pb-14
      dark:border-neutral-700 dark:bg-black lg:hidden">
@@ -30,7 +33,7 @@ export default function CartItemAccordion({
           const keys = e as Set<string>;
           if (keys.has("1")) {
             setTimeout(() => {
-              window.scrollTo({
+              scrollTo({
                 top: document.body.scrollHeight,
                 behavior: "smooth",
               });
@@ -62,16 +65,17 @@ export default function CartItemAccordion({
               {cart?.map((item: any, i: number) => {
                 const merchandiseSearchParams = {} as MerchandiseSearchParams;
                 const merchandiseUrl = createUrl(
-                  `/product/${item?.node.productId}?type=${item?.node.type}`,
-                  new URLSearchParams(merchandiseSearchParams)
-                );
-                const baseImage = JSON.parse(item?.node?.baseImage);
+                                `/product/${item?.node.productUrlKey}`,
+                                new URLSearchParams(merchandiseSearchParams)
+                              );
+                const baseImage: any = safeParse(item?.node?.baseImage);
                 return (
                   <li key={i} className="flex w-full flex-col">
                     <div className="relative flex w-full flex-row justify-between gap-3 px-1 py-4">
                       <Link
                         href={merchandiseUrl}
                         className="z-30 flex flex-row items-center space-x-4"
+                        aria-label={`${item?.node?.name}`}
                       >
                         <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                           <Image

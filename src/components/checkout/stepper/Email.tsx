@@ -121,6 +121,7 @@ function EmailForm({
           Already have an account? No worries, just{" "}
           <br className="block sm:hidden" />
           <Link
+            aria-label="Go to Login Page"
             className="text-base font-normal text-primary"
             href="/customer/login"
           >

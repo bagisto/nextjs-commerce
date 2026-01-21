@@ -4,14 +4,15 @@ import { useAppDispatch } from "@/store/hooks";
 import { fetchHandler } from "../fetch-handler";
 import { addItem, clearCart } from "@/store/slices/cart-slice";
 import { isObject } from "@utils/type-guards";
-import { getCartToken } from "@utils/getCartToken";
+import { getCartToken, getCookie } from "@utils/getCartToken";
 import { useGuestCartToken } from "./useGuestCartToken";
+import { IS_GUEST } from "@/utils/constants";
 
 interface AddInput {
   productId: number;
   quantity: number;
-  token?: string;
   cartId?: number;
+  token: string;
 }
 
 interface UpdateInput {
@@ -24,6 +25,9 @@ interface removeInput {
   token: string;
   cartItemId: number;
 }
+
+
+
 
 interface AddProductInCartResponse {
   id: number;
@@ -80,26 +84,31 @@ export const useAddProduct = () => {
   const { showToast } = useCustomToast();
 
   const { mutateAsync, isPending: isCartLoading } = useMutation({
-    mutationFn: (input: AddInput) =>
+    mutationFn: ({ token, ...input }: AddInput) =>
       fetchHandler({
         url: "cart/addToCart",
         method: "POST",
         contentType: true,
         body: { ...input },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
 
     onSuccess: (res: {
-      error: any; data: AddToCartAPIResponse 
-}) => {
+      error: any; data: AddToCartAPIResponse
+    }) => {
       const responseData = res?.data?.createAddProductInCart?.addProductInCart;
-      if (!responseData.success) {
-        showToast(res?.error?.message, "danger");
+
+      if (!responseData?.success) {
+        showToast(res?.error?.message?.message, "danger");
         return;
       }
       if (responseData) {
         if (responseData.success) {
-          dispatch(addItem(responseData as any));
-          showToast("Product added to cart successfully", "success");
+        dispatch(addItem(responseData as any));
+        showToast("Product added to cart successfully", "success");
         }
       }
     },
@@ -133,19 +142,23 @@ export const useAddProduct = () => {
     await mutateAsync({
       productId: parseInt(productId),
       quantity,
-      token: token,
+      token,
     });
   };
 
   //--------Remove Cart Product Quantity--------//
   const { mutateAsync: removeFromCart, isPending: isRemoveLoading } =
     useMutation({
-      mutationFn: (input: removeInput) =>
+      mutationFn: ({ token, ...input }: removeInput) =>
         fetchHandler({
           url: "cart/removeCart",
           method: "POST",
           contentType: true,
           body: { ...input },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }),
       onSuccess: async (response: { data: RemoveCartAPIResponse }) => {
         const responseData = response?.data?.createRemoveCartItem;
@@ -157,7 +170,11 @@ export const useAddProduct = () => {
 
           if (!responseData?.removeCartItem?.itemsQty) {
             dispatch(clearCart());
-            resetGuestToken();
+
+            const isGuest = getCookie(IS_GUEST);
+            if (isGuest === "true") {
+              resetGuestToken();
+            }
           }
         } else {
           showToast("Something went wrong", "warning");
@@ -180,12 +197,16 @@ export const useAddProduct = () => {
   //---------Update Cart Product Quantity--------//
   const { mutateAsync: updateCartItem, isPending: isUpdateLoading } =
     useMutation({
-      mutationFn: (input: UpdateInput) =>
+      mutationFn: ({ token, ...input }: UpdateInput) =>
         fetchHandler({
           url: "cart/updateCart",
           contentType: true,
           method: "POST",
           body: { ...input },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }),
 
       onSuccess: (response) => {

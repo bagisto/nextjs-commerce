@@ -49,19 +49,15 @@ export interface GetCartItemData {
   createReadCart: CreateReadCart;
 }
 
-export interface GetCartItemVariables {
-  token: string;
-}
 
 // Full GraphQL operation shape (commonly used with bagistoFetch)
 export interface ReadCartOperation {
   data: GetCartItemData;
-  variables: GetCartItemVariables;
 }
 
 
- // Add Product In Cart
- export interface AddToCartItem {
+// Add Product In Cart
+export interface AddToCartItem {
   id: string;
   cartId: string;
   productId: string;
@@ -109,7 +105,6 @@ export interface AddToCartData {
 }
 
 export interface AddToCartVariables {
-  token?: string | null;
   cartId?: number | null;
   productId: number;
   quantity: number;
@@ -184,7 +179,7 @@ export interface CreateMergeCartData {
   createMergeCart: CreateMergeCartPayload;
 }
 export interface CreateMergeCartVariables {
-  token: string;
+  // token removed - now passed in Authorization header
   cartId: number;
 }
 export interface CreateMergeCartOperation {
@@ -237,7 +232,7 @@ export interface RemoveCartItemData {
 }
 
 export interface RemoveCartItemVariables {
-  token: string;
+  // token removed - now passed in Authorization header
   cartItemId: number;
 }
 
@@ -285,7 +280,7 @@ export interface UpdateCartItemData {
   createUpdateCartItem: CreateUpdateCartItemPayload;
 }
 export interface UpdateCartItemVariables {
-  token: string;
+  // token removed - now passed in Authorization header
   cartItemId: number;
   quantity: number;
 }

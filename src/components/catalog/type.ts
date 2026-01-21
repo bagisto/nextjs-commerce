@@ -1,4 +1,5 @@
 export interface ProductSectionNode {
+  isSaleable: string | undefined;
   id: string;
   sku: string;
   type: string;

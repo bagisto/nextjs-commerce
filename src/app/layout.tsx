@@ -79,6 +79,7 @@ export default function RootLayout({
            <SpeculationRules />
         </ThemeProvider>
         </main>
+        <span className="dsv-2025.04.19-7e29"/>
       </body>
     </html>
   );

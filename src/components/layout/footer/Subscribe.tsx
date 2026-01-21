@@ -21,7 +21,7 @@ const Subscribe = () => {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ mode: "onSubmit" });
-   const { showToast } = useCustomToast();
+  const { showToast } = useCustomToast();
 
   const [status, setStatus] = useState<
     RecoverPasswordFormState["errors"] | null
@@ -48,13 +48,13 @@ const Subscribe = () => {
         setStatus(null);
       }, 3500);
     }
-    if(status?.email){
+    if (status?.email) {
       showToast(status?.email[0], "warning");
     }
-    if(status?.apiRes?.status === false){
+    if (status?.apiRes?.status === false) {
       showToast(status?.apiRes?.msg, "warning");
     }
-    if(status?.apiRes?.status === true){
+    if (status?.apiRes?.status === true) {
       showToast("Successfully Subscribed", "success");
     }
   }, [status]);
@@ -73,6 +73,7 @@ const Subscribe = () => {
       <div className="mt-4 flex gap-x-3">
         <input
           type="email"
+          aria-label="Email Address"
           {...register("email", {
             required: "Email is required",
             pattern: {

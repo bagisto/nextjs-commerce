@@ -14,7 +14,7 @@ export async function fetchHandler({
   body,
   headers = {},
   contentType = true,
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 }: FetchHandlerOptions): Promise<any> {
   try {
     const defaultHeaders: Record<string, string> = {

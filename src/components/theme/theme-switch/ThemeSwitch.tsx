@@ -7,6 +7,8 @@ import { useTheme } from "next-themes";
 import clsx from "clsx";
 import { MoonFilledIcon, SunFilledIcon } from "@/components/common/icons/product-icons";
 
+import { IconSkeleton } from "@/components/common/skeleton/IconSkeleton";
+
 export interface ThemeSwitchProps {
   className?: string;
   classNames?: SwitchProps["classNames"];
@@ -36,7 +38,7 @@ const ThemeSwitch: FC<ThemeSwitchProps> = ({ className, classNames }) => {
   });
 
   if (!isReady) {
-    return null; 
+    return <IconSkeleton />;
   }
 
   return (

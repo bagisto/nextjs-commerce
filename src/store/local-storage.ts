@@ -38,7 +38,7 @@ export const CACHED_KEYS = {
  * @param {any} data - Data to be stored
  * @returns void
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const setLocalStorage = (key: string, data: any) => {
   if (typeof window !== "undefined") {
     if (isArray(data) || isObject(data)) {

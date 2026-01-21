@@ -17,15 +17,15 @@ import { useState } from "react";
 export default function MobileMenu({ menu }: { menu: any }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [activeTab, setActiveTab] = useState<
-  "home" | "category" | "cart" | "account"
->("home");
+    "home" | "category" | "cart" | "account" | null
+  >(null);
 
   return (
     <>
       <BottomNavbar
-       onMenuOpen={onOpen}   
-       setActiveTab={setActiveTab}
-       activeTab={activeTab} />
+        onMenuOpen={onOpen}
+        setActiveTab={setActiveTab}
+        activeTab={activeTab} />
 
       <Drawer
         backdrop="transparent"
@@ -33,10 +33,15 @@ export default function MobileMenu({ menu }: { menu: any }) {
         isOpen={isOpen}
         radius="none"
         placement="left"
-        onOpenChange={onOpenChange}
+        onOpenChange={(open) => {
+          onOpenChange();
+          if (!open) {
+            setActiveTab(null);
+          }
+        }}
         classNames={{
           base: "z-50",
-          backdrop: "z-40", 
+          backdrop: "z-40",
           wrapper: "top-[68px] bottom-[64px]",
         }}
       >
@@ -49,25 +54,26 @@ export default function MobileMenu({ menu }: { menu: any }) {
         >
           {(onClose) => (
             <>
-            <DrawerBody className="px-4 py-4 overflow-y-auto">
-              <MobileSearchBar onClose={onClose} />
-              <h1 className="text-2xl text-black dark:text-white px-2 font-semibold"> Category </h1>
-              <ul className="flex w-full flex-col">
-                {menu.map((item: any) => (
-                  <li
-                    key={item.id + item.name}
-                    className="p-2 text-xl text-black dark:text-white"
-                  >
-                    <Link
-                      href={item.slug ? `/search/${item.slug}` : "/search"}
-                      onClick={onClose}
+              <DrawerBody className="px-4 py-4 overflow-y-auto">
+                <MobileSearchBar onClose={onClose} />
+                <h1 className="text-2xl text-black dark:text-white px-2 font-semibold"> Category </h1>
+                <ul className="flex w-full flex-col">
+                  {menu.map((item: any) => (
+                    <li
+                      key={item.id + item.name}
+                      className="p-2 text-xl text-black dark:text-white"
                     >
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </DrawerBody>
+                      <Link
+                        href={item.slug ? `/search/${item.slug}` : "/search"}
+                        aria-label={`${item?.name}`}
+                        onClick={onClose}
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </DrawerBody>
             </>
           )}
         </DrawerContent>

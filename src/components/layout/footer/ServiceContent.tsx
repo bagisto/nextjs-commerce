@@ -8,6 +8,7 @@ import TruckIcon from "@components/common/icons/service/TruckIcon";
 import { OptionDataTypes } from "@/types/types";
 import { ThemeCustomizationTranslationNode } from "@/types/theme/theme-customization";
 import { usePathname } from "next/navigation";
+import { safeParse } from "@utils/helper";
 
 export interface ServiceContentDataTypes {
   name?: string;
@@ -24,7 +25,7 @@ const ServiceContent: FC<ServiceContentDataTypes> = ({ serviceData }) => {
   return serviceData?.slice(0, 1)?.map((service, index: number) => {
     const options =
       typeof service.options === "string"
-        ? JSON.parse(service.options)
+        ? safeParse(service.options)
         : service.options;
 
     return <ServiceCarouselRender key={index} serviceList={{ options }} />;

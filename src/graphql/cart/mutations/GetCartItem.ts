@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_CART_ITEM = gql`
-  mutation GetCartItem($token: String!) {
-    createReadCart(input: { token: $token }) {
+  mutation GetCartItem {
+    createReadCart(input: {}) {
       readCart {
         id
         itemsCount

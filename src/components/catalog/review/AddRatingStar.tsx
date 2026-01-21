@@ -33,7 +33,7 @@ export const AddRatingStar = ({
 
     const handleClick = (index: number) => {
         if (value === undefined) {
-              // eslint-disable-next-line react-hooks/set-state-in-effect
+               
             setInternalValue(index);
         }
         onChange?.(index);

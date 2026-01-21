@@ -11,6 +11,7 @@ export const PRODUCT_CORE_FRAGMENT = gql`
     baseImageUrl
     minimumPrice
     specialPrice
+    isSaleable
   }
 `;
 
@@ -27,6 +28,7 @@ export const PRODUCT_DETAILED_FRAGMENT = gql`
     baseImageUrl
     minimumPrice
      specialPrice
+     isSaleable
     variants {
       edges {
         node {
@@ -71,5 +73,6 @@ export const PRODUCT_SECTION_FRAGMENT = gql`
     baseImageUrl
     price
     minimumPrice
+    isSaleable
   }
 `;

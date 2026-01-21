@@ -1,23 +1,19 @@
 import { GET_CHECKOUT_ADDRESSES } from "@/graphql";
 import { GetCheckoutAddressesOperation } from "@/types/checkout/type";
 import { bagistoFetch } from "@/utils/bagisto";
-
+import { getAuthToken } from "@/utils/helper";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-
-    const variables = {
-      token: body.token,
-    };
+    const guestToken = getAuthToken(req);
 
     const response = await bagistoFetch<GetCheckoutAddressesOperation>({
       query: GET_CHECKOUT_ADDRESSES,
-      variables: variables,
       cache: "no-store",
+      guestToken,
     });
 
-      return Response.json(
+    return Response.json(
       {
         data: response?.body?.data?.collectionGetCheckoutAddresses,
       },

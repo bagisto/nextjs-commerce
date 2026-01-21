@@ -2,13 +2,14 @@ import { CREATE_CHECKOUT_ADDRESS } from "@/graphql";
 import { CreateCheckoutAddressOperation } from "@/types/checkout/type";
 import { bagistoFetch } from "@/utils/bagisto";
 import { isBagistoError } from "@/utils/type-guards";
+import { getAuthToken } from "@/utils/helper";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const guestToken = getAuthToken(req);
 
     const variables = {
-      token: body.token,
       billingFirstName: body.billingFirstName,
       billingLastName: body.billingLastName,
       billingEmail: body.billingEmail,
@@ -40,8 +41,9 @@ export async function POST(req: Request) {
 
     const res = await bagistoFetch<CreateCheckoutAddressOperation>({
       query: CREATE_CHECKOUT_ADDRESS,
-      variables : variables,
+      variables: variables,
       cache: "no-store",
+      guestToken,
     });
 
     return Response.json({ data: res?.body?.data }, { status: 200 });

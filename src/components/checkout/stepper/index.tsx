@@ -44,7 +44,7 @@ export default function Stepper(
     setIsOpen
   }: CheckOutProps
 ) {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const steps = useMemo<Step[]>(() => {
     return [
       {
@@ -108,6 +108,8 @@ export default function Stepper(
     shippingAddress,
     selectedShippingRate,
     selectedPayment,
+    selectedPaymentTitle,
+    selectedShippingRateTitle,
     isOpen,
     setIsOpen
   ]);

@@ -23,7 +23,7 @@ export default async function Navbar() {
   const filteredCategories = categories
     .filter((cat: any) => cat.id !== "1")
     .map((cat: any) => {
-      const translation = cat.translations?.edges?.[0]?.node;
+      const translation = cat.translation;
       return {
         id: cat.id,
         name: translation?.name || "",
@@ -49,6 +49,7 @@ export default async function Navbar() {
               <Link
                 className="flex h-9 w-full scale-95 items-center md:h-9 md:w-auto lg:h-10"
                 href="/"
+                aria-label="Go to homepage"
               >
                 <LogoIcon />
               </Link>
@@ -60,6 +61,7 @@ export default async function Navbar() {
                         className="text-nowrap relative text-neutral-500 before:absolute before:bottom-0 before:left-0 before:h-px before:w-0 before:bg-current before:transition-all before:duration-300 before:content-[''] hover:text-black hover:before:w-full dark:text-neutral-400 dark:hover:text-neutral-300"
                         href={item.slug ? `/search/${item.slug}` : "/search"}
                         prefetch={true}
+                        aria-label={`Browse ${item.name} products`}
                       >
                         {item.name}
                       </Link>

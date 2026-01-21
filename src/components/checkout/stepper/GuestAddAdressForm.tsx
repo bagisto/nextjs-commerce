@@ -1,8 +1,9 @@
 "use client";
 import { FC, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { AddressDataTypes } from "@/types/types";
 import { EMAIL, getLocalStorage } from "@/store/local-storage";
+import { IS_VALID_ADDRESS, IS_VALID_PHONE, IS_VALID_INPUT } from "@/utils/constants";
 import { isObject } from "@/utils/type-guards";
 import { useCheckout } from "@utils/hooks/useCheckout";
 import InputText from "@components/common/form/Input";
@@ -27,7 +28,7 @@ export const GuestAddAdressForm: FC<{
 
   const {
     register,
-    watch,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -64,8 +65,12 @@ export const GuestAddAdressForm: FC<{
 
   useEffect(() => {
     if (initialBilling || initialShipping) {
-      setBillingAddress(initialBilling ?? null);
-      setShippingAddress(initialShipping ?? null);
+      const billing = initialBilling ?? null;
+      const shipping = initialShipping ?? null;
+      requestAnimationFrame(() => {
+        setBillingAddress(billing);
+        setShippingAddress(shipping);
+      });
 
       reset({
         billing: {
@@ -99,7 +104,11 @@ export const GuestAddAdressForm: FC<{
 
   const { isLoadingToSave, saveCheckoutAddress } = useCheckout();
 
-  const watchUseForShipping = watch("useForShipping", true);
+  const watchUseForShipping = useWatch({
+    control,
+    name: "useForShipping",
+    defaultValue: true,
+  });
 
   const addGuestAddress = async (data: any) => {
     const billing = data?.billing;
@@ -166,162 +175,6 @@ export const GuestAddAdressForm: FC<{
   };
 
   const showSummary = isObject(shippingAddress) && isObject(billingAddress);
-
-  const AddressForm = () => (
-    <form className="my-5" onSubmit={handleSubmit(addGuestAddress)}>
-      <div className="my-7 grid grid-cols-6 gap-4">
-        <InputText
-          {...register("billing.firstName", {
-            required: "First name is required",
-          })}
-          className="col-span-6 xxs:col-span-3 mb-4"
-          errorMsg={errors?.billing?.firstName?.message}
-          label="First Name *"
-          size="md"
-        />
-        <InputText
-          {...register("billing.lastName", {
-            required: "Last name is required",
-          })}
-          className="col-span-6 xxs:col-span-3 mb-4"
-          errorMsg={errors?.billing?.lastName?.message}
-          label="Last Name *"
-          size="md"
-        />
-        <InputText
-          {...register("billing.companyName")}
-          className="col-span-6 mb-2"
-          errorMsg={errors?.billing?.companyName?.message}
-          label="Company Name"
-          size="md"
-        />
-        <InputText
-          {...register("billing.address", {
-            required: "Address field is required",
-          })}
-          className="col-span-6 mb-4"
-          errorMsg={errors?.billing?.address?.message}
-          label="Street Address *"
-          size="md"
-        />
-        <InputText
-          {...register("billing.city", {
-            required: "City field is required",
-          })}
-          className="col-span-6 xxs:col-span-3 mb-4"
-          errorMsg={errors?.billing?.city?.message}
-          label="City *"
-          size="md"
-        />
-        <InputText
-          {...register("billing.postcode", {
-            required: "Postcode field is required",
-          })}
-          className="col-span-6 xxs:col-span-3"
-          errorMsg={errors?.billing?.postcode?.message}
-          label="Zip Code *"
-          size="md"
-        />
-        <InputText
-          {...register("billing.phone", {
-            required: "Phone field is required",
-            pattern: {
-              value: /^[\d\s\-\+\(\)]+$/,
-              message: "Please enter a valid phone number"
-            },
-            validate: (value) => {
-              const cleaned = value.replace(/\D/g, '');
-              return cleaned.length >= 10 || "Phone must be at least 10 digits";
-            }
-          })}
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          className="col-span-6"
-          errorMsg={errors?.billing?.phone?.message}
-          label="Phone *"
-          size="md"
-        />
-        <CheckBox
-          className="col-span-6 mt-3"
-          defaultValue={watchUseForShipping}
-          id="useForShipping"
-          label="Use the same address for shipping?"
-          {...register("useForShipping")}
-        />
-      </div>
-
-      {!watchUseForShipping && (
-        <div className="my-7 grid grid-cols-6 gap-4">
-          <InputText
-            {...register("shipping.firstName", {
-              required: "First name is required",
-            })}
-            className="col-span-3 mb-4"
-            errorMsg={errors?.shipping?.firstName?.message}
-            label="First Name *"
-            size="md"
-          />
-          <InputText
-            {...register("shipping.lastName", {
-              required: "Last name is required",
-            })}
-            className="col-span-3 mb-4"
-            errorMsg={errors?.shipping?.lastName?.message}
-            label="Last Name *"
-            size="md"
-          />
-          <InputText
-            {...register("shipping.companyName")}
-            className="col-span-6 mb-4"
-            errorMsg={errors?.shipping?.companyName?.message}
-            label="Company Name"
-            size="md"
-          />
-          <InputText
-            {...register("shipping.address", {
-              required: "Address field is required",
-            })}
-            className="col-span-6 mb-4"
-            errorMsg={errors?.shipping?.address?.message}
-            label="Street Address *"
-            size="md"
-          />
-          <InputText
-            {...register("shipping.city", {
-              required: "City field is required",
-            })}
-            className="col-span-3 mb-4"
-            errorMsg={errors?.shipping?.city?.message}
-            label="City *"
-            size="md"
-          />
-          <InputText
-            {...register("shipping.postcode", {
-              required: "Postcode field is required",
-            })}
-            className="col-span-3"
-            errorMsg={errors?.shipping?.postcode?.message}
-            label="Zip Code *"
-            size="md"
-          />
-          <InputText
-            {...register("shipping.phone", {
-              required: "Phone field is required",
-            })}
-            className="col-span-6"
-            errorMsg={errors?.shipping?.phone?.message}
-            label="Phone *"
-            size="md"
-          />
-        </div>
-      )}
-
-      <div className="justify-self-end">
-        <ProceedToCheckout buttonName="Next" pending={isLoadingToSave} />
-      </div>
-    </form>
-  );
 
   if (showSummary && isOpen) {
     return (
@@ -461,5 +314,209 @@ export const GuestAddAdressForm: FC<{
     );
   }
 
-  return <AddressForm />;
+  return (
+    <form className="my-5" onSubmit={handleSubmit(addGuestAddress)}>
+      <div className="my-7 grid grid-cols-6 gap-4">
+        <InputText
+          {...register("billing.firstName", {
+            required: "First name is required",
+            pattern: {
+              value: IS_VALID_INPUT,
+              message: "Invalid First Name",
+            },
+          })}
+          className="col-span-6 xxs:col-span-3 mb-4"
+          errorMsg={errors?.billing?.firstName?.message}
+          label="First Name *"
+          size="md"
+        />
+        <InputText
+          {...register("billing.lastName", {
+            required: "Last name is required",
+            pattern: {
+              value: IS_VALID_INPUT,
+              message: "Invalid Last Name",
+            },
+          })}
+          className="col-span-6 xxs:col-span-3 mb-4"
+          errorMsg={errors?.billing?.lastName?.message}
+          label="Last Name *"
+          size="md"
+        />
+        <InputText
+          {...register("billing.companyName", {
+            pattern: {
+              value: IS_VALID_INPUT,
+              message: "Invalid Company Name",
+            },
+          })}
+          className="col-span-6 mb-2"
+          errorMsg={errors?.billing?.companyName?.message}
+          label="Company Name"
+          size="md"
+        />
+        <InputText
+          {...register("billing.address", {
+            required: "Address field is required",
+            pattern: {
+              value: IS_VALID_ADDRESS,
+              message: "Invalid Address",
+            },
+          })}
+          className="col-span-6 mb-4"
+          errorMsg={errors?.billing?.address?.message}
+          label="Street Address *"
+          size="md"
+        />
+        <InputText
+          {...register("billing.city", {
+            required: "City field is required",
+            pattern: {
+              value: IS_VALID_INPUT,
+              message: "Invalid City",
+            },
+          })}
+          className="col-span-6 xxs:col-span-3 mb-4"
+          errorMsg={errors?.billing?.city?.message}
+          label="City *"
+          size="md"
+        />
+        <InputText
+          {...register("billing.postcode", {
+            required: "Postcode field is required",
+            pattern: {
+              value: IS_VALID_INPUT,
+              message: "Invalid Postcode",
+            },
+          })}
+          className="col-span-6 xxs:col-span-3"
+          errorMsg={errors?.billing?.postcode?.message}
+          label="Zip Code *"
+          size="md"
+        />
+        <InputText
+          {...register("billing.phone", {
+            required: "Phone field is required",
+            pattern: {
+              value: IS_VALID_PHONE,
+              message: "Enter Valid Phone Number",
+            },
+          })}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          className="col-span-6"
+          errorMsg={errors?.billing?.phone?.message}
+          label="Phone *"
+          size="md"
+        />
+        <CheckBox
+          className="col-span-6 mt-3"
+          defaultValue={watchUseForShipping}
+          id="useForShipping"
+          label="Use the same address for shipping?"
+          {...register("useForShipping")}
+        />
+      </div>
+
+      {!watchUseForShipping && (
+        <div className="my-7 grid grid-cols-6 gap-4">
+          <InputText
+            {...register("shipping.firstName", {
+              required: "First name is required",
+              pattern: {
+                value: IS_VALID_INPUT,
+                message: "Invalid First Name",
+              },
+            })}
+            className="col-span-3 mb-4"
+            errorMsg={errors?.shipping?.firstName?.message}
+            label="First Name *"
+            size="md"
+          />
+          <InputText
+            {...register("shipping.lastName", {
+              required: "Last name is required",
+              pattern: {
+                value: IS_VALID_INPUT,
+                message: "Invalid Last Name",
+              },
+            })}
+            className="col-span-3 mb-4"
+            errorMsg={errors?.shipping?.lastName?.message}
+            label="Last Name *"
+            size="md"
+          />
+          <InputText
+            {...register("shipping.companyName", {
+              pattern: {
+                value: IS_VALID_INPUT,
+                message: "Invalid Company Name",
+              },
+            })}
+            className="col-span-6 mb-4"
+            errorMsg={errors?.shipping?.companyName?.message}
+            label="Company Name"
+            size="md"
+          />
+          <InputText
+            {...register("shipping.address", {
+              required: "Address field is required",
+              pattern: {
+                value: IS_VALID_ADDRESS,
+                message: "Invalid Address",
+              },
+            })}
+            className="col-span-6 mb-4"
+            errorMsg={errors?.shipping?.address?.message}
+            label="Street Address *"
+            size="md"
+          />
+          <InputText
+            {...register("shipping.city", {
+              required: "City field is required",
+              pattern: {
+                value: IS_VALID_INPUT,
+                message: "Invalid City",
+              },
+            })}
+            className="col-span-3 mb-4"
+            errorMsg={errors?.shipping?.city?.message}
+            label="City *"
+            size="md"
+          />
+          <InputText
+            {...register("shipping.postcode", {
+              required: "Postcode field is required",
+              pattern: {
+                value: IS_VALID_INPUT,
+                message: "Invalid Postcode",
+              },
+            })}
+            className="col-span-3"
+            errorMsg={errors?.shipping?.postcode?.message}
+            label="Zip Code *"
+            size="md"
+          />
+          <InputText
+            {...register("shipping.phone", {
+              required: "Phone field is required",
+              pattern: {
+                value: IS_VALID_PHONE,
+                message: "Enter Valid Phone Number",
+              },
+            })}
+            className="col-span-6"
+            errorMsg={errors?.shipping?.phone?.message}
+            label="Phone *"
+            size="md"
+          />
+        </div>
+      )}
+
+      <div className="justify-self-end">
+        <ProceedToCheckout buttonName="Next" pending={isLoadingToSave} />
+      </div>
+    </form>
+  );
 };

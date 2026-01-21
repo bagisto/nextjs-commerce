@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_CHECKOUT_ADDRESSES = gql`
-  query CollectionGetCheckoutAddresses($token: String!) {
-    collectionGetCheckoutAddresses( token: $token) {
+ query collectionGetCheckoutAddresses {
+collectionGetCheckoutAddresses {
       edges {
         node {
           id

@@ -476,8 +476,9 @@ export type ConfigurableProductData = {
 
 export type AttributeOptionNode = {
   id: string;
-  adminName: string;
-  isValid : boolean
+  adminName?: string;
+  label?: string;
+  isValid: boolean;
 };
 
 export type AttributeOptionEdge = {
@@ -487,7 +488,8 @@ export type AttributeOptionEdge = {
 export type AttributeData = {
   id: string;
   code: string;
-  options: {
+  label?: string;
+  options: AttributeOptionNode[] | {
     edges: AttributeOptionEdge[];
   };
 };

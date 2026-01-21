@@ -71,10 +71,10 @@ export default function ForgetPasswordForm() {
     <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-4 xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-32">
       <div className="flex w-full flex-col gap-y-4 lg:max-w-[583px] lg:gap-y-12">
         <div className="font-outfit">
-          <h2 className="py-1 text-3xl font-semibold sm:text-4xl">
+          <h2 className="py-1 text-2xl font-semibold sm:text-4xl">
             Recover Password
           </h2>
-          <p className="mt-2 text-lg font-normal text-black/60 dark:text-neutral-300">
+          <p className="mt-2 text-base md:text-lg font-normal text-black/60 dark:text-neutral-400">
             If you forgot your password, recover it by entering your email
             address.
           </p>
@@ -82,7 +82,7 @@ export default function ForgetPasswordForm() {
 
         <form
           noValidate
-          className="flex flex-col gap-y-10"
+          className="flex flex-col gap-y-5 md:gap-y-10"
           onSubmit={handleSubmit(onSubmit)}
         >
           <InputText
@@ -94,24 +94,24 @@ export default function ForgetPasswordForm() {
               },
             })}
             errorMsg={errors?.email?.message ? [errors.email.message] : undefined}
-            label="Email"
+            label="Enter Your Email Address"
             labelPlacement="outside"
             name="email"
-            placeholder="Enter your email address"
+            placeholder="Enter email address"
             size="lg"
             typeName="email"
           />
 
-          <div className="flex flex-col gap-y-2">
+          <div className="flex flex-col gap-y-3 md:gap-y-2">
             <Button
               disabled={loading || isSubmitting}
               loading={loading || isSubmitting}
               title="Reset Password"
               type="submit"
             />
-            <span className="px-1">
+            <span className="px-1 mx-auto md:mx-0 font-outfit">
               Back to sign in?{" "}
-              <Link className="text-blue-600 underline" href="/customer/login">
+              <Link className="text-blue-600 underline" href="/customer/login" aria-label="Go to sign in page">
                 Sign In
               </Link>
             </span>

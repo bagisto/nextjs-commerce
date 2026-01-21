@@ -127,12 +127,14 @@ const SortOrder: FC<{
                 <div className="flex items-center justify-between mt-2 px-2">
                   <h2 className="text-2xl font-bold tracking-tight">Sort</h2>
                   <div className="flex items-center gap-4">
-                    <button
-                      onClick={clearFilters}
-                      className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-neutral-400"
-                    >
-                      Clear all filters
-                    </button>
+                    {Array.from(searchParams.keys()).some((key) => key !== "q") && (
+                      <button
+                        onClick={clearFilters}
+                        className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-neutral-400"
+                      >
+                        Clear all filters
+                      </button>
+                    )}
                     <Button
                       color="primary"
                       radius="full"

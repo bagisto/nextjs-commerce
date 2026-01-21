@@ -20,7 +20,11 @@ export function useCartDetail() {
         url: "cart-detail",
         method: "POST",
         contentType: true,
-        body: { token: token || "" },
+        body: {},
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
     enabled: !!token,
   });

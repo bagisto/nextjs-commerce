@@ -14,6 +14,7 @@ interface InputTextProps
   size?: "sm" | "md" | "lg";
   labelPlacement?: "inside" | "outside" | "outside-left";
   rounded?: "sm" | "md" | "lg";
+  showAsterisk?: boolean; // Show asterisk if true
 }
 
 const sizeClasses = {
@@ -41,6 +42,8 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
       size = "sm",
       labelPlacement = "inside",
       rounded = "sm",
+      required,
+      showAsterisk = true,
       ...rest
     },
     ref
@@ -49,18 +52,18 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
 
     const borderColorClass = hasError
       ? "border-red-500"
-      : "border-gray-300 dark:border-white";
+      : "border-gray-300 dark:border-gray-500";
 
     return (
       <div className={clsx("max-w-full mb-2.5", className)}>
         {labelPlacement !== "inside" && (
           <label
             className={clsx(
-              "mb-1 block font-medium text-gray-700 dark:text-white"
+              "px-1 mb-1 block font-medium text-black dark:text-white"
             )}
             htmlFor={name}
           >
-            {label}
+            {label} {showAsterisk && <span className="text-red-500">*</span>}
           </label>
         )}
         <div className="relative">
@@ -72,7 +75,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
               sizeClasses[size],
               roundedClasses[rounded],
               labelPlacement === "inside"
-                ? "placeholder-gray-400 dark:placeholder-gray-300"
+                ? "placeholder-input-color dark:placeholder-selected-color-dark"
                 : ""
             )}
             defaultValue={defaultValue}
@@ -80,6 +83,7 @@ const InputText = forwardRef<HTMLInputElement, InputTextProps>(
             name={name}
             placeholder={labelPlacement === "inside" ? label : placeholder}
             type={typeName}
+            required={required}
             {...rest}
           />
           {hasError && (

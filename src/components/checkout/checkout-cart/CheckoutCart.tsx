@@ -4,7 +4,7 @@ import { Price } from "@components/theme/ui/Price";
 import CartItemAccordion from "./CartItemAccordian";
 import { NOT_IMAGE } from "@utils/constants";
 import Link from "next/link";
-import { createUrl } from "@utils/helper";
+import { createUrl, safeParse } from "@utils/helper";
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
@@ -16,6 +16,7 @@ export default function CheckoutCart({ cartItems, selectedShippingRate: _id }: {
     : [];
   return (
     <>
+      <CartItemAccordion cartItems={cartItems} />
       <div className="hidden h-full min-h-[100dvh] flex-col justify-between py-4 pl-4 pr-8 lg:flex">
         <div className="">
           <h1 className="p-6 font-outfit text-xl font-medium text-black dark:text-neutral-300">
@@ -30,13 +31,14 @@ export default function CheckoutCart({ cartItems, selectedShippingRate: _id }: {
                   `/product/${item?.node.productUrlKey}`,
                   new URLSearchParams(merchandiseSearchParams)
                 );
-                const baseImage = JSON.parse(item?.node?.baseImage);
+                const baseImage: any = safeParse(item?.node?.baseImage);
 
                 return (
                   <li key={i} className="flex w-full flex-col">
                     <div className="relative flex w-full flex-row justify-between">
                       <Link
                         className="z-30 flex flex-row items-center space-x-4"
+                        aria-label={`${item?.node?.name}`}
                         href={merchandiseUrl}
                       >
                         <div className="relative h-[120px] w-[120px] cursor-pointer rounded-2xl bg-neutral-300 xl:h-[162px] xl:w-[194px]">
@@ -121,7 +123,6 @@ export default function CheckoutCart({ cartItems, selectedShippingRate: _id }: {
           </div>
         </div>
       </div>
-      <CartItemAccordion cartItems={cartItems} />
     </>
   );
 }

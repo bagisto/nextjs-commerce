@@ -7,16 +7,13 @@ export const GET_TREE_CATEGORIES = gql`
       position
       logoPath
       status
-      translations {
-        edges {
-          node {
-            name
-            slug
-            urlPath
-            description
-            metaTitle
-          }
-        }
+      translation{
+        id
+        name
+        slug
+        description
+        urlPath
+        metaTitle
       }
     }
   }

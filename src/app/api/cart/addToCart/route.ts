@@ -2,13 +2,14 @@ import { CREATE_ADD_PRODUCT_IN_CART } from "@/graphql";
 import { AddToCartOperation } from "@/types/cart/type";
 import { bagistoFetch } from "@/utils/bagisto";
 import { isBagistoError } from "@/utils/type-guards";
+import { getAuthToken } from "@utils/helper";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const guestToken = getAuthToken(req);
 
     const variables = {
-      token: body.token ?? null,
       cartId: body.cartId ?? null,
       productId: body.productId,
       quantity: body.quantity,
@@ -18,6 +19,7 @@ export async function POST(req: Request) {
       query: CREATE_ADD_PRODUCT_IN_CART,
       variables: variables,
       cache: "no-store",
+      guestToken,
     });
 
     return Response.json({

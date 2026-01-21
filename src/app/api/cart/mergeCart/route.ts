@@ -2,20 +2,22 @@ import { CREATE_MERGE_CART } from "@/graphql";
 import { bagistoFetch } from "@/utils/bagisto";
 import { isBagistoError } from "@/utils/type-guards";
 import { CreateMergeCartOperation } from "@/types/cart/type";
+import { getAuthToken } from "@/utils/helper";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
+    const guestToken = getAuthToken(req);
 
     const variables = {
-      token: body.token ?? null,
       cartId: body.cartId ?? null,
     };
 
     const res = await bagistoFetch<CreateMergeCartOperation>({
       query: CREATE_MERGE_CART,
-      variables : variables,
+      variables: variables,
       cache: "no-store",
+      guestToken,
     });
 
     return Response.json({
@@ -25,7 +27,7 @@ export async function POST(req: Request) {
     if (isBagistoError(error)) {
       return Response.json(
         {
-          data: { createAddProductInCart: null },
+          data: { createMergeCart: null },
           error: error.cause ?? error,
         },
         { status: 200 }

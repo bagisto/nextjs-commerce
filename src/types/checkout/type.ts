@@ -62,26 +62,25 @@ export interface CreateCheckoutShippingMethodOperation {
 }
 
 export interface CreateCheckoutShippingMethodVariables {
-  token: string;
   shippingMethod: string;
 }
 
 
 
- export interface SelectedPaymentType {
-    method: string;
-    methodTitle?: string;
-  };
+export interface SelectedPaymentType {
+  method: string;
+  methodTitle?: string;
+};
 
 
-  export interface SelectedShippingRateType {
-    method: string;
-    methodDescription?: string;
-  };
+export interface SelectedShippingRateType {
+  method: string;
+  methodDescription?: string;
+};
 
 
 
-  // Checkout Payment Methods
+// Checkout Payment Methods
 
 export interface CheckoutPaymentMethod {
   id: string;
@@ -96,12 +95,8 @@ export interface CheckoutPaymentMethod {
 export interface CheckoutPaymentMethodsData {
   collectionPaymentMethods: CheckoutPaymentMethod[];
 }
-export interface CheckoutPaymentMethodsVariables {
-  token: string;
-}
 export interface CheckoutPaymentMethodsOperation {
   data: CheckoutPaymentMethodsData;
-  variables: CheckoutPaymentMethodsVariables;
 }
 
 
@@ -117,13 +112,8 @@ export interface CreateCheckoutOrderPayload {
 export interface CreateCheckoutOrderData {
   createCheckoutOrder: CreateCheckoutOrderPayload;
 }
-export interface CreateCheckoutOrderVariables {
-  token: string;
-}
-
 export interface CreateCheckoutOrderOperation {
   data: CreateCheckoutOrderData;
-  variables: CreateCheckoutOrderVariables;
 }
 
 // Checkout Get Address
@@ -151,12 +141,8 @@ export interface CheckoutAddressesConnection {
 export interface GetCheckoutAddressesData {
   collectionGetCheckoutAddresses: CheckoutAddressesConnection;
 }
-export interface GetCheckoutAddressesVariables {
-  token: string;
-}
 export interface GetCheckoutAddressesOperation {
   data: GetCheckoutAddressesData;
-  variables: GetCheckoutAddressesVariables;
 }
 
 // checkout save address
@@ -188,7 +174,6 @@ export interface CreateCheckoutAddressData {
   createCheckoutAddress: CreateCheckoutAddressPayload;
 }
 export interface CreateCheckoutAddressVariables {
-  token: string;
 
   // Billing
   billingFirstName: string;

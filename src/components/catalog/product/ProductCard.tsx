@@ -15,6 +15,7 @@ export const ProductCard: FC<{
     name: string;
     id: string;
     type: string;
+    isSaleable?: string;
   };
 }> = ({ currency, price, specialPrice, imageUrl, product }) => {
   return (
@@ -23,7 +24,7 @@ export const ProductCard: FC<{
       className="animate-fadeIn gap-y-4.5 flex flex-col"
     >
       <div className="group relative overflow-hidden rounded-lg">
-        <Link href={`/product/${product.urlKey}`}>
+        <Link href={`/product/${product.urlKey}`} aria-label={`View ${product.name}`}>
           <div className="aspect-[353/283] h-auto truncate rounded-lg">
             <NextImage
               alt={product?.name || "Product image"}
@@ -37,12 +38,12 @@ export const ProductCard: FC<{
         <div
           className={`hidden lg:block absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-0 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
         >
-          <AddToCartButton productType={product.type} productId={product.id} productUrlKey={product.urlKey} />
+          <AddToCartButton productType={product.type} productId={product.id} productUrlKey={product.urlKey} isSaleable={product?.isSaleable} />
         </div>
         <div
           className={`block lg:hidden absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-x-4 rounded-full border-[1.5px] border-white bg-white/70 px-4 py-1.5 text-xs font-semibold text-black opacity-100 shadow-2xl backdrop-blur-md duration-300 group-hover:opacity-100 dark:text-white`}
         >
-          <AddToCartButton productType={product.type} productId={product.id} productUrlKey={product.urlKey} />
+          <AddToCartButton productType={product.type} productId={product.id} productUrlKey={product.urlKey} isSaleable={product?.isSaleable}/>
         </div>
       </div>
 

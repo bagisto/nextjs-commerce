@@ -1,3 +1,5 @@
+import { safeParse } from "../helper";
+
 export const getVariantInfo = (
   isConfigurable: boolean,
   params: string,
@@ -14,7 +16,7 @@ export const getVariantInfo = (
   }
   const searchParams = new URLSearchParams(params);
   const indexData: Record<string, Record<string, number>> =
-    JSON.parse(index || "{}");
+    safeParse(index) || {};
 
   const selectedAttributes: Record<string, number> = {};
 
@@ -28,7 +30,6 @@ export const getVariantInfo = (
   const possibleOptions: Record<string, number[]> = {};
 
   for (const attr of superAttributes) {
-    // For each attribute, find compatible options by filtering using all OTHER selections
     const otherSelectedAttributes = { ...selectedAttributes };
     delete otherSelectedAttributes[attr.code];
 
@@ -47,24 +48,28 @@ export const getVariantInfo = (
     }
   }
 
-  const variantAttributes = superAttributes.map((attr) => ({
-    ...attr,
-    options: {
-      ...attr.options,
-      edges: attr.options.edges.map((edge: any) => ({
-        ...edge,
-        node: {
-          ...edge.node,
-          isValid: (() => {
-            const otherSelectedAttributes = { ...selectedAttributes };
-            delete otherSelectedAttributes[attr.code];
-            const hasOtherSelections = Object.keys(otherSelectedAttributes).length > 0;
-            return !hasOtherSelections || possibleOptions[attr.code].includes(Number(edge.node.id));
-          })(),
-        },
+  const variantAttributes = superAttributes.map((attr) => {
+    const rawOptions = Array.isArray(attr.options)
+      ? attr.options
+      : attr.options?.edges?.map((edge: any) => edge.node) || [];
+
+    return {
+      ...attr,
+      options: rawOptions.map((option: any) => ({
+        ...option,
+        isValid: (() => {
+          const otherSelectedAttributes = { ...selectedAttributes };
+          delete otherSelectedAttributes[attr.code];
+          const hasOtherSelections =
+            Object.keys(otherSelectedAttributes).length > 0;
+          return (
+            !hasOtherSelections ||
+            possibleOptions[attr.code].includes(Number(option.id))
+          );
+        })(),
       })),
-    },
-  }));
+    };
+  });
 
   const allSelected = superAttributes.every(
     (attr) => selectedAttributes[attr.code] !== undefined

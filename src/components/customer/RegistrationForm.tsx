@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import InputText from "@components/common/form/Input";
 import { useCustomToast } from "@/utils/hooks/useToast";
 import { useRouter } from "next/navigation";
-import { EMAIL_REGEX, SIGNUP_IMG } from "@utils/constants";
+import { EMAIL_REGEX, SIGNUP_IMG, IS_VALID_INPUT } from "@utils/constants";
 import { createUser } from "@utils/actions";
 import { Button } from "@components/common/button/Button";
 
@@ -59,7 +59,7 @@ export default function RegistrationForm() {
           <h2 className="py-1 text-2xl font-semibold sm:text-4xl">
             Become User
           </h2>
-          <p className="mt-2 text-lg font-normal text-black/[60%] dark:text-neutral-300 sm:mt-2">
+          <p className="mt-2 text-base md:text-lg font-normal text-black/[60%] dark:text-neutral-400 sm:mt-2">
             You are new to our store, we are glad to have you as a member.
           </p>
         </div>
@@ -74,6 +74,10 @@ export default function RegistrationForm() {
               <InputText
                 {...register("firstName", {
                   required: "First name is required",
+                  pattern: {
+                    value: IS_VALID_INPUT,
+                    message: "Invalid First Name",
+                  },
                 })}
                 className="w-full"
                 errorMsg={
@@ -88,7 +92,14 @@ export default function RegistrationForm() {
                 size="lg"
               />
               <InputText
-                {...register("lastName", { required: "Last name is required" })}
+                {...register("lastName",
+                  {
+                    required: "Last name is required",
+                    pattern: {
+                      value: IS_VALID_INPUT,
+                      message: "Invalid Last Name",
+                    },
+                  })}
                 className="w-full"
                 errorMsg={
                   errors.lastName?.message
@@ -153,15 +164,6 @@ export default function RegistrationForm() {
               {...register("passwordConfirmation", {
                 required: "Please confirm your password",
               })}
-              // errorMsg={
-              //   errors.passwordConfirmation
-              //     ? [errors.passwordConfirmation.message]
-              //     : userErrors?.passwordConfirmation
-              //       ? userErrors.passwordConfirmation
-              //       : userErrors?.password // also show server password errors here
-              //         ? userErrors.password
-              //         : undefined
-              // }
               label="Confirm Password"
               labelPlacement="outside"
               name="passwordConfirmation"
@@ -178,9 +180,9 @@ export default function RegistrationForm() {
               title="Sign Up"
               type="submit"
             />
-            <span className="font-outfit">
+            <span className="mx-auto md:mx-0 font-outfit">
               Already have an account?{" "}
-              <Link className="text-blue-600 underline" href="/customer/login">
+              <Link className="text-blue-600 underline" href="/customer/login" aria-label="Go to sign in page">
                 Sign In
               </Link>
             </span>

@@ -2,14 +2,12 @@ import { gql } from "@apollo/client";
 
 export const CREATE_ADD_PRODUCT_IN_CART = gql`
   mutation CreateAddProductInCart(
-    $token: String
     $cartId: Int
     $productId: Int!
     $quantity: Int!
   ) {
     createAddProductInCart(
       input: {
-        token: $token
         cartId: $cartId
         productId: $productId
         quantity: $quantity

@@ -25,7 +25,7 @@ export default async function Footer() {
     <>
       <div className="mx-auto my-16 mt-16 sm:mt-0 w-full lg:my-12 md:my-20 md:max-w-4xl">
         {isObject(services) && services?.translations?.edges && (
-          
+
           <ServiceContent
             name={services?.name}
             serviceData={services?.translations?.edges?.map((edge: ThemeCustomizationTranslationEdge) => edge.node)}
@@ -35,18 +35,42 @@ export default async function Footer() {
       <footer className="hidden lg:block border-t border-neutral-200 text-sm text-neutral-500 dark:border-neutral-700 dark:text-neutral-400">
         <div className="mx-auto flex w-full max-w-screen-2xl flex-col justify-between gap-6 gap-y-6 px-6 py-12 text-sm dark:border-neutral-700 min-[880px]:flex-row min-[880px]:gap-12 min-[880px]:gap-y-20 min-[880px]:px-4">
           <div className="flex flex-col gap-[14px]">
-            <Link className="flex items-center gap-2 md:pt-1" href="/">
+            <Link
+              className="flex items-center gap-2 md:pt-1 cursor-pointer"
+              href="/"
+              aria-label="Go to homepage"
+              title="Go to homepage"
+            >
               <LogoIcon />
+              <span className="sr-only">Go to homepage</span>
             </Link>
             <div className="flex gap-[14px]">
-              <Link href="#" className="cursor-pointer">
+              <Link
+                href={"#"}
+                aria-label="Visit Bagisto Store on Facebook"
+                title="Facebook"
+                target="_blank"
+                className="cursor-pointer">
                 <FaceBookIcon />
+                <span className="sr-only">Facebook</span>
               </Link>
-              <Link href="#" className="cursor-pointer">
+              <Link
+                href={"#"}
+                aria-label="Visit Bagisto Store on Instagram"
+                title="Instagram"
+                target="_blank"
+                className="cursor-pointer">
                 <InstaGramIcon />
+                <span className="sr-only">Instagram</span>
               </Link>
-              <Link href="#" className="cursor-pointer">
+              <Link
+                href={"#"}
+                aria-label="Visit Bagisto Store on Twitter"
+                title="Twitter"
+                target="_blank"
+                className="cursor-pointer">
                 <TwitterIcon />
+                <span className="sr-only">Twitter</span>
               </Link>
             </div>
           </div>

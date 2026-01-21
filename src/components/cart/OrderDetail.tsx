@@ -8,8 +8,9 @@ export default function OrderDetail() {
   const [orderId, setOrderId] = useState<string | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    setOrderId(getCookie(ORDER_ID));
+    requestAnimationFrame(() => {
+      setOrderId(getCookie(ORDER_ID));
+    });
   }, []);
 
   return (

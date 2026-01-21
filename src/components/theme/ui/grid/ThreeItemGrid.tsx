@@ -22,6 +22,7 @@ export default function ThreeItemGridItem({
       }
     >
       <Link
+        aria-label={`${item?.name}`}
         className="relative block aspect-square h-full w-full"
         href={`/product/${item.urlKey}?type=${item.type}`}
       >

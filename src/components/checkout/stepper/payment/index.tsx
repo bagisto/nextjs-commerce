@@ -25,7 +25,11 @@ const Payment: FC<{
         url: "checkout/paymentMethods",
         method: "POST",
         contentType: true,
-        body: { token },
+        body: {},
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
   });
 

@@ -27,6 +27,7 @@ const Category: FC<{
               className="relative aspect-[498/665] h-full w-full max-w-[498px] flex-none overflow-hidden rounded-[18px]"
             >
               <Link
+                aria-label={`${product?.name}`}
                 className="relative h-full w-full"
                 href={`/search/${product.slug}`}
               >

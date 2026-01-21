@@ -7,6 +7,7 @@ import CheckoutCart from "./checkout-cart/CheckoutCart";
 import Stepper from "./stepper";
 import { useState, useEffect } from 'react';
 import { useAddressesFromApi } from "@utils/helper";
+import { useScrollToTop } from "@/utils/hooks/useScrollTo";
 
 
 
@@ -21,13 +22,10 @@ const CheckOut = ({ step }: CheckOutProps) => {
   const cartItems = cartDetail?.cart;
   const selectedShippingRate = cartItems?.selectedShippingRate;
   const selectedShippingRateTitle = cartItems?.selectedShippingRateTitle || cartItems?.selectedShippingRate;
-  // const selectedShippingRateTitle =  cartItems?.selectedShippingRate;
   const selectedPayment = cartItems?.paymentMethod;
   const selectedPaymentTitle = cartItems?.paymentMethodTitle;
   const [isOpen, setIsOpen] = useState(!selectedPayment);
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  useScrollToTop();
 
   useEffect(() => {
     if (selectedPayment) {
@@ -36,9 +34,7 @@ const CheckOut = ({ step }: CheckOutProps) => {
     }
   }, [selectedPayment]);
 
-  useEffect(() => {
-    scrollToTop();
-  }, []);
+
 
   return (
     <>

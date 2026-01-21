@@ -1,9 +1,11 @@
-import { FC } from "react";
+import { FC, Suspense } from "react";
+import { safeParse } from "@utils/helper";
 import { ThemeCustomizationResponse } from "@/types/theme/theme-customization";
 import ImageCarousel from "./ImageCarousel";
 import ProductCarousel from "./ProductCarousel";
 import CategoryCarousel from "./CategoryCarousel";
 import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
+import { CategoryCarouselSkeleton } from "@components/common/skeleton/CategoryCarouselSkeleton";
 
 interface RenderThemeCustomizationProps {
     themeCustomizations: ThemeCustomizationResponse['themeCustomizations'];
@@ -26,12 +28,10 @@ const RenderThemeCustomization: FC<RenderThemeCustomizationProps> = ({ themeCust
                     const translation = node.translations.edges.find(e => e.node.locale === 'en') || node.translations.edges[0];
                     if (!translation) return null;
 
-                    let options = {};
-                    try {
-                        options = JSON.parse(translation.node.options);
-                    } catch (e) {
-                        console.error("Error parsing options for", node.type, e);
-                        return null;
+                    const options = safeParse(translation.node.options) || {};
+                    if (Object.keys(options).length === 0) {
+                        console.error("Error parsing options for", node.type);
+                        // return null; // Or continue
                     }
 
                     switch (node.type) {
@@ -45,7 +45,11 @@ const RenderThemeCustomization: FC<RenderThemeCustomizationProps> = ({ themeCust
                             return <ProductCarousel key={node.id} options={{ ...options, title: node.name } as any} itemCount={itemCount} sortOrder={node?.sortOrder} />;
                         }
                         case "category_carousel":
-                            return <CategoryCarousel key={node.id} options={options as any} />;
+                            return (
+                                <Suspense key={node.id} fallback={<CategoryCarouselSkeleton />}>
+                                    <CategoryCarousel options={options as any} />
+                                </Suspense>
+                            );
                         default:
                             return null;
                     }

@@ -2,7 +2,6 @@ import { gql } from "@apollo/client";
 
 export const CREATE_CHECKOUT_ADDRESS = gql`
  mutation createCheckoutAddress(
-    $token: String!
     $billingFirstName: String!
     $billingLastName: String!
     $billingEmail: String!
@@ -27,7 +26,6 @@ export const CREATE_CHECKOUT_ADDRESS = gql`
 ) {
   createCheckoutAddress(
     input: {
-      token: $token
       billingFirstName: $billingFirstName
       billingLastName: $billingLastName
       billingEmail: $billingEmail

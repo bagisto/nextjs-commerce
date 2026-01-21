@@ -84,7 +84,8 @@ export const GET_PRODUCT_SWATCH_REVIEW = gql`
       urlKey
       price
       isSaleable
-      index
+      combinations
+      superAttributeOptions
       attributeValues {
         edges {
           cursor

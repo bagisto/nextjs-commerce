@@ -6,6 +6,7 @@ import { BASE_URL, baseUrl } from "./constants";
 import { ProductData, ReviewDatatypes } from "@components/catalog/type";
 import { useAddress } from "@utils/useAddress";
 import { CheckoutAddressNode, MappedCheckoutAddress } from "@/types/checkout/type";
+import { CategoryNode } from "@/types/theme/category-tree";
 
 export const createUrl = (
   pathname: string,
@@ -292,7 +293,7 @@ export const parseCsv = (value?: string) =>
  * @param value - Any value that might be an array, null, or undefined
  * @returns An array or empty array
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export default function safeArray<T = any>(value: T[] | null | undefined): T[] {
   if (value == null) return [];
   return Array.isArray(value) ? value : [];
@@ -318,7 +319,6 @@ export function safePriceValue(product: ProductData): number {
     const priceValue = product?.type === "configurable"
       ? product?.minimumPrice ?? "0"
       : product?.price ?? "0";
-    // const priceValue = product?.minimumPrice ?? "0";
     return parseFloat(priceValue) || 0;
   }
   if (
@@ -409,3 +409,40 @@ export function throttle<T extends (...args: any[]) => any>(
   };
 }
 
+export function findCategoryBySlug(categories: CategoryNode[], slug: string): CategoryNode | null {
+  for (const category of categories) {
+    if (category.translation?.slug === slug) return category;
+
+    if (category.children && isArray(category.children)) {
+      const found = findCategoryBySlug(category.children, slug);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+
+export function extractNumericId(id: string): string | undefined {
+  if (!id) return undefined;
+  const match = id.match(/\d+$/);
+  return match ? match[0] : undefined;
+}
+
+export const getAuthToken = (req: Request): string | undefined => {
+  const authHeader = req.headers.get("Authorization");
+  return authHeader?.split(" ")[1];
+};
+
+/**
+ * Safely parses a JSON string, returns null if parsing fails or value is not a string
+ * @param value - The string to parse
+ * @returns The parsed object or null
+ */
+export function safeParse<T = any>(value: string | null | undefined): T | null {
+  if (!value || typeof value !== "string") return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}

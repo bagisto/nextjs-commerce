@@ -90,6 +90,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
                 {images.map((img, index) => {
                     const imageUrl = getFullImageUrl(img.image);
                     const isActive = index === currentIndex;
+                    const altText = img.title || `Banner ${index + 1}`;
 
                     return (
                         <div
@@ -98,10 +99,14 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
                                 }`}
                         >
                             {img.link ? (
-                                <Link href={img.link} className="block h-full w-full">
+                                <Link
+                                    href={`/search/${img.link}`}
+                                    className="block h-full w-full"
+                                    aria-label={`View ${altText}`}
+                                >
                                     <Image
                                         src={imageUrl}
-                                        alt={img.title || `Banner ${index + 1}`}
+                                        alt={altText}
                                         fill
                                         className="object-cover !z-0"
                                         priority={index === 0}
@@ -111,7 +116,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
                             ) : (
                                 <Image
                                     src={imageUrl}
-                                    alt={img.title || `Banner ${index + 1}`}
+                                    alt={altText}
                                     fill
                                     className="object-cover !z-0"
                                     priority={index === 0}

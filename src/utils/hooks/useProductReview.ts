@@ -19,12 +19,16 @@ interface AddInput {
 export function useProductReview() {
     const { showToast } = useCustomToast();
     const { mutateAsync: createProductReview, isPending: isLoading } = useMutation({
-        mutationFn: (input: AddInput) =>
+        mutationFn: ({ token, ...input }: AddInput & { token: string }) =>
             fetchHandler({
                 url: "review",
                 method: "POST",
                 contentType: true,
                 body: { ...input },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
             }),
 
         onSuccess: (response) => {

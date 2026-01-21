@@ -2,7 +2,6 @@ import { gql } from "@apollo/client";
 
 export const CREATE_CHECKOUT_PAYMENT_METHODS = gql`
   mutation CreateCheckoutPaymentMethod(
-    $token: String!
     $paymentMethod: String!
     $successUrl: String
     $failureUrl: String
@@ -10,7 +9,6 @@ export const CREATE_CHECKOUT_PAYMENT_METHODS = gql`
   ) {
     createCheckoutPaymentMethod(
       input: {
-        token: $token
         paymentMethod: $paymentMethod
         paymentSuccessUrl: $successUrl
         paymentFailureUrl: $failureUrl

@@ -37,10 +37,10 @@ const CategoryCarousel: FC<CategoryCarouselProps> = async ({
     return (
       <section className="pt-8 sm:pt-12 lg:pt-20">
         <div className="md:max-w-4.5xl mx-auto mb-10 w-auto text-center md:px-36">
-          <h2 className="mb-2 text-2xl sm:text-4xl font-semibold">
+          <h2 className="mb-2 text-xl md:text-4xl  font-semibold">
             Shop by Category
           </h2>
-          <p className="text-base font-normal text-black/60 dark:text-neutral-300">
+          <p className="text-sm md:text-base font-normal text-black/60 dark:text-neutral-300">
             Discover the latest trends! Fresh products just added—shop new
             styles, tech, and essentials before they&apos;re gone.
           </p>
@@ -55,6 +55,7 @@ const CategoryCarousel: FC<CategoryCarouselProps> = async ({
                 <Link
                   className="relative h-full w-full"
                   href={`/search/${category.translation.slug}`}
+                  aria-label={`Shop ${category.translation.name} category`}
                 >
                   <GridTileImage
                     fill

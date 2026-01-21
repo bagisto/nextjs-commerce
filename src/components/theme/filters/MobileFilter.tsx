@@ -20,7 +20,7 @@ import { createUrl } from "@/utils/helper";
 export default function MobileFilter({
   filterAttributes,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   filterAttributes: any;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -114,12 +114,16 @@ export default function MobileFilter({
                 <div className="flex items-center justify-between mt-2 px-2">
                   <h2 className="text-2xl font-bold tracking-tight">Filters</h2>
                   <div className="flex items-center gap-4">
-                    <button
-                      onClick={clearAllFilters}
-                      className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-neutral-400"
-                    >
-                      Clear all filters
-                    </button>
+                    {Array.from(searchParams.keys()).some(
+                      (key) => key !== QUERY && key !== SORT
+                    ) && (
+                        <button
+                          onClick={clearAllFilters}
+                          className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-neutral-400"
+                        >
+                          Clear all filters
+                        </button>
+                      )}
                     <Button
                       color="primary"
                       radius="full"

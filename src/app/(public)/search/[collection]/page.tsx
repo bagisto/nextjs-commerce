@@ -21,29 +21,10 @@ import { SortByFields } from "@utils/constants";
 import { CategoryDetail } from "@components/theme/search/CategoryDetail";
 import { Suspense } from "react";
 import FilterListSkeleton from "@components/common/skeleton/FilterSkeleton";
-import { CategoryNode, TreeCategoriesResponse } from "@/types/theme/category-tree";
+import { TreeCategoriesResponse } from "@/types/theme/category-tree";
 import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
+import { extractNumericId, findCategoryBySlug } from "@utils/helper";
 
-function findCategoryBySlug(categories: CategoryNode[], slug: string): CategoryNode | null {
-  for (const category of categories) {
-    const translation = category.translations?.edges?.find(
-      (t) => t.node.slug === slug
-    );
-    if (translation) return category;
-
-    if (category.children && isArray(category.children)) {
-      const found = findCategoryBySlug(category.children, slug);
-      if (found) return found;
-    }
-  }
-  return null;
-}
-
-function extractNumericId(id: string): string | undefined {
-  if (!id) return undefined;
-  const match = id.match(/\d+$/);
-  return match ? match[0] : undefined;
-}
 
 export async function generateMetadata({
   params,
@@ -63,9 +44,7 @@ export async function generateMetadata({
 
   if (!categoryItem) return notFound();
 
-  const translation = categoryItem.translations.edges.find(
-    (t) => t.node.slug === categorySlug
-  )?.node;
+  const translation = categoryItem.translation;
 
   return {
     title: translation?.metaTitle || translation?.name,
@@ -170,9 +149,7 @@ export default async function CategoryPage({
   const products = data?.products?.edges?.map((e) => e.node) || [];
   const pageInfo = data?.products?.pageInfo;
   const totalCount = data?.products?.totalCount;
-  const translation = categoryItem.translations?.edges?.find(
-    (t) => t.node.slug === categorySlug
-  )?.node;
+  const translation = categoryItem.translation;
 
   return (
     <>

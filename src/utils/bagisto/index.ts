@@ -2,17 +2,15 @@ import { cookies, headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import {
-  BagistoCollectionProductsOperation,
   BagistoCreateUserOperation,
   BagistoProductInfo,
   BagistoUser,
   ImageInfo,
-  InputData,
-  ProductDetailsInfo,
 } from "@/types/types";
 import {
   BAGISTO_SESSION,
   HIDDEN_PRODUCT_TAG,
+  STOREFRONT_KEY,
 } from "../constants";
 import { getServerSession } from "next-auth";
 import {
@@ -22,9 +20,8 @@ import {
 } from "@/graphql/customer/mutations";
 import { DocumentNode } from "graphql";
 import { GRAPHQL_URL } from "@/utils/constants";
-import { GET_FOOTER } from "@/graphql";
+import { GET_FOOTER, PAGE_BY_URL_KEY } from "@/graphql";
 import { SUBSCRIBE_TO_NEWSLETTER } from "@/graphql/theme/mutations";
-import { getHomeProductQuery } from "./product-collection";
 import { authOptions } from "@utils/auth";
 import { RegisterInputs } from "@components/customer/RegistrationForm";
 import { GetFooterResponse, GetFooterVariables, ThemeCustomizationResult } from "@/types/theme/theme-customization";
@@ -40,6 +37,7 @@ export async function bagistoFetch<T>({
   tags,
   variables,
   isCookies = true,
+  guestToken,
   revalidate = 60,
 }: {
   cache?: RequestCache;
@@ -48,6 +46,7 @@ export async function bagistoFetch<T>({
   tags?: string[];
   variables?: ExtractVariables<T>;
   isCookies?: boolean;
+  guestToken?: string;
   revalidate?: number;
 }): Promise<{ status: number; body: T } | never> {
   try {
@@ -67,10 +66,14 @@ export async function bagistoFetch<T>({
 
     const baseHeaders: Record<string, string> = {
       "Content-Type": "application/json",
+      "X-STOREFRONT-KEY": STOREFRONT_KEY,
     };
 
     if (accessToken) {
       baseHeaders.Authorization = `Bearer ${accessToken}`;
+    }
+    else if (guestToken) {
+      baseHeaders.Authorization = `Bearer ${guestToken}`;
     }
 
     if (bagistoCartId) {
@@ -130,6 +133,7 @@ export async function bagistoFetchNoSession<T>({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-STOREFRONT-KEY": STOREFRONT_KEY,
         "x-locale": "en",
         "x-currency": "USD",
         ...headers,
@@ -140,7 +144,7 @@ export async function bagistoFetchNoSession<T>({
       }),
       cache,
       next: {
-        revalidate: cache === "no-store" ? 0 : revalidate ||60,
+        revalidate: cache === "no-store" ? 0 : revalidate || 60,
         ...(tags && { tags }),
       },
     });
@@ -231,7 +235,7 @@ export async function createUserToLogin(
         },
       },
       cache: "no-store",
-      revalidate : 3600,
+      revalidate: 3600,
     });
 
     return res.body.data.createCustomer.customer;
@@ -257,13 +261,8 @@ export async function logoutUser() {
       variables: { input: { token: string } };
     }>({
       query: CUSTOMER_LOGOUT,
-      variables: {
-        input: {
-          token,
-        },
-      },
       isCookies: true,
-      revalidate : 3600,
+      revalidate: 3600,
     });
 
     const success = res?.body?.data?.createLogout?.logout?.success ?? false;
@@ -299,7 +298,7 @@ export async function recoverUserLogin(
         ...input,
       },
       cache: "no-store",
-      revalidate : 3600,
+      revalidate: 3600,
     });
   } catch (error) {
     return error;
@@ -325,37 +324,6 @@ export async function subsCribeUser(
   }
 }
 
-export async function getCollectionHomeProducts({
-  filters,
-}: {
-  filters: InputData[];
-  tag: string;
-}): Promise<ProductDetailsInfo[]> {
-  try {
-    const res = await bagistoFetchNoSession<BagistoCollectionProductsOperation>(
-      {
-        query: getHomeProductQuery,
-        variables: { input: filters },
-        tags: ["products"],
-        isCookies: false,
-         revalidate : 86400,
-      }
-    );
-
-    if (
-      res.body &&
-      res.body.data &&
-      res.body.data.allProducts &&
-      Array.isArray(res.body.data.allProducts.data)
-    ) {
-      return reshapeProducts(res.body.data.allProducts.data);
-    }
-    return [];
-  } catch {
-    // Error handled silently
-  }
-  return [];
-}
 
 export async function getThemeCustomization(): Promise<ThemeCustomizationResult> {
   try {
@@ -366,7 +334,7 @@ export async function getThemeCustomization(): Promise<ThemeCustomizationResult>
       query: GET_FOOTER,
       variables: { type: "footer_links" },
       isCookies: false,
-       revalidate : 86400,
+      revalidate: 86400,
     });
 
     const servicesRes = await bagistoFetch<{
@@ -376,7 +344,7 @@ export async function getThemeCustomization(): Promise<ThemeCustomizationResult>
       query: GET_FOOTER,
       variables: { type: "services_content" },
       isCookies: false,
-       revalidate : 86400,
+      revalidate: 86400,
     });
 
 
@@ -431,4 +399,18 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
     topic,
     now: Date.now()
   });
+}
+
+
+export async function getPage(
+  input: { urlKey: string }
+): Promise<any> {
+  const res = await bagistoFetch<any>({
+    query: PAGE_BY_URL_KEY,
+    cache: "no-store",
+    isCookies: false,
+    variables: { pageByUrlKey: input.urlKey },
+  });
+
+  return res.body.data?.pageByUrlKeypages;
 }

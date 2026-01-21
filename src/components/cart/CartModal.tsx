@@ -25,32 +25,62 @@ import { useFormStatus } from "react-dom";
 import { redirectToCheckout } from "@/utils/actions";
 import { EMAIL, getLocalStorage } from "@/store/local-storage";
 import Link from "next/link";
-import { createUrl, isCheckout, useAddressesFromApi } from "@utils/helper";
+import { createUrl, isCheckout, useAddressesFromApi, safeParse } from "@utils/helper";
 import { useMediaQuery } from "@utils/hooks/useMediaQueryHook";
 
 
 type MerchandiseSearchParams = {
   [key: string]: string;
 };
-export default function CartModal() {
+export default function CartModal({
+  children,
+  className,
+  onClick,
+  onClose: onCloseProp,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  onClose?: () => void;
+}) {
   const { isLoading } = useCartDetail();
   const cartDetail = useAppSelector((state) => state.cartDetail);
   const { billingAddress } = useAddressesFromApi();
-  const cart = Array.isArray(cartDetail?.cart?.items?.edges) ? cartDetail?.cart?.items?.edges : [];
+  const cart = Array.isArray(cartDetail?.cart?.items?.edges)
+    ? cartDetail?.cart?.items?.edges
+    : [];
   const cartObj: any = cartDetail?.cart ?? {};
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
+  const handleOpen = () => {
+    onOpen();
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    onOpenChange();
+    if (!open && onCloseProp) {
+      onCloseProp();
+    }
+  };
 
   return (
     <>
       <button
+        type="button"
         aria-label="Open cart"
-        className={clsx(isLoading ? "cursor-wait" : "cursor-pointer")}
+        className={clsx(className, isLoading ? "cursor-wait" : "cursor-pointer")}
         disabled={isLoading}
-        onClick={onOpen}
+        onClick={handleOpen}
       >
-        <OpenCart quantity={cartDetail?.cart?.itemsQty} />
+        {children ? (
+          children
+        ) : (
+          <OpenCart quantity={cartDetail?.cart?.itemsQty} />
+        )}
       </button>
 
       {
@@ -61,7 +91,7 @@ export default function CartModal() {
             classNames={{ backdrop: "bg-white/50 dark:bg-black/50" }}
             isOpen={isOpen}
             radius="none"
-            onOpenChange={onOpenChange}
+            onOpenChange={handleOpenChange}
           >
             <DrawerContent>
               {(onClose) => (
@@ -99,13 +129,14 @@ export default function CartModal() {
                                 `/product/${item?.node.productUrlKey}`,
                                 new URLSearchParams(merchandiseSearchParams)
                               );
-                              const baseImage = JSON.parse(item?.node?.baseImage);
+                              const baseImage: any = safeParse(item?.node?.baseImage);
 
                               return (
                                 <li key={i} className="flex w-full flex-col">
                                   <div className="flex w-full flex-row justify-between gap-3 px-1 py-4">
                                     <Link
                                       className="z-30 flex flex-row space-x-4"
+                                      aria-label={`${item?.node?.name}`}
                                       href={merchandiseUrl}
                                       onClick={onClose}
                                     >
@@ -169,7 +200,7 @@ export default function CartModal() {
                         </ul>
 
                         <div className="border-0 border-t border-solid border-neutral-200 dark:border-dark-grey py-4 text-sm text-neutral-500 dark:text-neutral-400">
-                          <div className="mb-3 flex items-center justify-between">
+                         { (cartDetail as any)?.cart?.taxAmount > 0 && <div className="mb-3 flex items-center justify-between">
                             <p className="text-base font-normal text-black/[60%] dark:text-white">
                               Taxes
                             </p>
@@ -178,7 +209,7 @@ export default function CartModal() {
                               className="text-right text-base font-medium text-black dark:text-white"
                               currencyCode={"USD"}
                             />
-                          </div>
+                          </div>}
 
                           <div className="mb-3 flex items-center justify-between pb-1">
                             <p className="text-base font-normal text-black/[60%] dark:text-white">
@@ -217,7 +248,7 @@ export default function CartModal() {
             hideCloseButton
             isOpen={isOpen}
             radius="none"
-            onOpenChange={onOpenChange}
+            onOpenChange={handleOpenChange}
             classNames={{
               base: "z-50",
               backdrop: "z-40",
@@ -259,13 +290,14 @@ export default function CartModal() {
                                 `/product/${item?.node.productUrlKey}`,
                                 new URLSearchParams(merchandiseSearchParams)
                               );
-                              const baseImage = JSON.parse(item?.node?.baseImage);
+                              const baseImage: any = safeParse(item?.node?.baseImage);
 
                               return (
                                 <li key={i} className="flex w-full flex-col">
                                   <div className="flex w-full flex-row justify-between gap-3 px-1 py-4">
                                     <Link
                                       className="z-30 flex flex-row space-x-4"
+                                      aria-label={`${item?.node?.name}`}
                                       href={merchandiseUrl}
                                       onClick={onClose}
                                     >
@@ -329,7 +361,7 @@ export default function CartModal() {
                         </ul>
 
                         <div className="border-0 border-t border-solid border-neutral-200 dark:border-dark-grey py-4 text-sm text-neutral-500 dark:text-neutral-400">
-                          <div className="mb-3 flex items-center justify-between">
+                         { (cartDetail as any)?.cart?.taxAmount > 0 && <div className="mb-3 flex items-center justify-between">
                             <p className="text-base font-normal text-black/[60%] dark:text-white">
                               Taxes
                             </p>
@@ -338,7 +370,7 @@ export default function CartModal() {
                               className="text-right text-base font-medium text-black dark:text-white"
                               currencyCode={"USD"}
                             />
-                          </div>
+                          </div>}
                           <div className="mb-3 flex items-center justify-between pb-1">
                             <p className="text-base font-normal text-black/[60%] dark:text-white">
                               Total

@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { getSession, signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "@components/common/button/Button";
 import { EMAIL_REGEX, SIGNIN_IMG } from "@/utils/constants";
@@ -13,6 +14,8 @@ import { useMergeCart } from "@utils/hooks/useMergeCart";
 import { getCookie } from "@utils/getCartToken";
 import { setCookie } from "@utils/helper";
 import { setLocalStorage } from "@/store/local-storage";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser } from "@/store/slices/user-slice";
 import { useCartDetail } from "@utils/hooks/useCartDetail";
 import { GUEST_CART_ID, GUEST_CART_TOKEN, IS_GUEST } from "@/utils/constants";
 
@@ -22,6 +25,8 @@ type LoginFormInputs = {
 };
 
 export default function LoginForm() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
   const { showToast } = useCustomToast();
   const { getCartDetail } = useCartDetail()
   const { mergeCart } = useMergeCart();
@@ -61,6 +66,10 @@ export default function LoginForm() {
         console.warn("No API token available in session after login");
       }
 
+      if (session?.user) {
+        dispatch(setUser(session.user as any));
+      }
+
       // Only merge cart if user had a guest cart before login
       if (userToken && guestCartId && guestCartToken) {
         try {
@@ -77,7 +86,8 @@ export default function LoginForm() {
         setCookie(IS_GUEST, "false");
       }
       setTimeout(() => {
-        window.location.href = "/";
+        router.push("/");
+        router.refresh();
       }, 100);
 
 
@@ -88,13 +98,13 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="my-8 flex h-[80vh] w-full items-center w-full max-w-screen-2xl mx-auto px-4  xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-28">
+    <div className="flex h-[80vh] w-full items-center max-w-screen-2xl mx-auto px-4  xss:px-7.5 justify-between gap-4 lg:my-16 xl:my-28">
       <div className="flex w-full max-w-[583px] flex-col gap-y-4 lg:gap-y-12">
         <div className="font-outfit">
           <h2 className="py-1 text-2xl font-semibold sm:text-4xl">
             Sign in to your account
           </h2>
-          <p className="mt-2 text-lg font-normal text-black/60 dark:text-neutral-300">
+          <p className="mt-2  text-base md:text-lg font-normal text-black/60 dark:text-neutral-400">
             If you have an account, sign in with your email address.
           </p>
         </div>
@@ -104,7 +114,7 @@ export default function LoginForm() {
           className="flex flex-col gap-y-4 lg:gap-y-12"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col gap-y-2.5 lg:gap-[18px]">
+          <div className="flex flex-col gap-y-2.5 lg:gap-4">
             <InputText
               {...register("username", {
                 required: "Email is required",
@@ -116,7 +126,7 @@ export default function LoginForm() {
               errorMsg={
                 errors.username?.message ? [errors.username.message] : undefined
               }
-              label="Email"
+              label="Enter Your Email Address"
               labelPlacement="outside"
               name="username"
               placeholder="Enter your email address"
@@ -142,7 +152,7 @@ export default function LoginForm() {
               errorMsg={
                 errors.password?.message ? [errors.password.message] : undefined
               }
-              label="Password"
+              label="Enter Password"
               labelPlacement="outside"
               name="password"
               placeholder="Enter your password"
@@ -154,6 +164,7 @@ export default function LoginForm() {
             <Link
               className="text-end text-sm font-medium text-blue-600 underline hover:text-blue-500 underline"
               href="/customer/forget-password"
+              aria-label="Go to forgot password page"
             >
               Forgot your password ?
             </Link>
@@ -167,11 +178,12 @@ export default function LoginForm() {
               title="Sign In"
               type="submit"
             />
-            <span className="font-outfit">
+            <span className="mx-auto font-outfit sm:mx-0">
               New customer?{" "}
               <Link
                 className="font-medium text-blue-600 hover:text-blue-500 underline"
                 href="/customer/register"
+                aria-label="Go to create account page"
               >
                 Create your account
               </Link>

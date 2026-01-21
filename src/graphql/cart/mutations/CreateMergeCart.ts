@@ -2,12 +2,10 @@ import { gql } from "@apollo/client";
 
 export const CREATE_MERGE_CART = gql`
   mutation createMergeCart(
-    $token: String!
     $cartId: Int!
   ) {
     createMergeCart(
       input: {
-        token: $token
         cartId: $cartId
       }
     ) {

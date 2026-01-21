@@ -26,7 +26,7 @@ export function GridTileImage({
   };
 } & React.ComponentProps<typeof Image>) {
   const [imgSrc, setImgSrc] = useState<string | undefined>(src as string);
-  const [isLoading, setLoading] = useState(true);
+  const [_isLoading, setLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   const loadDone = () => {
@@ -45,7 +45,7 @@ export function GridTileImage({
   return (
     <div
       className={clsx(
-        "group relative flex h-full w-full items-center justify-center overflow-hidden rounded-lg dark:bg-black",
+        "group relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg dark:bg-black",
         active ? "border-2 border-blue-600 " : " border-2 border-transparent",
         {
           relative: label,
@@ -59,15 +59,11 @@ export function GridTileImage({
           placeholder="blur"
           blurDataURL={NOT_IMAGE}
           onError={handleError}
-          priority
           onLoad={loadDone}
           {...props}
           className={clsx(
-            "duration-700 truncate h-full transition group-hover:scale-105 w-full object-contain ease-in-out align-[none]",
+            "duration-700 truncate h-full transition group-hover:scale-105 w-full object-cover ease-in-out",
             hasError ? "bg-contain!" : "",
-            isLoading
-              ? "grayscale blur-2xl rounded-md truncate"
-              : "grayscale-0 blur-0",
             className
           )}
         />

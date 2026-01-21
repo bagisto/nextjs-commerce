@@ -1,11 +1,9 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_CHECKOUT_ORDER = gql`
-  mutation CreateCheckoutOrder($token: String!) {
+  mutation CreateCheckoutOrder {
     createCheckoutOrder(
-      input: {
-        token: $token
-      }
+      input: {}
     ) {
       checkoutOrder {
         id

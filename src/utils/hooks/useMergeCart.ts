@@ -23,18 +23,21 @@ export function useMergeCart() {
     isPending: isLoading,
     error,
   } = useMutation({
-    mutationFn: (input: MergeCartInput) =>
+    mutationFn: ({ token, ...input }: MergeCartInput) =>
       fetchHandler({
         url: "cart/mergeCart",
         method: "POST",
         contentType: true,
         body: { ...input },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
 
     onSuccess: (response) => {
       const responseData = response?.data?.createMergeCart?.mergeCart
       if (!responseData) {
-        showToast("Cart merge failed!", "warning");
         return;
       }
 

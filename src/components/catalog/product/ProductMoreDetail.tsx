@@ -71,12 +71,12 @@ export const ProductMoreDetails: FC<{
               {filterAdditionalData?.map((item) => (
                 <React.Fragment key={item.label}>
                   <div className="grid">
-                    <p className="text-base font-normal text-black/60 dark:text-white">
+                    <p className="text-base font-normal text-selected-black dark:text-white">
                       {item?.attribute?.adminName}
                     </p>
                   </div>
                   <div className="grid">
-                    <p className="text-base font-normal text-black/60 dark:text-white">
+                    <p className="text-base font-normal text-selected-black dark:text-white">
                       {item?.value || "--"}
                     </p>
                   </div>

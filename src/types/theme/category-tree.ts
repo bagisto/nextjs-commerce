@@ -7,8 +7,8 @@ export interface CategoryNode {
   position: number;
   logoPath?: string | null;
   status: string;
-  translations: CategoryTranslationConnection;
-  children?: CategoryNode[]; // recursive
+  translation: CategoryTranslationNode;
+  children?: CategoryNode[];
 }
 
 

@@ -16,7 +16,11 @@ export const useAddress = () => {
         url: "checkout/saveAddress",
         method: "POST",
         contentType: true,
-        body: { token },
+        body: "",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
   });
 };

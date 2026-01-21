@@ -40,12 +40,16 @@ export const useCheckout = () => {
 
   const { mutateAsync: saveAddressToCheckout, isPending: isLoadingToSave } =
     useMutation({
-      mutationFn: (data: any) =>
+      mutationFn: ({ token, ...data }: any) =>
         fetchHandler({
           url: "checkout/saveCheckoutAddresses",
           method: "POST",
           contentType: true,
           body: data,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }),
 
       onSuccess: (response) => {
@@ -87,7 +91,11 @@ export const useCheckout = () => {
         url: "checkout/shippingMethods",
         method: "POST",
         contentType: true,
-        body: { token: token || "" },
+        body: {},
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
     },
     onError: (error) => {
@@ -117,12 +125,16 @@ export const useCheckout = () => {
 
   // --------Save Shipping Methods to checkout --------//
   const { mutateAsync: saveShipping, isPending: isSaving } = useMutation({
-    mutationFn: (data: saveShippingMethodsTypes) =>
+    mutationFn: ({ token, ...data }: saveShippingMethodsTypes) =>
       fetchHandler({
         url: "checkout/saveShipping",
         method: "POST",
         contentType: true,
         body: data,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
     onSuccess: (response) => {
       const responseData = response?.data?.createCheckoutShippingMethod?.checkoutShippingMethod;
@@ -153,12 +165,16 @@ export const useCheckout = () => {
   // --------Save Payment Methods to checkout --------//
   const { mutateAsync: savePayment, isPending: isPaymentLoading } = useMutation(
     {
-      mutationFn: (data: savePaymentMethodsTypes) =>
+      mutationFn: ({ token, ...data }: savePaymentMethodsTypes) =>
         fetchHandler({
           url: "/checkout/savePayment",
           method: "POST",
           contentType: true,
           body: data,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }),
       onSuccess: (response) => {
         const responseData = response?.data?.createCheckoutPaymentMethod?.checkoutPaymentMethod;
@@ -187,12 +203,16 @@ export const useCheckout = () => {
 
   // -------Finally Place Order---------------//
   const { mutateAsync: placeOrder, isPending: isPlaceOrder } = useMutation({
-    mutationFn: (data: any) =>
+    mutationFn: ({ token, ...data }: any) =>
       fetchHandler({
         url: "/checkout/placeOrder",
         method: "POST",
         contentType: true,
-        body: data
+        body: data,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }),
     onSuccess: (response) => {
       const responseData = response?.data?.createCheckoutOrder?.checkoutOrder;
@@ -202,8 +222,8 @@ export const useCheckout = () => {
         setCookie(ORDER_ID, responseData?.orderId as string);
         dispatch(clearCart())
         router.replace("/success");
-        } 
-       else {
+      }
+      else {
         showToast(response?.error?.message as string, "warning");
       }
     },
@@ -217,9 +237,9 @@ export const useCheckout = () => {
     await placeOrder({
       token: token || ""
     });
-    
+
     const isGuest = getCookie(IS_GUEST);
-    if (isGuest) {
+    if (isGuest === "true") {
       await resetGuestToken();
     }
   };

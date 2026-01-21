@@ -15,7 +15,7 @@ export const isObject = (
   );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export const isArray = (arr: any) => {
   return arr && Array.isArray(arr) && arr.length > 0;
 };

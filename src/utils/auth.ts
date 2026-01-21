@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       authorize: async (credentials): Promise<any> => {
         if (!credentials?.username || !credentials?.password) {
           throw new Error("Email and password are required.");
@@ -28,25 +28,25 @@ export const authOptions: NextAuthOptions = {
           password: credentials.password,
         };
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         const res = await bagistoFetch<any>({
           query: CUSTOMER_LOGIN,
           variables: { input },
           cache: "no-store",
         });
 
-        const login = res?.body?.data?.createLogin?.login;
+        const data = res?.body?.data?.createCustomerLogin?.customerLogin;
 
-        if (!login || !login.success) {
-          throw new Error(login?.message || "Invalid credentials.");
+        if (!data || !data.success || !data.token) {
+          throw new Error(data?.message || "Invalid credentials.");
         }
 
         return {
-          id: credentials.username, // required by NextAuth
+          id: data.id, // required by NextAuth
           email: credentials.username,
-          name: credentials.username.split("@")[0],
-          apiToken: login.apiToken,
-          accessToken: login.token, // Sanctum token
+          name: credentials.username, // Using email as name since firstName/lastName are missing in response
+          apiToken: data.apiToken,
+          accessToken: data.token, // Sanctum token
           role: "customer",
         };
       },

@@ -104,7 +104,7 @@ function FilterItemList({
 export default function FilterList({
   filterAttributes,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   filterAttributes: any;
 }) {
   const pathname = usePathname();

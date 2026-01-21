@@ -60,12 +60,17 @@ body::-webkit-scrollbar-thumb {
   font-family: var(--font-outfit), system-ui, sans-serif;
   --background: #ffffff;
   --foreground: #000;
+  --color-selected-black: #00000099;
+
 
   --hero-background: #ffffff;
   --hero-foreground: #000;
   --dark-grey: #404040;
   --selected-color: #E3ECFF;
   --selected-color-dark: #555b69;
+  --selected-bottom-dark: #95B6FF;
+  --selected-bg-bottom-dark : #314779 ; 
+  --input-color : #B3B3B3 ; 
   /* font size  */
   --font-size-xxs: 13px;
   /* Spacing */
@@ -88,10 +93,10 @@ body::-webkit-scrollbar-thumb {
 }
 
 .dark {
-  --background: #000;
+  --background: #171717;
   --foreground: #ffffff;
 
-  --hero-background: #000;
+  --hero-background: #171717;
   --hero-foreground: #ffffff;
 }
 
@@ -99,9 +104,15 @@ body::-webkit-scrollbar-thumb {
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-font-color: var(--font-color);
+  --color-selected-black: var(--color-selected-black);
+
   --color-dark-grey: var(--dark-grey);
   --color-selected-color: var(--selected-color);
   --color-selected-color-dark: var(--selected-color-dark);
+  --color-selected-bottom-dark: var(--selected-bottom-dark);
+  --color-selected-bg-bottom-dark : var(--selected-bg-bottom-dark) ;
+  --color-input-color : var(--input-color) ;
 }
 
 
@@ -112,6 +123,12 @@ body {
 }
 
 @layer components {
+  .placeholder-input-color::placeholder {
+    color: var(--input-color);
+  }
+  .dark .placeholder-selected-color-dark::placeholder {
+    color: var(--selected-color-dark);
+  }
   .mobile-heading h2 {
     @apply sticky bg-white z-50 dark:bg-background top-0;
   }
@@ -121,6 +138,16 @@ body {
     font-family: Outfit, sans-serif !important;
     font-size: 24px !important;
     font-weight: 600 !important;
+  }
+
+  .prose p {
+    color: var(--color-selected-black) !important;
+    font-weight: 300 !important;
+  }
+
+  .dark .prose p {
+    color: white !important;
+    font-weight: 300 !important;
   }
 
   .margin-t {
