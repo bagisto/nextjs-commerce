@@ -11,9 +11,9 @@ export async function POST(req: Request) {
 
     const variables = {
       paymentMethod: body.paymentMethod,
-      successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/success`,
-      failureUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/failure`,
-      cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel`
+      successUrl: `payment/success`,
+      failureUrl: `payment/failure`,
+      cancelUrl: `payment/cancel`
     }
 
     const res = await bagistoFetch<any>({
