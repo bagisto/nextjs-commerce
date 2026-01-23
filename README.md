@@ -78,12 +78,11 @@ Before you begin, ensure you have the following installed:
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `SITE_NAME` | Your store name | `My Awesome Store` |
-| `BAGISTO_STORE_DOMAIN` | Your Bagisto backend URL | `https://api.mystore.com` |
-| `IMAGE_DOMAIN` | Domain for product images | `api.mystore.com` |
-| `REVALIDATION_DURATION` | ISR cache duration (seconds) | `3600` |
-| `NEXTAUTH_URL` | Your frontend URL | `https://mystore.com` |
-| `NEXTAUTH_SECRET` | Random secret for NextAuth | Generate with `openssl rand -base64 32` |
+| `NEXT_PUBLIC_BAGISTO_ENDPOINT` | Enter Your Bagisto Shop URL | `https://your-store.bagisto.com/` |
+| `NEXT_PUBLIC_BAGISTO_STOREFRONT_KEY` | Enter Your Bagisto Storefront Key | `pk_storefront_*************************` |
+| `NEXT_PUBLIC_NEXT_AUTH_URL` | Enter Your Headless Shop URL | `https://headless-store.com/` |
+| `NEXT_PUBLIC_NEXT_AUTH_SECRET` | Enter Your Headless Shop Secret | Generate with `openssl rand -base64 32` |
+| `COMPANY_NAME` | Enter Your company name | Bagisto Headless Store |
 
 
 **Important Notes**  
