@@ -49,10 +49,14 @@ export function ProductDescription({
     productSwatchReview?.attributeValues?.edges?.map(
       (e: { node: any }) => e.node
     ) || [];
+const [expandedKeys, setExpandedKeys] = useState<Set<string>>(new Set());
+    const handleReviewClick = () => {
+  setExpandedKeys(new Set(["2"])); 
+};
 
   return (
     <>
-      <div className="mb-6 flex flex-col border-b border-neutral-200 pb-6 dark:border-neutral-700">
+      <div className="mb-2 flex flex-col pb-6">
         {/* Breadcrumb */}
         <div className="hidden lg:flex flex-col gap-3 shrink-0 mb-2">
           <Link
@@ -62,14 +66,14 @@ export function ProductDescription({
             Home /
           </Link>
         </div>
-        <h1 className="font-outfit text-2xl sm:text-3xl md:text-3xl lg:text-4xl font-semibold">
+        <h1 className="font-outfit text-2xl md:text-3xl lg:text-4xl font-semibold">
           {product?.name || ""}
         </h1>
 
-        <div className="flex w-auto justify-between gap-y-2 py-4 xs:flex-row xs:gap-y-0 sm:py-6 flex-wrap">
-          <div className="flex gap-4 items-center">
+        <div className="flex w-auto justify-between items-baseline gap-y-2 py-4 xs:flex-row xs:gap-y-0 sm:py-6 flex-wrap">
+          <div className="flex gap-4 items-baseline">
             {product?.type === "configurable" && (
-              <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400">
+              <p className="text-base text-gray-600 dark:text-gray-400">
                 As low as
               </p>
             )}
@@ -78,14 +82,14 @@ export function ProductDescription({
                 <Price
                   amount={String(product?.minimumPrice)}
                   currencyCode={currencyCode}
-                  className="font-outfit text-xl sm:text-2xl font-semibold"
+                  className="font-outfit text-xl md:text-2xl font-semibold"
                 />
               </>
             ) : (
               <Price
                 amount={String(priceValue)}
                 currencyCode={currencyCode}
-                className="font-outfit text-xl sm:text-2xl md:text-3xl font-semibold"
+                className="font-outfit text-xl md:text-2xl font-semibold"
               />
             )}
           </div>
@@ -95,6 +99,7 @@ export function ProductDescription({
             star={reviews[0]?.rating ?? 0}
             reviewCount={totalReview}
             className="mt-2"
+            onReviewClick={handleReviewClick}
           />
         </div>
       </div>
@@ -122,6 +127,8 @@ export function ProductDescription({
         reviews={Array.isArray(reviews) ? reviews : []}
         totalReview={totalReview}
         productId={product?.id ?? ""}
+        expandedKeys={expandedKeys}
+        setExpandedKeys={setExpandedKeys}
       />
     </>
   );

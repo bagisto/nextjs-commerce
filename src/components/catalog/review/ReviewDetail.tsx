@@ -10,9 +10,11 @@ import { Avatar, Tooltip } from "@heroui/react";
 import clsx from "clsx";
 import { FC, useState } from "react";
 import { ReviewDetailProps } from "../type";
+import { ReviewButton } from "./ReviewSection";
 
 const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => {
   const [visibleCount, setVisibleCount] = useState(5);
+  const [_showForm, setShowForm] = useState(false);
   if (!Array.isArray(reviewDetails) || reviewDetails.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center pb-2">
@@ -30,14 +32,15 @@ const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => 
   const visibleReviews = reviewDetails.slice(0, visibleCount);
 
   return totalReview ? (
-    <div className="flex flex-wrap gap-x-5 sm:gap-x-10">
+    <>
+    <div className="flex flex-col flex-wrap gap-x-5 sm:gap-x-10">
       <div className="my-2 flex w-full flex-col flex-wrap justify-between gap-4 sm:flex-row sm:items-center min-[1350px]:flex-nowrap">
         <div className="flex items-center gap-x-2">
           <Rating
             length={5}
             size="size-5"
             star={reviewAvg}
-            totalReview={totalReview}
+            reviewCount={totalReview}
           />
         </div>
 
@@ -93,20 +96,24 @@ const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => 
               { name, title, comment, createdAt, rating, images, customer },
               index
             ) => (
-              <div
-                key={index}
-                className="flex flex-col gap-y-2 py-3 border-b border-neutral-200 dark:border-neutral-700"
-              >
+             <div
+    key={index}
+    className={clsx("flex flex-col gap-y-2 py-3", {
+      "border-b border-neutral-200 dark:border-neutral-700": 
+        visibleReviews.length > 1 && index < visibleReviews.length - 1
+    })}
+  >
+
                 <h1 className="font-outfit text-xl font-medium text-black/[80%] dark:text-white">
                   {title}
                 </h1>
-
                 <Rating
                   className="my-1"
                   length={5}
                   size="size-5"
                   star={rating}
                 />
+
 
                 <h2 className="font-outfit text-base font-normal text-black/[80%] dark:text-white">
                   {comment}
@@ -156,7 +163,11 @@ const ReviewDetail: FC<ReviewDetailProps> = ({ reviewDetails, totalReview }) => 
           />
         )}
       </div>
+       <div className="mx-auto ">
+        <ReviewButton setShowForm={setShowForm} />
+       </div>
     </div>
+    </>
   ) : (
     <div className="flex flex-col items-center justify-center pb-2">
       <ReviewIcon />

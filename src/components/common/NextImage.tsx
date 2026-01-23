@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { NOT_IMAGE } from "@/utils/constants";
 import { NextImageProps } from "./type";
-
+import { Shimmer } from "./Shimmer";
 
 export function NextImage({
   src,
@@ -15,17 +15,25 @@ export function NextImage({
   sizes = "100vw",
   priority = false,
 }: NextImageProps) {
-  const [loaded, setLoaded] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
-  const finalSrc = failed || !src ? NOT_IMAGE : src;
+  const finalSrc = hasError || !src ? NOT_IMAGE : src;
 
   return (
     <div
       className={`relative overflow-hidden ${className}`}
       style={{ width: "100%", height: "100%" }}
     >
-      {/* IMAGE */}
+      {!isLoaded && (
+        <Shimmer
+          className="absolute inset-0 z-0"
+          width="100%"
+          height="100%"
+          rounded="lg"
+        />
+      )}
+
       <Image
         src={finalSrc}
         alt={alt}
@@ -34,16 +42,15 @@ export function NextImage({
         sizes={sizes}
         priority={priority}
         loading={priority ? "eager" : "lazy"}
-        onLoadingComplete={() => setLoaded(true)}
-        onError={() => setFailed(true)}
-        className={`transition-opacity duration-300 object-cover w-full h-full
-          ${loaded ? "opacity-100" : "opacity-0"}
-        `}
+        onLoad={() => setIsLoaded(true)}
+        onError={() => {
+          setHasError(true);
+          setIsLoaded(true);
+        }}
+        className={`transition-opacity duration-300 object-cover w-full h-full ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        }`}
       />
-
-      {!loaded && (
-        <div className="absolute inset-0 bg-neutral-200" />
-      )}
     </div>
   );
 }

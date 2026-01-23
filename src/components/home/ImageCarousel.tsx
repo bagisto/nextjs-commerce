@@ -3,6 +3,7 @@
 import { FC, useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Shimmer } from "@/components/common/Shimmer";
 
 interface ImageCarouselProps {
     options: {
@@ -68,24 +69,64 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
         return () => stopAutoplay();
     }, [isPaused, images, startAutoplay, stopAutoplay]);
 
+    const touchStartX = useRef<number | null>(null);
+    const touchEndX = useRef<number | null>(null);
+    const mouseStartX = useRef<number | null>(null);
+    const mouseEndX = useRef<number | null>(null);
+
     if (!Array.isArray(images) || images.length === 0) return null;
+
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+    const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+    const handleTouchEnd = () => {
+        if (touchStartX.current !== null && touchEndX.current !== null) {
+            const distance = touchStartX.current - touchEndX.current;
+            if (distance > 50) {
+                setCurrentIndex((prev) => (prev + 1) % images.length);
+            } else if (distance < -50) {
+                setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+            }
+        }
+        touchStartX.current = null;
+        touchEndX.current = null;
+    };
+
+    const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+        mouseStartX.current = e.clientX;
+    };
+    const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+        mouseEndX.current = e.clientX;
+        if (mouseStartX.current !== null && mouseEndX.current !== null) {
+            const distance = mouseStartX.current - mouseEndX.current;
+            if (distance > 50) {
+                setCurrentIndex((prev) => (prev + 1) % images.length);
+            } else if (distance < -50) {
+                setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+            }
+        }
+        mouseStartX.current = null;
+        mouseEndX.current = null;
+    };
 
     return (
         <section className="mt-7.5 w-full">
-            <style>{`
-                .image-carousel-aspect {
-                    aspect-ratio: 1.72;
-                }
-                @media (min-width: 768px) {
-                    .image-carousel-aspect {
-                        aspect-ratio: 1.98;
-                    }
-                }
-            `}</style>
             <div
-                className="group relative w-full overflow-hidden rounded-xl md:rounded-2xl image-carousel-aspect"
+                className="group relative w-full overflow-hidden rounded-xl md:rounded-2xl aspect-[1.97/1]"
+                style={{
+                    position: 'relative',
+                    width: '100%'
+                }}
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
             >
                 {images.map((img, index) => {
                     const imageUrl = getFullImageUrl(img.image);
@@ -95,8 +136,14 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
                     return (
                         <div
                             key={index}
-                            className={`absolute inset-0 transition-opacity duration-700 ${isActive ? "opacity-100 z-0" : "opacity-0 z-0"
-                                }`}
+                            className={`absolute inset-0 transition-opacity duration-700 ${isActive ? "opacity-100 z-0" : "opacity-0 z-0"}`}
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%'
+                            }}
                         >
                             {img.link ? (
                                 <Link
@@ -104,6 +151,21 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
                                     className="block h-full w-full"
                                     aria-label={`View ${altText}`}
                                 >
+                                    <div className="relative h-full w-full">
+                                        <Shimmer className="h-full w-full" />
+                                        <Image
+                                            src={imageUrl}
+                                            alt={altText}
+                                            fill
+                                            className="object-cover !z-0"
+                                            priority={index === 0}
+                                            sizes="100vw"
+                                        />
+                                    </div>
+                                </Link>
+                            ) : (
+                                <div className="relative h-full w-full">
+                                    <Shimmer className="h-full w-full" />
                                     <Image
                                         src={imageUrl}
                                         alt={altText}
@@ -112,16 +174,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
                                         priority={index === 0}
                                         sizes="100vw"
                                     />
-                                </Link>
-                            ) : (
-                                <Image
-                                    src={imageUrl}
-                                    alt={altText}
-                                    fill
-                                    className="object-cover !z-0"
-                                    priority={index === 0}
-                                    sizes="100vw"
-                                />
+                                </div>
                             )}
                         </div>
                     );

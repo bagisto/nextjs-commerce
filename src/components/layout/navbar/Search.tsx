@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createUrl } from "@/utils/helper";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useMediaQuery } from "@utils/hooks/useMediaQueryHook";
 
 export default function Search({
   search = false,
@@ -66,9 +67,10 @@ export default function Search({
       handleSubmit();
     }
   };
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   return (
-    <div className="max-w-[550px] relative w-full mx-auto md:min-w-[386px] xl:min-w-[516px] outline-none hover:outline-none ">
+  <div className={`${isDesktop ? "max-w-[550px]" : ""} relative w-full mx-auto xl:min-w-[516px] outline-none hover:outline-none`}>
       {setSearch && (
         <button
           onClick={() => setSearch(!search)}

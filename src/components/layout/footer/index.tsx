@@ -23,7 +23,7 @@ export default async function Footer() {
 
   return (
     <>
-      <div className="mx-auto my-16 mt-16 sm:mt-0 w-full lg:my-12 md:my-20 md:max-w-4xl">
+      <div className="mx-auto my-16 mt-16 sm:mt-0 w-full lg:my-12 md:my-20 md:max-w-4xl px-4 py-8">
         {isObject(services) && services?.translations?.edges && (
 
           <ServiceContent

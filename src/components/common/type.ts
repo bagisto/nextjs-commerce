@@ -16,4 +16,5 @@ export interface RatingTypes {
   size?: string;
   className?: string;
   totalReview?: number;
+  onReviewClick?: () => void;
 }

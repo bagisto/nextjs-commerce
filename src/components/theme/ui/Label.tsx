@@ -24,17 +24,17 @@ const Label = ({
       })}
     >
       <div
-        className={`flex gap-5 items-center rounded-full px-4 py-2 border border-neutral-200 bg-white/70 text-xs font-semibold text-black backdrop-blur-md dark:border-neutral-800 dark:bg-black/70 dark:text-white ${
+        className={`flex gap-5 items-center rounded-full px-[3.5rem] py-2 border border-neutral-200 bg-white/70 text-xs font-semibold text-black backdrop-blur-md dark:border-neutral-800 dark:bg-black/70 dark:text-white ${
           page === "category"
-            ? "lg:px-6 md:py-2  md:px-4 lg:py-4"
+            ? "md:py-2  md:px-4 lg:px-6 lg:py-4"
             : "md:py-5 md:px-6 "
         }`}
       >
         <p
           className={` line-clamp-2 font-semibold leading-none tracking-tight ${clsx(
             page === "category"
-              ? "text-lg md:text-xl lg:text-[28px]"
-              : "text-base "
+              ? "text-sm md:text-xl lg:text-2xl"
+              : "text-sm "
           )}`}
         >
           {title}
@@ -42,7 +42,7 @@ const Label = ({
         {page === "category" ? (
           <button
             aria-label="Go back"
-            className="cursor-pointer rounded-full bg-blue-600 p-3 transition-transform duration-300 hover:translate-x-1"
+            className="cursor-pointer rounded-full bg-blue-600 p-2 sm:p-3 transition-transform duration-300 hover:translate-x-1"
           >
             <LeftArrow />
           </button>

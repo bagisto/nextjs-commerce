@@ -214,7 +214,6 @@ export const useAddProduct = () => {
           response?.data?.createUpdateCartItem?.updateCartItem;
 
         if (isObject(responseData)) {
-          showToast("Cart updated successfully", "success");
           dispatch(addItem(responseData as any));
         } else {
           showToast("Something went wrong!", "warning");

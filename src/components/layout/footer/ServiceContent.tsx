@@ -1,14 +1,14 @@
 "use client";
 
 import { FC, JSX } from "react";
-import DollerIcon from "@components/common/icons/service/DollerIcon";
-import EarphoneIcon from "@components/common/icons/service/EarphoneIcon";
-import ProductIcon from "@components/common/icons/service/ProductIcon";
-import TruckIcon from "@components/common/icons/service/TruckIcon";
 import { OptionDataTypes } from "@/types/types";
 import { ThemeCustomizationTranslationNode } from "@/types/theme/theme-customization";
 import { usePathname } from "next/navigation";
 import { safeParse } from "@utils/helper";
+import VectorIcon from "@components/common/icons/service/VectorIcon";
+import TruckIcon from "@components/common/icons/service/TruckIcon";
+import SofaIcon from "@components/common/icons/service/SofaIcon";
+import AssuranceIcon from "@components/common/icons/service/AssuranceIcon";
 
 export interface ServiceContentDataTypes {
   name?: string;
@@ -33,10 +33,10 @@ const ServiceContent: FC<ServiceContentDataTypes> = ({ serviceData }) => {
 };
 
 const iconMapping: Record<string, JSX.Element> = {
-  "icon-truck": <TruckIcon />,
-  "icon-product": <ProductIcon />,
-  "icon-dollar-sign": <DollerIcon />,
-  "icon-support": <EarphoneIcon />,
+  "icon-truck": <VectorIcon />,
+  "icon-product": <TruckIcon />,
+  "icon-dollar-sign": <SofaIcon />,
+  "icon-support": <AssuranceIcon />,
 };
 
 const ServiceCarouselRender: FC<ServiceContenRenderTypes> = ({

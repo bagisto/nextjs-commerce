@@ -7,32 +7,42 @@ export const Rating = ({
   star = 0,
   size = "size-4",
   className,
-  totalReview,
   reviewCount,
+  onReviewClick,
 }: RatingTypes) => {
   const rating = star ?? 0;
-  const reviewCountToShow = reviewCount ?? totalReview;
+  const reviewCountToShow = reviewCount ?? star > 0;
 
   return (
-    <div className={clsx("flex items-center gap-x-2", className)}>
-      <div className="flex gap-x-0.5">
-        {Array.from({ length }).map((_, index) => (
-          <StarIcon
-            key={index}
-            className={clsx(
-              size,
-              index < rating
-                ? "fill-yellow-500 dark:fill-yellow-500"
-                : "fill-black dark:fill-gray-900",
-              "fill-black dark:stroke-white"
-            )}
-          />
-        ))}
-      </div>
-      <span className="text-nowrap h-fit font-outfit text-base font-light">
-        ({reviewCountToShow} Review
-        {reviewCountToShow !== 1 && reviewCountToShow !== 0 ? "s" : ""})
-      </span>
-    </div>
+   <div className={clsx("flex items-center gap-x-2", className)}>
+  {reviewCountToShow ? (
+    <>
+  <div className="flex gap-x-0.5">
+    {Array.from({ length }).map((_, index) => (
+      <StarIcon
+        key={index}
+        className={clsx(
+          size,
+          index < rating
+            ? "fill-yellow-500 dark:fill-yellow-500"
+            : "fill-black dark:fill-gray-900",
+          "fill-black dark:stroke-white"
+        )}
+      />
+    ))}
+  </div>
+    <span className="text-sm text-gray-600 dark:text-gray-400">
+      ({reviewCountToShow} {reviewCountToShow === 1 ? 'Review' : 'Reviews'})
+    </span>
+    </>
+  ) : (
+    <span 
+    className="text-sm text-blue-600 underline cursor-pointer"
+    onClick={onReviewClick}
+    >
+      Write a review
+    </span>
+  )}
+</div>
   );
 };

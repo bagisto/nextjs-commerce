@@ -270,7 +270,7 @@ export default function CartModal({
                     </div>
                   </DrawerHeader>
 
-                  <DrawerBody className="py-0">
+                  <DrawerBody className="py-0 !px-2">
                     {(cart?.length === 0) ? (
                       <div className="mt-20 flex w-full flex-col items-center justify-center overflow-hidden">
                         <ShoppingCartIcon className="h-16" />
@@ -294,7 +294,7 @@ export default function CartModal({
 
                               return (
                                 <li key={i} className="flex w-full flex-col">
-                                  <div className="flex w-full flex-row justify-between gap-3 px-1 py-4">
+                                  <div className="flex w-full flex-row justify-between gap-1 xxs:gap-3 px-1 py-4">
                                     <Link
                                       className="z-30 flex flex-row space-x-4"
                                       aria-label={`${item?.node?.name}`}

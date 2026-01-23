@@ -13,7 +13,9 @@ export const ProductMoreDetails: FC<{
   productId: string;
   reviews: any[];
   totalReview: number;
-}> = ({ description, additionalData, reviews, productId, totalReview }) => {
+  expandedKeys: Set<string>;
+  setExpandedKeys: (keys: Set<string>) => void;
+}> = ({ description, additionalData, reviews, productId, totalReview, expandedKeys, setExpandedKeys }) => {
 
   const filterAdditionalData = additionalData.filter((item) => item?.attribute?.
     isVisibleOnFront == "1");
@@ -29,6 +31,8 @@ export const ProductMoreDetails: FC<{
         selectionMode="multiple"
         showDivider={false}
         variant="splitted"
+        selectedKeys={expandedKeys}
+         onSelectionChange={(keys) => setExpandedKeys(keys as Set<string>)}
       >
         <AccordionItem
           key="1"
@@ -104,7 +108,6 @@ export const ProductMoreDetails: FC<{
         >
           {totalReview > 0 ? (
             <>
-              <ReviewSection productId={productId} />
               <ReviewDetail
                 reviewDetails={reviews}
                 totalReview={totalReview}

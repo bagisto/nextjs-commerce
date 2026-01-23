@@ -46,6 +46,7 @@ export const PRODUCT_DETAILED_FRAGMENT = gql`
             name
             title
             comment
+            createdAt
           }
         }
       }

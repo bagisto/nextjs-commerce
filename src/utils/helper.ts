@@ -310,7 +310,7 @@ export const setCookie = (name: string, value: string | number, days = 30) => {
 };
 
 export const getValidTitle = (text: string) => {
-  return text?.toUpperCase()?.replaceAll('_', ' ') ?? ''
+  return text?.toLowerCase()?.replaceAll('_', ' ') ?? ''
 }
 
 

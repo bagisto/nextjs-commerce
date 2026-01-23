@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import Label from "../Label";
 import { NOT_IMAGE } from "@/utils/constants";
+import { Shimmer } from "@/components/common/Shimmer";
 
 export function GridTileImage({
   active,
@@ -26,7 +27,7 @@ export function GridTileImage({
   };
 } & React.ComponentProps<typeof Image>) {
   const [imgSrc, setImgSrc] = useState<string | undefined>(src as string);
-  const [_isLoading, setLoading] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   const loadDone = () => {
@@ -35,23 +36,33 @@ export function GridTileImage({
         setImgSrc(NOT_IMAGE);
       }
     }, 500);
-    setLoading(false);
+    setIsLoaded(true);
   };
 
   const handleError = () => {
     setHasError(true);
     setImgSrc(NOT_IMAGE);
   };
+
   return (
     <div
       className={clsx(
         "group relative flex h-full w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg dark:bg-black",
-        active ? "border-2 border-blue-600 " : " border-2 border-transparent",
+        active ? "border-2 border-blue-600" : "border-2 border-transparent",
         {
           relative: label,
         }
       )}
     >
+      {!isLoaded && (
+        <Shimmer
+          className="absolute inset-0 z-0"
+          width="100%"
+          height="100%"
+          rounded="lg"
+        />
+      )}
+
       {imgSrc ? (
         <Image
           src={imgSrc}
@@ -64,11 +75,12 @@ export function GridTileImage({
           className={clsx(
             "duration-700 truncate h-full transition group-hover:scale-105 w-full object-cover ease-in-out",
             hasError ? "bg-contain!" : "",
+            isLoaded ? "opacity-100" : "opacity-0",
             className
           )}
         />
       ) : (
-        <div className="h-full w-full animate-pulse bg-gray-100" />
+        <div className="h-full w-full" />
       )}
 
       {label ? (

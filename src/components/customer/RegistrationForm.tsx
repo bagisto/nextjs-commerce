@@ -53,7 +53,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <div className="my-8 flex w-full items-center w-full max-w-screen-2xl mx-auto px-4 xss:px-7.5 justify-between gap-0 md:gap-4 lg:my-16 xl:my-28">
+    <div className="mt-5 md:my-8 md:mt-0 flex w-full items-center w-full max-w-screen-2xl mx-auto px-4 xss:px-7.5 justify-between gap-0 md:gap-4 lg:my-16 xl:my-28">
       <div className="relative flex w-full max-w-[583px] flex-col gap-y-4 lg:gap-y-12">
         <div className="font-outfit">
           <h2 className="py-1 text-2xl font-semibold sm:text-4xl">
@@ -66,7 +66,7 @@ export default function RegistrationForm() {
 
         <form
           noValidate
-          className="flex flex-col gap-y-8 lg:gap-y-12"
+          className="flex flex-col gap-y-5 lg:gap-y-12"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex flex-col gap-y-2.5 lg:gap-[18px]">
@@ -173,7 +173,7 @@ export default function RegistrationForm() {
             />
           </div>
 
-          <div className="flex flex-col gap-y-3">
+          <div className="flex flex-col gap-y-3 mb-8 lg:mb-0">
             <Button
               disabled={isSubmitting}
               loading={isSubmitting}

@@ -69,8 +69,8 @@ body::-webkit-scrollbar-thumb {
   --selected-color: #E3ECFF;
   --selected-color-dark: #555b69;
   --selected-bottom-dark: #95B6FF;
-  --selected-bg-bottom-dark : #314779 ; 
-  --input-color : #B3B3B3 ; 
+  --selected-bg-bottom-dark: #314779;
+  --input-color: #B3B3B3;
   /* font size  */
   --font-size-xxs: 13px;
   /* Spacing */
@@ -111,8 +111,8 @@ body::-webkit-scrollbar-thumb {
   --color-selected-color: var(--selected-color);
   --color-selected-color-dark: var(--selected-color-dark);
   --color-selected-bottom-dark: var(--selected-bottom-dark);
-  --color-selected-bg-bottom-dark : var(--selected-bg-bottom-dark) ;
-  --color-input-color : var(--input-color) ;
+  --color-selected-bg-bottom-dark: var(--selected-bg-bottom-dark);
+  --color-input-color: var(--input-color);
 }
 
 
@@ -126,9 +126,11 @@ body {
   .placeholder-input-color::placeholder {
     color: var(--input-color);
   }
+
   .dark .placeholder-selected-color-dark::placeholder {
     color: var(--selected-color-dark);
   }
+
   .mobile-heading h2 {
     @apply sticky bg-white z-50 dark:bg-background top-0;
   }
@@ -152,6 +154,26 @@ body {
 
   .margin-t {
     margin-top: -9px;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .image-carousel-aspect {
+    aspect-ratio: 1.72;
+  }
+
+  @media (min-width: 768px) {
+    .image-carousel-aspect {
+      aspect-ratio: 1.98;
+    }
   }
 
 

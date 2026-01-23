@@ -28,7 +28,7 @@ export default function CartItemAccordion({
      dark:border-neutral-700 dark:bg-black lg:hidden">
       <Accordion
         selectionMode="multiple"
-        className="px-4"
+        className="!px-0"
         onSelectionChange={(e) => {
           const keys = e as Set<string>;
           if (keys.has("1")) {
@@ -50,6 +50,10 @@ export default function CartItemAccordion({
               <ChevronRightIcon className="h-5 w-5 stroke-neutral-800 dark:stroke-white" />
             )
           }
+          classNames={{
+    heading: "px-4", 
+    content: "px-4" 
+  }}
           aria-label="Accordion 1"
           title="Order Summary"
           subtitle={
@@ -60,8 +64,8 @@ export default function CartItemAccordion({
             />
           }
         >
-          <div className="flex h-full flex-col justify-between overflow-hidden">
-            <ul className="flex-grow overflow-auto py-4">
+          <div className="flex h-full flex-col justify-between px-4">
+            <ul className="flex-grow overflow-y-auto max-h-[300px] py-4 pr-2 -mr-2" style={{ scrollbarWidth: 'thin' }}>
               {cart?.map((item: any, i: number) => {
                 const merchandiseSearchParams = {} as MerchandiseSearchParams;
                 const merchandiseUrl = createUrl(
