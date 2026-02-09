@@ -1,0 +1,16 @@
+# Netlify configuration for Bagisto Next.js Commerce
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+# Uncomment and add plugins if needed
+#[[plugins]]
+#  package = "@netlify/plugin-nextjs"
+
+[context.production.environment]
+  NEXT_PUBLIC_BAGISTO_ENDPOINT = "https://your-store.bagisto.com/"
+  NEXT_PUBLIC_BAGISTO_STOREFRONT_KEY = "pk_storefront_*************************"
+  NEXT_PUBLIC_NEXT_AUTH_URL = "https://headless-store.com/"
+  NEXT_PUBLIC_NEXT_AUTH_SECRET = "Generate with openssl rand -base64 32"
+  COMPANY_NAME = "Bagisto Headless Store"
