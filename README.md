@@ -88,7 +88,14 @@ Before you begin, ensure you have the following installed:
 **Important Notes**  
 - You will need to use the environment variables defined in `.env.example` to run Next.js Commerce.  
 - It’s recommended to use **Vercel Environment Variables**, but a `.env` file is sufficient for local development.  
-- **Never commit your `.env` file** to version control — it contains secrets that would allow others to control your Bagisto store.  
+- **Never commit your `.env` file** to version control — it contains secrets that would allow others to control your Bagisto store.
+
+
+## One-Click Deploy to Netlify
+
+Click the button above to deploy your own copy of Bagisto Headless eCommerce to Netlify instantly!
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/bagisto/nextjs-commerce)
 
 ---
 
