@@ -28,9 +28,9 @@ Through layered caching and optimized rendering strategies, it consistently achi
 
 Check the [Documentation](https://headless-doc.bagisto.com/) to quickly set up your Headless eCommerce store.
 
-**Bagisto Version:** v2.3.0
+**Bagisto Version:** v2.3.8
 
-**Bagisto GraphQL API:** v2.3.0
+**Bagisto API:** v1.0.3
 
 ![Bagisto Headless Commerce Image](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-home.png)
 ## Features
