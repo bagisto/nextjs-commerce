@@ -80,8 +80,8 @@ Before you begin, ensure you have the following installed:
 |----------|-------------|---------|
 | `NEXT_PUBLIC_BAGISTO_ENDPOINT` | Enter Your Bagisto Shop URL | `https://your-store.bagisto.com/` |
 | `NEXT_PUBLIC_BAGISTO_STOREFRONT_KEY` | Enter Your Bagisto Storefront Key | `pk_storefront_*************************` |
-| `NEXT_PUBLIC_NEXT_AUTH_URL` | Enter Your Headless Shop URL | `https://headless-store.com/` |
-| `NEXT_PUBLIC_NEXT_AUTH_SECRET` | Enter Your Headless Shop Secret | Generate with `openssl rand -base64 32` |
+| `NEXT_AUTH_URL` | Enter Your Headless Shop URL | `https://headless-store.com/` |
+| `NEXT_AUTH_SECRET` | Enter Your Headless Shop Secret | Generate with `openssl rand -base64 32` |
 | `COMPANY_NAME` | Enter Your company name | Bagisto Headless Store |
 
 

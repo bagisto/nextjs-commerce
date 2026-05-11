@@ -1,5 +1,3 @@
-import { NEXT_AUTH_SECRET } from "./constants";
-
 export const encodeJWT = (payload: object): string => {
   try {
     const jsonStr = JSON.stringify(payload);
@@ -7,7 +5,7 @@ export const encodeJWT = (payload: object): string => {
 
     const header = btoa(JSON.stringify({ alg: "none", typ: "JWT" }));
 
-    const token = `${header}.${encodedPayload}.${NEXT_AUTH_SECRET}`;
+    const token = `${header}.${encodedPayload}`;
 
     return encodeURIComponent(token);
   } catch (e) {

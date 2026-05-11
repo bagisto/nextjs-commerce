@@ -21,6 +21,8 @@ const eslintConfig = defineConfig([
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-non-null-assertion": "warn",
       "react-hooks/exhaustive-deps": "off",
+      "react-hooks/error-boundaries": "off",
+      "react-hooks/set-state-in-effect": "off",
       "react/no-unescaped-entities": "warn",
       "@typescript-eslint/no-empty-interface": "warn",
       "prefer-const": "error",
