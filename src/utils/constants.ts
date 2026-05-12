@@ -42,7 +42,7 @@ export const PRODUCT_OFFER_TYPE = "AggregateOffer";
  */
 export const BAGISTO_SESSION = process.env.BAGISTO_SESSION ?? "bagisto_session";
 export const TOKEN = "token";
-export const BASE_URL = process.env.NEXT_PUBLIC_NEXT_AUTH_URL;
+export const BASE_URL = process.env.NEXTAUTH_URL;
 export const baseUrl = process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT;
 export const GRAPHQL_URL = `${(process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT || '').replace(/\/$/, '')}${BAGISTO_GRAPHQL_API_ENDPOINT}`;
 

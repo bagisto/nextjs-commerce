@@ -10,7 +10,7 @@ export async function proxy(request: NextRequest) {
     if (restrictedPaths.some((path) => pathname.startsWith(path))) {
         const token = await getToken({
             req: request,
-            secret: process.env.NEXT_AUTH_SECRET
+            secret: process.env.NEXTAUTH_SECRET
         })
 
         if (token) {

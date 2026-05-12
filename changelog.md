@@ -5,8 +5,8 @@
 ### Added
 
 - Added `BAGISTO_SESSION` key.
-- Added `NEXT_AUTH_URL` key.
-- Added `NEXT_AUTH_SECRET` key.
+- Added `NEXTAUTH_URL` key.
+- Added `NEXTAUTH_SECRET` key.
 - Added `REVALIDATION_DURATION` key.
 - Added `IMAGE_DOMAIN` key.
 - Added the new the query field.
