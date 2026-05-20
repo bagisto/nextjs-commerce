@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { print, type DocumentNode } from "graphql";
+import { addTypenameToDocument } from "@apollo/client/utilities";
 import { bagistoFetch } from "@/utils/bagisto";
 import { isBagistoError } from "@/utils/type-guards";
 import { getAuthToken } from "@/utils/helper";
@@ -19,7 +21,17 @@ import {
     CREATE_PRODUCT_REVIEW,
 } from "@/graphql";
 
-const ALLOWED_OPERATIONS: Record<string, any> = {
+const buildOperations = (
+    docs: Record<string, DocumentNode>
+): Record<string, string> =>
+    Object.fromEntries(
+        Object.entries(docs).map(([name, doc]) => [
+            name,
+            print(addTypenameToDocument(doc)),
+        ])
+    );
+
+const ALLOWED_OPERATIONS: Record<string, string> = buildOperations({
     createAddProductInCart: CREATE_ADD_PRODUCT_IN_CART,
     RemoveCartItem: REMOVE_CART_ITEM,
     UpdateCartItem: UPDATE_CART_ITEM,
@@ -34,7 +46,7 @@ const ALLOWED_OPERATIONS: Record<string, any> = {
     CreateCheckoutPaymentMethod: CREATE_CHECKOUT_PAYMENT_METHODS,
     CreateCheckoutOrder: CREATE_CHECKOUT_ORDER,
     CreateProductReview: CREATE_PRODUCT_REVIEW,
-};
+});
 
 export async function POST(req: NextRequest) {
     try {

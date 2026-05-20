@@ -16,13 +16,9 @@ import { BagistoSession } from "@/types/types";
 let sessionCache: { session: BagistoSession | null; timestamp: number } | null = null;
 const SESSION_CACHE_TTL = 5000;
 
-const getSessionForRequest = reactCache(async () => {
-  return (await getSession()) as BagistoSession | null;
-});
-
 async function getCachedSession(): Promise<BagistoSession | null> {
   if (typeof window === "undefined") {
-    return getSessionForRequest();
+    return null;
   }
 
   const now = Date.now();
