@@ -1,4 +1,3 @@
-"use client";
 import LoadingDots from "@components/common/icons/LoadingDots";
 import clsx from "clsx";
 
@@ -14,7 +13,7 @@ function SubmitButton({
   pending: boolean;
 }) {
   const buttonClasses =
-    "relative text-base w-fit cursor-pointer rounded-full px-8 py-3 font-bold border-white items-center justify-center bg-blue-600 tracking-wide text-white";
+    "relative text-base w-fit cursor-pointer rounded-full px-8 py-3 font-bold border-white items-center justify-center bg-primary tracking-wide text-white";
   const disabledClasses = "cursor-wait opacity-60 hover:opacity-60";
 
   if (!availableForSale) {

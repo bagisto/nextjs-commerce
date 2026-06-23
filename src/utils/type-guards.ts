@@ -23,12 +23,10 @@ export const isArray = (arr: any) => {
 export const isBagistoError = (error: unknown): error is BagistoErrorLike => {
   if (!isObject(error)) return false;
 
-  // ApolloError with GraphQL response (Bagisto style error)
   if ("graphQLErrors" in error && Array.isArray((error).graphQLErrors)) {
     return true;
   }
 
-  // Standard JS error (still might be Bagisto wrapped)
   if (error instanceof Error) return true;
 
   return findError(error);

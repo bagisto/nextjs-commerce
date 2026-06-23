@@ -31,7 +31,6 @@ export interface ThemeCustomizationResponse {
 
 
 
-// footer 
 export interface ThemeOptions {
   title: string;
   url: string;
@@ -80,7 +79,7 @@ export interface ThemeCustomizationTranslationEdge {
   node: ThemeCustomizationTranslationNode;
 }
 export interface FooterMenuProps {
-  menu: ThemeCustomizationEdge[];
+  menu?: ThemeCustomizationEdge[];
 }
 
 export interface ThemeCustomizationResult {
@@ -90,7 +89,6 @@ export interface ThemeCustomizationResult {
 
 
 
-// Theme Customization Options Types
 
 export interface ImageCarouselOptions {
   images?: Array<{
@@ -127,7 +125,6 @@ export type RenderableThemeOptions =
 
 
 
-  // Page Translation Types
 
   export interface PageTranslation {
   id: string;

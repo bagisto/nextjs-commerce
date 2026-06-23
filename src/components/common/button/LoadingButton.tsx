@@ -18,7 +18,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const buttonClasses = clsx(
-    "relative flex w-full text-lg cursor-pointer font-outfit font-semibold items-center justify-center rounded-xl bg-blue-600 p-3 tracking-wide text-white",
+    "relative flex w-full text-lg cursor-pointer font-outfit font-semibold items-center justify-center rounded-xl bg-primary p-3 tracking-wide text-white",
     "hover:opacity-90",
     {
       "opacity-50 cursor-wait ": loading || disabled,

@@ -1,7 +1,6 @@
 export default function CheckoutSkeleton() {
   return (
     <div className="mx-auto w-full flex-1 animate-pulse space-y-6 rounded-md px-0 py-10 text-white">
-      {/* Logo */}
       <div className="flex items-center gap-x-2">
         <div className="h-10 w-12 rounded-sm bg-gray-300 text-center text-sm text-black dark:bg-gray-600 dark:text-white" />
         <div className="h-6 w-24 rounded-sm bg-gray-300 text-center text-sm text-black dark:bg-gray-600 dark:text-white" />

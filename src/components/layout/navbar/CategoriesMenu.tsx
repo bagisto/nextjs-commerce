@@ -2,9 +2,9 @@ import Link from "next/link";
 import { GET_TREE_CATEGORIES } from "@/graphql";
 import MobileMenu from "./MobileMenu";
 import { cachedGraphQLRequest } from "@utils/hooks/useCache";
-import { TreeCategoriesResponse } from "@/types/theme/category-tree";
+import { CategoryNode, TreeCategoriesResponse } from "@/types/theme/category-tree";
 
-export async function CategoriesMenu() {
+export async function CategoriesMenu({ type }: { type?: "mobile" | "desktop" }) {
    const data = await cachedGraphQLRequest<TreeCategoriesResponse>(
     "category",
     GET_TREE_CATEGORIES,
@@ -15,8 +15,8 @@ export async function CategoriesMenu() {
   const categories = data?.treeCategories || [];
 
   const filteredCategories = categories
-    .filter((cat: any) => cat.id !== "1")
-    .map((cat: any) => {
+    .filter((cat: CategoryNode) => cat.id !== "1")
+    .map((cat: CategoryNode) => {
       const translation = cat.translation;
       return {
         id: cat.id,
@@ -24,7 +24,7 @@ export async function CategoriesMenu() {
         slug: translation?.slug || "",
       };
     })
-    .filter((item: any) => item.name && item.slug);
+    .filter((item) => item.name && item.slug);
 
   const menuData = [
     { id: "all", name: "All", slug: "" },
@@ -33,23 +33,25 @@ export async function CategoriesMenu() {
 
   return (
     <>
-      <MobileMenu menu={menuData} />
-      <ul className="hidden gap-4 text-sm md:items-center lg:flex xl:gap-6">
-        {menuData.map(
-          (item: { id: string; name: string; slug: string }) => (
-            <li key={item?.id + item?.name}>
-              <Link
-                className="text-nowrap relative text-neutral-500 before:absolute before:bottom-0 before:left-0 before:h-px before:w-0 before:bg-current before:transition-all before:duration-300 before:content-[''] hover:text-black hover:before:w-full dark:text-neutral-400 dark:hover:text-neutral-300"
-                href={item.slug ? `/search/${item.slug}` : "/search"}
-                prefetch={true}
-                aria-label={`Browse ${item.name} products`}
-              >
-                {item.name}
-              </Link>
-            </li>
-          )
-        )}
-      </ul>
+      {(type === "mobile" || !type) && <MobileMenu menu={menuData} />}
+      {(type === "desktop" || !type) && (
+        <ul className="hidden gap-4 text-sm md:items-center lg:flex xl:gap-6">
+          {menuData.map(
+            (item: { id: string; name: string; slug: string }) => (
+              <li key={item?.id + item?.name}>
+                <Link
+                  className="text-nowrap relative text-selected-black before:absolute before:bottom-0 before:left-0 before:h-px before:w-0 before:bg-current before:transition-all before:duration-300 before:content-[''] hover:text-black hover:before:w-full dark:text-selected-white dark:hover:text-neutral-300"
+                  href={item.slug ? `/search/${item.slug}` : "/search"}
+                  prefetch={true}
+                  aria-label={`Browse ${item.name} products`}
+                >
+                  {item.name}
+                </Link>
+              </li>
+            )
+          )}
+        </ul>
+      )}
     </>
   );
 }

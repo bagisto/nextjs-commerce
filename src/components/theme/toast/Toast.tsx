@@ -24,7 +24,7 @@ export const Toast = ({
       initial={{ opacity: 0, y: 50, scale: 0.3 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-      className="z-10 mt-4 flex w-full items-center dark:backdrop-blur-md dark:bg-[#000000]/30 rounded-xl"
+      className="z-10 mt-4 flex w-full items-center dark:backdrop-blur-md dark:bg-black/30 rounded-xl"
     >
       <Alert
         color={toast?.type}

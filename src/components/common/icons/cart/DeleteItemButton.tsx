@@ -1,6 +1,7 @@
 import LoadingDots from "@components/common/icons/LoadingDots";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useAddProduct } from "@utils/hooks/useAddToCart";
+import type { CartItemEdge } from "@/types/cart/type";
 import clsx from "clsx";
 
 
@@ -27,19 +28,10 @@ function SubmitButton({
       {loading ? (
         <LoadingDots className="bg-black dark:bg-white" />
       ) : (
-        <TrashIcon className="hover:text-accent-3 mx-[1px] h-6 w-6" />
+        <TrashIcon className="hover:text-accent-3 mx-px h-6 w-6" />
       )}
     </button>
   );
-}
-
-interface CartItemEdge {
-  node: {
-    id: string;
-    quantity: number;
-    name: string;
-    price: number;
-  };
 }
 
 export function DeleteItemButton({ item }: { item: CartItemEdge }) {

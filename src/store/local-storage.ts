@@ -1,9 +1,6 @@
 
 import { isArray, isObject } from "@/utils/type-guards";
 
-/**
- * Storage keys
- */
 export const CURRENCY_CODE = "current_currency";
 export const STORE_CODE = "current_store";
 export const STORE_CONFIG = "store_config";
@@ -31,13 +28,6 @@ export const CACHED_KEYS = {
   MEGA_MENU: "MEGA_MENU",
   ROOT_CATEGORIES: "ROOT_CATEGORIES",
 };
-/**
- * Set local storage
- *
- * @param {string} key - Key for the storage
- * @param {any} data - Data to be stored
- * @returns void
- */
  
 export const setLocalStorage = (key: string, data: any) => {
   if (typeof window !== "undefined") {
@@ -50,13 +40,6 @@ export const setLocalStorage = (key: string, data: any) => {
   }
 };
 
-/**
- * Get data from local storage
- *
- * @param {string} key - Key for the storage
- * @param {boolean} needParsedData - Whether to parse the data or not
- * @returns any
- */
 export const getLocalStorage = (key: string, needParsedData = false) => {
   try {
     if (typeof window !== "undefined" && window) {
@@ -73,13 +56,6 @@ export const getLocalStorage = (key: string, needParsedData = false) => {
   }
 };
 
-/**
- * Get a specific key from local storage
- *
- * @param {string} storageKey - Key for the storage
- * @param {string} requiredKey - Required key
- * @returns any
- */
 export const getKeyFromStorage = (
   storageKey: string ,
   requiredKey: string 
@@ -89,23 +65,12 @@ export const getKeyFromStorage = (
   return data?.[requiredKey] || null;
 };
 
-/**
- * Remove data from local storage
- *
- * @param {string} storageKey - Key for the storage
- * @returns void
- */
 export const removeFromLocalStorage = (storageKey: string) => {
   if (typeof window !== "undefined") {
     localStorage.removeItem(storageKey);
   }
 };
 
-/**
- * Reset cart storage
- *
- * @returns void
- */
 export const resetCartStorage = () => {
   removeFromLocalStorage(CART_DATA);
   removeFromLocalStorage(GUEST_CART);

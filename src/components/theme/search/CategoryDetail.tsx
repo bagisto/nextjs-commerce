@@ -1,7 +1,7 @@
 import { FC } from "react";
 import type { FunctionComponent } from "react";
 import clsx from "clsx";
-import Link from "next/link";
+import Breadcrumb from "@components/common/Breadcrumb";
 
 interface TextProps {
   html: string;
@@ -20,10 +20,8 @@ export const CategoryDetail: FC<{
     <div className="px-4 w-full max-w-screen-2xl mt-8 md:mt-14 mx-auto mb-0 sm:mb-10">
       <div className="flex flex-col lg:flex-row justify-between gap-4 md:gap-8 lg:gap-20 items-start">
         <div className=" flex-col gap-3 shrink-0">
-          <Link href="/" className="hidden lg:flex w-fit text-sm font-medium text-nowrap relative text-neutral-500 before:absolute before:bottom-0 before:left-0 before:h-px before:w-0 before:bg-current before:transition-all before:duration-300 before:content-[''] hover:text-black hover:before:w-full dark:text-neutral-400 dark:hover:text-neutral-300">
-            Home /
-          </Link>
-          <h1 className="text-xl md:text-3xl font-bold tracking-tight text-black dark:text-white capitalize">
+          <Breadcrumb items={[{ label: "Home", href: "/" }, { label: categoryItem.name }]} />
+          <h1 className="mt-2 text-xl md:text-4xl font-bold tracking-tight text-black dark:text-white capitalize">
             {categoryItem.name}
           </h1>
         </div>
@@ -31,7 +29,7 @@ export const CategoryDetail: FC<{
         <div className="w-full md:max-w-2xl lg:max-w-3xl">
           {categoryItem.description && (
             <Prose
-              className="w-full text-base text-gray-600 dark:text-gray-300"
+              className="w-full text-lg text-gray-600 dark:text-gray-300"
               html={categoryItem.description}
             />
           )}
@@ -47,7 +45,7 @@ const Prose: FunctionComponent<TextProps> = ({ html, className }) => {
     <div
       dangerouslySetInnerHTML={{ __html: html as string }}
       className={clsx(
-        "prose prose-h1:text-[24px]",
+        "prose prose-h1:text-2xl",
         className
       )}
 

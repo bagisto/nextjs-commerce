@@ -1,12 +1,10 @@
-// Category List Types 
 
 
-// Category Details Types 
 
 export interface ProductOptionNode {
   id: string;
   adminName: string;
-  isValid?: boolean; 
+  isValid?: boolean;
 }
 
 
@@ -18,6 +16,81 @@ export interface ProductOptionEdge {
 export interface AttributeOptions {
   edges: ProductOptionEdge[];
 }
+
+export interface BookingEventTicketTranslation {
+  locale: string;
+  name: string;
+  description: string;
+}
+
+export interface ProductBookingEventTicket {
+  id: string;
+  _id: string;
+  bookingProductId: string;
+  price: string;
+  qty: number;
+  specialPrice: string;
+  specialPriceFrom?: string;
+  specialPriceTo?: string;
+  formattedPrice: string;
+  formattedSpecialPrice: string;
+  translation: BookingEventTicketTranslation;
+}
+
+export interface AppointmentSlot {
+  id: string;
+  _id: string;
+  bookingProductId: string;
+  duration: number;
+  breakTime: number;
+  sameSlotAllDays: string;
+  slots: string;
+}
+
+export interface DefaultSlot {
+  bookingType: string;
+  duration: number | null;
+  breakTime: number | null;
+  slots: string;
+}
+
+export interface TableSlot {
+  id: string;
+  _id: string;
+  bookingProductId: string;
+  priceType: string;
+  guestLimit: number;
+  duration: number;
+  breakTime: number;
+  preventSchedulingBefore: number;
+  sameSlotAllDays: string;
+  slots: string;
+}
+
+export interface RentalSlot {
+  rentingType: string;
+  dailyPrice: string;
+  hourlyPrice: string;
+  slots: string;
+}
+
+export interface BookingProduct {
+  _id: string;
+  type: string;
+  location: string;
+  availableFrom: string;
+  availableTo: string;
+  availableEveryWeek?: boolean;
+  qty?: number;
+  eventTickets?: {
+    edges: Array<{ node: ProductBookingEventTicket }>;
+  };
+  appointmentSlot?: AppointmentSlot;
+  tableSlot?: TableSlot;
+  rentalSlot?: RentalSlot;
+  defaultSlot?: DefaultSlot;
+}
+
 
 
 export interface ProductAttribute {
@@ -76,7 +149,6 @@ export interface SingleProductResponse {
   product: ProductNode;
 }
 
-// Product Swatch Review Types
 export interface SuperAttributeOption {
   id: string;
   code: string;
@@ -110,8 +182,14 @@ export interface ProductSwatchReview {
   id: string;
   type: string;
   isSaleable?: string;
-  superAttributeOptions?: string; // JSON string
-  combinations?: string; // JSON string
+  price: number | string | { value?: number; currencyCode?: string } | null;
+  minimumPrice?: number | string | null;
+  specialPrice?: string;
+  priceHtml?: {
+    currencyCode?: string;
+  };
+  superAttributeOptions?: string;
+  combinations?: string;
   superAttributes?: {
     edges: Array<{
       node: SuperAttributeOption;
@@ -122,11 +200,116 @@ export interface ProductSwatchReview {
       node: AttributeValueNode;
     }>;
   };
+  groupedProducts?: {
+    edges: Array<{
+      node: {
+        id: string;
+        qty: number;
+        sortOrder: number;
+        associatedProduct: {
+          id: string;
+          name: string;
+          sku: string;
+          price: string;
+          formattedPrice: string;
+          specialPrice: string;
+          formattedSpecialPrice: string;
+          images?: {
+            edges: Array<{
+              node: {
+                id: string;
+                publicPath: string;
+              };
+            }>;
+          };
+        };
+      };
+    }>;
+  };
+  bundleOptions?: {
+    edges: Array<{
+      node: {
+        id: string;
+        type: string;
+        isRequired: boolean;
+        sortOrder: number;
+        translation: {
+          label: string;
+        };
+        bundleOptionProducts: {
+          edges: Array<{
+            node: {
+              id: string;
+              qty: number;
+              isDefault: boolean;
+              isUserDefined: boolean;
+              sortOrder: number;
+              product: {
+                id: string;
+                name: string;
+                sku: string;
+                price: string | number;
+                images?: {
+                  edges: Array<{
+                    node: {
+                      id: string;
+                      publicPath: string;
+                    };
+                  }>;
+                };
+              };
+            };
+          }>;
+        };
+      };
+    }>;
+  };
+  downloadableLinks?: {
+    edges: Array<ProductDownloadableLinkEdge>;
+  };
+  downloadableSamples?: {
+    edges: Array<ProductDownloadableSampleEdge>;
+  };
+  bookingProducts?: {
+    edges: Array<{ node: BookingProduct }>;
+  };
+}
+
+export interface ProductDownloadableLink {
+  _id: string;
+  type: string;
+  price: string;
+  formattedPrice: string;
+  translation: {
+    title: string;
+  };
+  sampleType?: string;
+  sampleFile?: string;
+  sampleFileUrl?: string;
+  sampleUrl?: string;
+}
+
+export interface ProductDownloadableSample {
+  _id: string;
+  type: string;
+  file?: string;
+  fileUrl?: string;
+  url?: string;
+  translation: {
+    title: string;
+  };
+}
+
+export interface ProductDownloadableLinkEdge {
+  node: ProductDownloadableLink;
+}
+
+export interface ProductDownloadableSampleEdge {
+  node: ProductDownloadableSample;
 }
 
 
 
-// GraphQL Response Types
 
 export interface ProductEdge {
   node: {
@@ -185,7 +368,6 @@ export interface RelatedProductsResponse {
 }
 
 
-// Review Types
 
 export interface ReviewInput {
   productId: number;

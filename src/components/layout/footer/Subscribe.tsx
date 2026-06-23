@@ -70,7 +70,7 @@ const Subscribe = () => {
         Subscribe to our newsletter for exclusive offers!
       </p>
 
-      <div className="mt-4 flex gap-x-3">
+      <div className="mt-4 flex gap-x-3 w-full max-w-[400px]">
         <input
           type="email"
           aria-label="Email Address"
@@ -82,16 +82,16 @@ const Subscribe = () => {
             },
           })}
           className={clsx(
-            "block rounded-2xl w-full xl:min-w-[283px] p-2.5 text-sm focus:border-blue-200 border border-neutral-200 bg-white  text-black outline-none placeholder:text-neutral-500 focus:ring-1 focus:ring-neutral-300 dark:border-neutral-800 dark:bg-transparent dark:text-white dark:placeholder:text-neutral-400 ",
+            "block w-[283px] h-[40px] px-[14px] py-[10px] rounded-2xl text-sm outline-none border-1.5 bg-overlay-subtle border-white dark:bg-neutral-800 dark:border-neutral-700 text-black dark:text-white placeholder:text-selected-black dark:placeholder:text-neutral-400",
             errors.email || status?.email
               ? "border-red-500 dark:border-red-500"
-              : "border-gray-300 dark:border-neutral-200"
+              : ""
           )}
           placeholder="Email Address"
         />
         <Button
           className={clsx(
-            "relative flex font-medium w-full min-w-32 max-w-32 items-center justify-center !rounded-2xl border-1 border-solid border-neutral-600 bg-transparent px-5 py-2.5 font-outfit text-[15px]  tracking-wide dark:!text-white !text-neutral-600",
+            "relative flex !font-medium !w-[105px] h-[40px] items-center justify-center !rounded-2xl border-1.5 border-solid border-border-cool  px-[20px] py-[10px] font-outfit !text-15 leading-[20px] tracking-wide !text-black dark:!text-black !bg-white dark:border-neutral-700 dark:!bg-primary dark:!text-white dark:border-primary",
             {
               "hover:opacity-90": !isSubmitting,
               "cursor-not-allowed opacity-50": isSubmitting,

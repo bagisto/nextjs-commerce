@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { cookies, headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
@@ -18,7 +19,15 @@ import {
   CUSTOMER_LOGOUT,
   CUSTOMER_REGISTRATION,
   FORGET_PASSWORD,
+  UPDATE_CUSTOMER_PROFILE,
 } from "@/graphql/customer/mutations";
+import { GET_CUSTOMER_PROFILE } from "@/graphql/customer/queries/GetCustomerProfile";
+import { GET_CUSTOMER_ORDER } from "@/graphql/customer/queries/GetCustomerOrder";
+import { GET_CUSTOMER_ORDERS } from "@/graphql/customer/queries/GetCustomerOrders";
+import { GET_CUSTOMER_DOWNLOADABLE_PRODUCTS } from "@/graphql/customer/queries/GetCustomerDownloadableProducts";
+import { GET_CUSTOMER_REVIEWS } from "@/graphql/customer/queries/GetCustomerReviews";
+import { GET_CUSTOMER_ADDRESSES } from "@/graphql/customer/queries/GetCustomerAddresses";
+import { CREATE_CUSTOMER_ADDRESS } from "@/graphql/customer/mutations/CreateCustomerAddress";
 import { DocumentNode } from "graphql";
 import { GRAPHQL_URL } from "@/utils/constants";
 import {
@@ -29,14 +38,15 @@ import {
 import { SUBSCRIBE_TO_NEWSLETTER } from "@/graphql/theme/mutations";
 import { cachedGraphQLRequest } from "@/utils/hooks/useCache";
 import { authOptions } from "@utils/auth";
-import { RegisterInputs } from "@components/customer/RegistrationForm";
+import { RegisterInputs } from "@components/customer/types";
 import {
   GetFooterResponse,
   ThemeCustomizationResult,
   ThemeCustomizationResponse,
   PageData,
 } from "@/types/theme/theme-customization";
-
+import { CREATE_COMPARE_ITEM } from "@/graphql/customer/mutations";
+import { extractNumericId } from "@/utils/helper";
 
 type ExtractVariables<T> = T extends { variables: object }
   ? T["variables"]
@@ -429,4 +439,550 @@ export async function getPage(input: { urlKey: string }): Promise<PageData[]> {
   });
 
   return res.body.data?.pageByUrlKeypages || [];
+}
+
+export const getCustomerProfile = cache(async () => {
+  try {
+    const res = await bagistoFetch<{
+      data: { readCustomerProfile: any };
+    }>({
+      query: GET_CUSTOMER_PROFILE,
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.readCustomerProfile;
+  } catch (error) {
+    console.error("getCustomerProfile error:", error);
+    return null;
+  }
+});
+
+export async function updateCustomerProfile(input: any) {
+  try {
+    const res = await bagistoFetch<any>({
+      query: UPDATE_CUSTOMER_PROFILE,
+      variables: { input },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.createCustomerProfileUpdate?.customerProfileUpdate
+    };
+  } catch (error: any) {
+    console.error("updateCustomerProfile error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function getCustomerOrders(variables?: { first?: number; after?: string }) {
+  try {
+    const res = await bagistoFetch<{
+      data: { customerOrders: any };
+      variables: any;
+    }>({
+      query: GET_CUSTOMER_ORDERS,
+      variables: variables || { first: 10 },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.customerOrders;
+  } catch (error) {
+    console.error("getCustomerOrders error:", error);
+    return null;
+  }
+}
+
+export async function getCustomerOrder(id: string) {
+  try {
+    const res = await bagistoFetch<{
+      data: { customerOrder: any };
+      variables: any;
+    }>({
+      query: GET_CUSTOMER_ORDER,
+      variables: { id },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.customerOrder;
+  } catch (error) {
+    console.error("getCustomerOrder error:", error);
+    return null;
+  }
+}
+
+export async function getCustomerDownloadableProducts({
+  first = 10,
+  after = null,
+}: {
+  first?: number;
+  after?: string | null;
+}) {
+  try {
+    const res = await bagistoFetch<{
+      data: { customerDownloadableProducts: any };
+      variables: any;
+    }>({
+      query: GET_CUSTOMER_DOWNLOADABLE_PRODUCTS,
+      variables: { first, after },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.customerDownloadableProducts;
+  } catch (error) {
+    console.error("getCustomerDownloadableProducts error:", error);
+    return null;
+  }
+}
+
+export async function getCustomerReviews({
+  first = 10,
+  after = null,
+}: {
+  first?: number;
+  after?: string | null;
+}) {
+  try {
+    const res = await bagistoFetch<{
+      data: { customerReviews: any };
+      variables: any;
+    }>({
+      query: GET_CUSTOMER_REVIEWS,
+      variables: { first, after },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.customerReviews;
+  } catch (error) {
+    console.error("getCustomerReviews error:", error);
+    return null;
+  }
+}
+export async function getCustomerAddresses({
+  first = 10,
+  after = null,
+}: {
+  first?: number;
+  after?: string | null;
+}) {
+  try {
+    const res = await bagistoFetch<{
+      data: { getCustomerAddresses: any };
+      variables: any;
+    }>({
+      query: GET_CUSTOMER_ADDRESSES,
+      variables: { first, after },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.getCustomerAddresses;
+  } catch (error) {
+    console.error("getCustomerAddresses error:", error);
+    return null;
+  }
+}
+
+export async function createCustomerAddress(input: any) {
+  try {
+    const res = await bagistoFetch<any>({
+      query: CREATE_CUSTOMER_ADDRESS,
+      variables: { input },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.createAddUpdateCustomerAddress?.addUpdateCustomerAddress
+    };
+  } catch (error: any) {
+    console.error("createCustomerAddress error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function deleteCustomerAddress(addressId: string) {
+  try {
+    const { DELETE_CUSTOMER_ADDRESS } = await import('@/graphql/customer/mutations');
+    const res = await bagistoFetch<any>({
+      query: DELETE_CUSTOMER_ADDRESS,
+      variables: { input: { addressId: parseInt(addressId) } },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.createDeleteCustomerAddress?.deleteCustomerAddress
+    };
+  } catch (error: any) {
+    console.error("deleteCustomerAddress error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function setDefaultAddress(address: any) {
+  try {
+    const { CREATE_CUSTOMER_ADDRESS } = await import('@/graphql/customer/mutations');
+
+    const input = {
+      addressId: parseInt(address._id || address.id),
+      firstName: address.firstName,
+      lastName: address.lastName,
+      email: address.email,
+      address1: address.address1 || address.address,
+      address2: address.address2 || "",
+      city: address.city,
+      state: address.state,
+      country: address.country,
+      postcode: address.postcode,
+      phone: address.phone,
+      defaultAddress: true,
+      useForShipping: true
+    };
+
+    const res = await bagistoFetch<any>({
+      query: CREATE_CUSTOMER_ADDRESS,
+      variables: { input },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.createAddUpdateCustomerAddress?.addUpdateCustomerAddress
+    };
+  } catch (error: any) {
+    console.error("setDefaultAddress error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function getCustomerAddress(id: string) {
+  try {
+    const { GET_CUSTOMER_ADDRESS } = await import('@/graphql/customer/queries/GetCustomerAddress');
+    const res = await bagistoFetch<any>({
+      query: GET_CUSTOMER_ADDRESS,
+      variables: { id },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.customerAddress;
+  } catch (error) {
+    console.error("getCustomerAddress error:", error);
+    return null;
+  }
+}
+
+export async function toggleWishlist(productId: string | number) {
+  try {
+    const { TOGGLE_WISHLIST_MUTATION } = await import('@/graphql/catalog/mutations');
+    const res = await bagistoFetch<any>({
+      query: TOGGLE_WISHLIST_MUTATION,
+      variables: { input: { productId: typeof productId === 'string' ? parseInt(productId.split('/').pop() || '0') : productId } },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.toggleWishlist
+    };
+  } catch (error: any) {
+    if (error?.message?.toLowerCase()?.includes("removed from wishlist")) {
+      return {
+        success: true,
+        data: null
+      };
+    }
+    console.error("toggleWishlist error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function getCustomerWishlist() {
+  try {
+    const { GET_WISHLISTS } = await import('@/graphql/customer/queries/GetWishlists');
+    const res = await bagistoFetch<any>({
+      query: GET_WISHLISTS,
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.wishlists?.edges?.map((edge: any) => edge.node) || [];
+  } catch (error) {
+    console.error("getCustomerWishlist error:", error);
+    return [];
+  }
+}
+
+export async function getWishlistItem(id: string) {
+  try {
+    const { GET_WISHLIST } = await import('@/graphql/customer/queries/GetWishlist');
+    const res = await bagistoFetch<any>({
+      query: GET_WISHLIST,
+      variables: { id },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.wishlist;
+  } catch (error) {
+    if ((error as any)?.extensions?.status === 400) {
+      return null;
+    }
+    console.error("getWishlistItem error:", error);
+    return null;
+  }
+}
+
+export async function getAllWishlists(variables?: { first?: number; after?: string }) {
+  try {
+    const { GET_ALL_WISHLISTS } = await import('@/graphql/customer/queries/GetAllWishlists');
+    const res = await bagistoFetch<any>({
+      query: GET_ALL_WISHLISTS,
+      variables: variables || { first: 10 },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.wishlists;
+  } catch (error) {
+    console.error("getAllWishlists error:", error);
+    return null;
+  }
+}
+
+export async function getWishlistIds(variables?: { first?: number; after?: string }) {
+  try {
+    const { GET_WISHLIST_IDS } = await import('@/graphql/customer/queries/GetWishlistIds');
+    const res = await bagistoFetch<any>({
+      query: GET_WISHLIST_IDS,
+      variables: variables || { first: 500 },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.wishlists;
+  } catch (error) {
+    console.error("getWishlistIds error:", error);
+    return null;
+  }
+}
+
+export async function deleteWishlistItem(id: string) {
+  try {
+    const { DELETE_WISHLIST_ITEM } = await import('@/graphql/customer/mutations/DeleteWishlist');
+    const res = await bagistoFetch<any>({
+      query: DELETE_WISHLIST_ITEM,
+      variables: { input: { id } },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.deleteWishlist?.wishlist
+    };
+  } catch (error: any) {
+    console.error("deleteWishlistItem error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function moveWishlistToCart(wishlistItemId: string, quantity: number) {
+  try {
+    const { MOVE_WISHLIST_TO_CART } = await import('@/graphql/customer/mutations/MoveWishlistToCart');
+    const { extractNumericId } = await import('@/utils/helper');
+    const numericId = extractNumericId(wishlistItemId);
+
+    const res = await bagistoFetch<any>({
+      query: MOVE_WISHLIST_TO_CART,
+      variables: { 
+        input: { 
+          wishlistItemId: parseInt(numericId || '0'),
+          quantity 
+        } 
+      },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.moveWishlistToCart?.wishlistToCart
+    };
+  } catch (error: any) {
+    console.error("moveWishlistToCart error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function createCompareItem(productId: string | number) {
+  try {
+
+    const numericId = extractNumericId(productId);
+
+    const res = await bagistoFetch<any>({
+      query: CREATE_COMPARE_ITEM,
+      variables: { 
+        input: { 
+          productId: parseInt(numericId || '0')
+        } 
+      },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: true,
+      data: res.body.data?.createCompareItem?.compareItem
+    };
+  } catch (error: any) {
+    console.error("createCompareItem error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function getCompareItems(variables?: { first?: number; after?: string }) {
+  try {
+    const { GET_COMPARE_ITEMS } = await import('@/graphql');
+    
+    const res = await bagistoFetch<any>({
+      query: GET_COMPARE_ITEMS,
+      variables: variables || { first: 10 },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.compareItems || null;
+  } catch (error) {
+    console.error("getCompareItems error:", error);
+    return null;
+  }
+}
+
+export async function getCompareIds(variables?: { first?: number; after?: string }) {
+  try {
+    const { GET_COMPARE_IDS } = await import('@/graphql/customer/queries/GetCompareIds');
+
+    const res = await bagistoFetch<any>({
+      query: GET_COMPARE_IDS,
+      variables: variables || { first: 500 },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return res.body.data?.compareItems || null;
+  } catch (error) {
+    console.error("getCompareIds error:", error);
+    return null;
+  }
+}
+
+export async function deleteCompareItem(id: string) {
+  try {
+    const { DELETE_COMPARE_ITEM } = await import('@/graphql');
+    
+    const res = await bagistoFetch<any>({
+      query: DELETE_COMPARE_ITEM,
+      variables: { input: { id } },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: !!res.body.data?.deleteCompareItem?.compareItem,
+      message: res.body.data?.deleteCompareItem?.compareItem ? "Product removed from comparison" : "Failed to remove product"
+    };
+  } catch (error: any) {
+    console.error("deleteCompareItem error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function deleteAllCompareItems() {
+  try {
+    const { DELETE_ALL_COMPARE_ITEMS } = await import('@/graphql');
+    
+    const res = await bagistoFetch<any>({
+      query: DELETE_ALL_COMPARE_ITEMS,
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: !!res.body.data?.createDeleteAllCompareItems?.deleteAllCompareItems,
+      message: res.body.data?.createDeleteAllCompareItems?.deleteAllCompareItems?.message || "All items removed from comparison"
+    };
+  } catch (error: any) {
+    console.error("deleteAllCompareItems error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
+}
+
+export async function addProductToCart(productId: string | number, quantity: number) {
+  try {
+    const { CREATE_ADD_PRODUCT_IN_CART } = await import('@/graphql/cart/mutations');
+    const numericId = extractNumericId(productId);
+
+    const res = await bagistoFetch<any>({
+      query: CREATE_ADD_PRODUCT_IN_CART,
+      variables: { 
+        productId: parseInt(numericId || '0'),
+        quantity 
+      },
+      cache: "no-store",
+      isCookies: true,
+    });
+
+    return {
+      success: res.body.data?.createAddProductInCart?.addProductInCart?.success || false,
+      message: res.body.data?.createAddProductInCart?.addProductInCart?.message || "Product added to cart"
+    };
+  } catch (error: any) {
+    console.error("addProductToCart error:", error);
+    return {
+      success: false,
+      message: error?.message || "Something went wrong"
+    };
+  }
 }

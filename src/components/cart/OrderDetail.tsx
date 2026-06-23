@@ -1,17 +1,19 @@
 "use client";
 
 import { ORDER_ID } from "@/utils/constants";
-import { getCookie } from "@utils/getCartToken";
+import { deleteCookie, getCookie } from "@utils/getCartToken";
 import { useEffect, useState } from "react";
 
-export default function OrderDetail() {
-  const [orderId, setOrderId] = useState<string | null>(null);
+export default function OrderDetail({ orderId: initialOrderId }: { orderId?: string }) {
+  const [orderId] = useState<string | null>(
+    () => initialOrderId ?? getCookie(ORDER_ID)
+  );
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      setOrderId(getCookie(ORDER_ID));
-    });
+    deleteCookie(ORDER_ID);
   }, []);
+
+
 
   return (
     <div className="mb-8 font-outfit">
@@ -22,7 +24,7 @@ export default function OrderDetail() {
         </span>{" "}
         has been placed successfully{" "}
       </h1>
-      <p className="text-center text-lg font-normal text-black/60 dark:text-neutral-300">
+      <p className="text-center text-lg font-normal text-black/60 dark:text-selected-white">
         Missing page, but your next favorite chair is just a click away.
       </p>
     </div>

@@ -1,5 +1,15 @@
 export type AddressType = "cart_billing" | "cart_shipping";
 
+export interface CheckoutStepperProps {
+  billingAddress?: MappedCheckoutAddress | null;
+  shippingAddress?: MappedCheckoutAddress | null;
+  currentStep: string;
+  selectedPayment?: string;
+  selectedPaymentTitle?: string;
+  selectedShippingRate?: string;
+  selectedShippingRateTitle?: string;
+}
+
 export interface GetCheckoutAddressesResponse {
   collectionGetCheckoutAddresses: CheckoutAddressConnection;
 }
@@ -79,7 +89,6 @@ export interface SelectedShippingRateType {
 
 
 
-// Checkout Payment Methods
 
 export interface CheckoutPaymentMethod {
   id: string;
@@ -99,7 +108,6 @@ export interface CheckoutPaymentMethodsOperation {
   data: CheckoutPaymentMethodsData;
 }
 
-// checkout save payment
 
 export interface CreateCheckoutPaymentMethodVariables {
   paymentMethod: string;
@@ -126,7 +134,6 @@ export interface CreateCheckoutPaymentMethodOperation {
   variables: CreateCheckoutPaymentMethodVariables;
 }
 
-// Checkout Shipping Rates
 
 export interface CheckoutShippingRate {
   id: string;
@@ -150,7 +157,6 @@ export interface GetCheckoutShippingRatesOperation {
   variables: GetCheckoutShippingRatesVariables;
 }
 
-// Checkout Place Order
 
 export interface CheckoutOrder {
   id: string;
@@ -166,7 +172,6 @@ export interface CreateCheckoutOrderOperation {
   data: CreateCheckoutOrderData;
 }
 
-// Checkout Get Address
 export interface CheckoutAddress {
   id: string;
   addressType: string;
@@ -194,7 +199,6 @@ export interface GetCheckoutAddressesOperation {
   data: GetCheckoutAddressesData;
 }
 
-// checkout save address
 export interface CheckoutAddressResult {
   id: string;
   _id: string;
@@ -223,7 +227,6 @@ export interface CreateCheckoutAddressData {
   createCheckoutAddress: CreateCheckoutAddressPayload;
 }
 export interface CreateCheckoutAddressVariables {
-  // Billing
   billingFirstName: string;
   billingLastName: string;
   billingEmail: string;
@@ -235,10 +238,8 @@ export interface CreateCheckoutAddressVariables {
   billingPhoneNumber: string;
   billingCompanyName: string;
 
-  // Shipping control
   useForShipping?: boolean;
 
-  // Shipping (optional when useForShipping === true)
   shippingFirstName?: string;
   shippingLastName?: string;
   shippingEmail?: string;
@@ -255,4 +256,3 @@ export interface CreateCheckoutAddressOperation {
   variables: CreateCheckoutAddressVariables;
 }
 
-// checkout save payment

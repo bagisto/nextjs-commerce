@@ -48,12 +48,12 @@ export function VariantSelector({
                       setUserInteracted(true);
                     }}
                     className={clsx(
-                      "flex min-w-[48px] cursor-pointer items-center justify-center rounded-lg bg-neutral-100 px-3.5 py-2.5 text-sm dark:border-neutral-800 dark:bg-neutral-800",
+                      "flex min-w-12 cursor-pointer items-center justify-center rounded-lg bg-neutral-100 px-3.5 py-2.5 text-sm dark:border-neutral-800 dark:bg-neutral-800",
                       {
-                        "cursor-default ring-2 ring-blue-600 text-blue-600": isActive,
-                        "ring-[0] transition duration-300 ease-in-out hover:scale-110 hover:border-blue-600":
+                        "cursor-default ring-2 ring-primary text-primary": isActive,
+                        "ring-[0] transition duration-300 ease-in-out hover:scale-110 hover:border-primary":
                           !isActive && isAvailable,
-                        "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-neutral-500 ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-neutral-400 dark:ring-neutral-700 before:dark:bg-neutral-700":
+                        "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-selected-black ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-selected-white dark:ring-neutral-700 before:dark:bg-neutral-700":
                           !isAvailable,
                       }
                     )}

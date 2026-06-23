@@ -9,8 +9,10 @@ import TwitterIcon from "@components/common/icons/social-icon/TwitterIcon";
 import Subscribe from "./Subscribe";
 import FooterMenu from "./FooterMenu";
 import ServiceContent from "./ServiceContent";
-import { ThemeCustomizationTranslationEdge } from "@/types/theme/theme-customization";
-const { COMPANY_NAME, SITE_NAME } = process.env;
+import { ThemeCustomizationTranslationEdge, FooterColumns, ThemeOptions } from "@/types/theme/theme-customization";
+import { safeParse } from "@/utils/helper";
+import { JSX } from "react";
+const { COMPANY_NAME } = process.env;
 
 export default async function Footer() {
   const currentYear = new Date().getFullYear();
@@ -18,9 +20,28 @@ export default async function Footer() {
   const skeleton =
     "w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700";
   const menu = await getThemeCustomization();
-  const copyrightName = COMPANY_NAME || SITE_NAME || "";
+  const copyrightName = COMPANY_NAME || "";
   const services =
     menu?.services_content?.themeCustomizations?.edges?.[0]?.node;
+
+  const footerLinksNode = menu?.footer_links?.themeCustomizations?.edges?.[0]?.node;
+  const footerTranslation = footerLinksNode?.translations?.edges?.[0]?.node;
+  const footerOptions: FooterColumns | null | undefined = typeof footerTranslation?.options === "string"
+    ? safeParse(footerTranslation.options)
+    : footerTranslation?.options;
+  const socialLinks = footerOptions?.column_3 || [];
+
+  const socialIconMapping: Record<string, JSX.Element> = {
+    facebook: <FaceBookIcon />,
+    instagram: <InstaGramIcon />,
+    twitter: <TwitterIcon />,
+    x: <TwitterIcon />,
+  };
+
+  const getSocialIcon = (title: string) => {
+    const key = title.toLowerCase();
+    return socialIconMapping[key] || null;
+  };
 
   return (
     <>
@@ -32,9 +53,9 @@ export default async function Footer() {
           )}
         />
       )}
-      <footer className="hidden lg:block border-t border-neutral-200 text-sm text-neutral-500 dark:border-neutral-700 dark:text-neutral-400">
+      <footer className="hidden lg:block border-t border-neutral-200 text-sm text-selected-black dark:border-neutral-700 dark:text-selected-white">
         <div className="mx-auto flex w-full max-w-screen-2xl flex-col justify-between gap-6 gap-y-6 px-6 py-12 text-sm dark:border-neutral-700 min-[880px]:flex-row min-[880px]:gap-12 min-[880px]:gap-y-20 min-[880px]:px-4">
-          <div className="flex flex-col gap-[14px]">
+          <div className="flex flex-col gap-3.5">
             <Link
               className="flex items-center gap-2 md:pt-1 cursor-pointer"
               href="/"
@@ -44,37 +65,24 @@ export default async function Footer() {
               <LogoIcon />
               <span className="sr-only">Go to homepage</span>
             </Link>
-            <div className="flex gap-[14px]">
-              <Link
-                href={"#"}
-                aria-label="Visit Bagisto Store on Facebook"
-                title="Facebook"
-                target="_blank"
-                className="cursor-pointer"
-              >
-                <FaceBookIcon />
-                <span className="sr-only">Facebook</span>
-              </Link>
-              <Link
-                href={"#"}
-                aria-label="Visit Bagisto Store on Instagram"
-                title="Instagram"
-                target="_blank"
-                className="cursor-pointer"
-              >
-                <InstaGramIcon />
-                <span className="sr-only">Instagram</span>
-              </Link>
-              <Link
-                href={"#"}
-                aria-label="Visit Bagisto Store on Twitter"
-                title="Twitter"
-                target="_blank"
-                className="cursor-pointer"
-              >
-                <TwitterIcon />
-                <span className="sr-only">Twitter</span>
-              </Link>
+            <div className="flex gap-3.5">
+              {socialLinks.map((item: ThemeOptions, index: number) => {
+                const icon = getSocialIcon(item.title);
+                if (!icon) return null;
+                return (
+                  <Link
+                    key={item.title ?? index}
+                    href={item.url}
+                    aria-label={`Visit Bagisto Store on ${item.title}`}
+                    title={item.title}
+                    target="_blank"
+                    className="cursor-pointer"
+                  >
+                    {icon}
+                    <span className="sr-only">{item.title}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
           <div className="flex flex-col gap-x-8 md:flex-row lg:gap-x-[50px]">
@@ -105,7 +113,7 @@ export default async function Footer() {
                 : ""}{" "}
               All rights reserved.
             </p>
-            <hr className="mx-4 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
+            <hr className="mx-4 hidden h-4 w-px border-l border-neutral-400 md:inline-block" />
             <p className="text-center">Designed in Bagisto</p>
           </div>
         </div>

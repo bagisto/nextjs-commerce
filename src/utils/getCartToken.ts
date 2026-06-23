@@ -1,4 +1,4 @@
-import { GUEST_CART_TOKEN, IS_GUEST } from "@/utils/constants";
+import { GUEST_CART_TOKEN, GUEST_CART_ID, IS_GUEST } from "@/utils/constants";
 import { decodeJWT } from "@/utils/jwt-cookie";
 
 export const getNativeCookie = (name: string): string | null => {
@@ -19,7 +19,14 @@ export const getCartToken = (): string | null => {
   return decoded?.sessionToken ?? null;
 };
 
-//  fetch any cookie data
+
+export const getGuestCartId = (): number | null => {
+  const raw = getNativeCookie(GUEST_CART_ID);
+  if (!raw) return null;
+  const id = parseInt(raw, 10);
+  return isNaN(id) ? null : id;
+};
+
 export const getCookie = (name: string): string | null => {
   if (typeof document === "undefined") return null;
 

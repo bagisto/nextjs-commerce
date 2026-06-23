@@ -21,7 +21,7 @@ function SubmitButton({
     <button
       aria-label={buttonName}
       className={clsx(
-        " my-3 w-auto items-center cursor-pointer justify-center rounded-full border-white bg-blue-600 px-12 py-4 text-sm font-bold tracking-wide text-white",
+        " my-3 w-auto items-center cursor-pointer justify-center rounded-full border-white bg-primary px-12 py-4 text-sm font-bold tracking-wide text-white",
         {
           "hover:opacity-90": true,
         }

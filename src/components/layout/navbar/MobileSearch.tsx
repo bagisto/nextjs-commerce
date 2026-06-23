@@ -13,7 +13,7 @@ const MobileSearch = () => {
         <button
           onClick={() => setSearch(!search)}
           aria-label="Open cart"
-          className="size-9 lg:size-11 flex cursor-pointer items-center justify-center rounded-sm border border-solid border-neutral-200 dark:border-neutral-700 md:hidden"
+          className="size-9 lg:size-11 flex cursor-pointer items-center justify-center rounded-sm border border-solid border-neutral-200 dark:border-neutral-700 min-[769px]:hidden"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@ const MobileSearch = () => {
       </Suspense>
       <div
         className={clsx(
-          "absolute z-50 left-0 right-0 top-0 flex w-full justify-center bg-neutral-50 dark:bg-neutral-900 p-[15px] transition-all duration-300 md:hidden ",
+          "absolute z-50 left-0 right-0 top-0 flex w-full justify-center bg-neutral-50 dark:bg-neutral-900 p-[15px] transition-all duration-300 min-[769px]:hidden ",
           search ? "translate-y-0 opacity-100" : " -translate-y-full opacity-0"
         )}
       >
@@ -54,7 +54,7 @@ export const MobileSearchBar = ({
 }) => {
   return (
     <>
-      <div className="block w-full justify-center md:hidden px-4 mt-2 z-10">
+      <div className="block w-full justify-center min-[769px]:hidden px-4 mt-2.5 z-10 border-b border-overlay dark:border-surface-darker pb-4">
         <Suspense fallback={<SearchSkeleton />}>
           <Search search={false} onClose={onClose} />
         </Suspense>

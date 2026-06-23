@@ -23,7 +23,7 @@ export default function ReviewSection({
     <>
       <div>
         {totalReview > 0 ? (
-          <ReviewButton setShowForm={setOpen} className={className} />
+          <ReviewButton setShowForm={setOpen} className={`${className ?? ""}`} />
         ) : (
           <NoReview setShowForm={setOpen} />
         )}
@@ -40,10 +40,10 @@ export default function ReviewSection({
         classNames={{
           wrapper: "z-[100] items-center justify-center",
           backdrop: "z-[99]",
-          base: "bg-white/90 dark:bg-black/80 backdrop-blur-xl  rounded-xl mx-4",
+          base: "bg-white dark:bg-neutral-900 rounded-xl mx-4 border border-neutral-200 dark:border-neutral-800 shadow-2xl",
         }}
       >
-        <ModalContent className="p-0 border-none">
+        <ModalContent className="p-0 border-none bg-white dark:bg-neutral-900">
           {(onClose) => (
             <AddProductReview
               productId={productId}

@@ -1,7 +1,7 @@
 
 export const ThreeItemGridSkeleton = () => {
   return (
-    <section className="pt-8 sm:pt-12 lg:pt-20">
+    <section className="pt-6 sm:pt-12 lg:pt-20">
       <div className="md:max-w-4.5xl mx-auto mb-10 w-auto px-0 text-center md:px-36">
         <div className="mb-4 h-10 w-2/3 mx-auto animate-pulse rounded bg-gray-200 dark:bg-neutral-800 md:h-12" />
         <div className="h-5 w-full max-w-xl mx-auto animate-pulse rounded bg-gray-200 dark:bg-neutral-800" />

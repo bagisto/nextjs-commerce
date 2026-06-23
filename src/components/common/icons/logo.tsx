@@ -2,7 +2,7 @@ export default function LogoIcon(_props: React.ComponentProps<"svg">) {
   return (
     <>
       <div className="flex items-center gap-x-2">
-        <div className="!min-h-10 !min-w-10 flex items-center justify-center rounded-lg border border-[#E0E0E0] bg-white dark:border-[#404040] dark:bg-black">
+        <div className="!min-h-10 !min-w-10 flex items-center justify-center rounded-lg border border-border-muted bg-white dark:border-dark-grey dark:bg-black">
           <svg
             width="28"
             height="28"
@@ -15,7 +15,7 @@ export default function LogoIcon(_props: React.ComponentProps<"svg">) {
               y="8.07141"
               width="21.004"
               height="21.2374"
-              className="fill-[#0041FF]"
+              className="fill-accent-strong"
             />
             <path
               fillRule="evenodd"

@@ -2,4 +2,12 @@ export { CUSTOMER_REGISTRATION} from "./CustomerRegistration";
 export { CUSTOMER_LOGIN} from "./CustomerLogin";
 export { CUSTOMER_LOGOUT} from "./CustomerLogout";
 export { VERIFY_CUSTOMER} from "./VerifyCustomer";
-export {FORGET_PASSWORD} from "./ForgetPassword"
+export {FORGET_PASSWORD} from "./ForgetPassword";
+export { UPDATE_CUSTOMER_PROFILE } from "./UpdateCustomerProfile";
+export { CREATE_CUSTOMER_ADDRESS } from "./CreateCustomerAddress";
+export { DELETE_CUSTOMER_ADDRESS } from "./DeleteCustomerAddress";
+export { DELETE_WISHLIST_ITEM } from "./DeleteWishlist";
+export { MOVE_WISHLIST_TO_CART } from "./MoveWishlistToCart";
+export { CREATE_COMPARE_ITEM } from "./CreateCompareItem";
+export { DELETE_COMPARE_ITEM } from "./DeleteCompareItem";
+export { DELETE_ALL_COMPARE_ITEMS } from "./DeleteAllCompareItems";

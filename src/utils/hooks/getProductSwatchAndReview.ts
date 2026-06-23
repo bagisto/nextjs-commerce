@@ -1,4 +1,4 @@
-import { SingleProductResponse } from "@/app/(public)/product/[...urlProduct]/page";
+import { SingleProductResponse } from "@/components/catalog/type";
 import { GET_PRODUCT_SWATCH_REVIEW } from "@/graphql";
 import { cachedProductRequest } from "@/utils/hooks/useCache";
 

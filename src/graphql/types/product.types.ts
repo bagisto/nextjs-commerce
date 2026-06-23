@@ -1,7 +1,3 @@
-/**
- * GraphQL Type Definitions for Products
- * These types match the GraphQL schema and provide type safety
- */
 
 export interface PageInfo {
   startCursor: string | null;
@@ -113,7 +109,6 @@ export interface ProductConnection {
   edges: ProductEdge[];
 }
 
-// Query Variables Types
 export interface GetProductsVariables {
   query?: string;
   sortKey?: string;
@@ -134,7 +129,6 @@ export interface GetRelatedProductsVariables {
   first?: number;
 }
 
-// Query Response Types
 export interface GetProductsResponse {
   products: ProductConnection;
 }

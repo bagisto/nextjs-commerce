@@ -38,10 +38,11 @@ export default function AddProductReview({
     const file = e.target.files?.[0];
     if (file) {
       setImageFile(file.name);
-      setReviewInfo((prev) => ({ ...prev, attachments: file.name }));
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        const base64String = reader.result as string;
+        setImagePreview(base64String);
+        setReviewInfo((prev) => ({ ...prev, attachments: base64String }));
       };
       reader.readAsDataURL(file);
     }
@@ -70,7 +71,6 @@ export default function AddProductReview({
 
     setErrors(newErrors);
 
-    // If there are errors, don't submit
     if (newErrors.title || newErrors.comment || newErrors.rating) {
       showToast("Please fill in all required fields", "danger");
       return;
@@ -84,7 +84,7 @@ export default function AddProductReview({
         rating: reviewInfo.rating,
         name: "Guest User",
         email: "guest@mail.com",
-        attachments: "",
+        attachments: reviewInfo.attachments ? JSON.stringify([reviewInfo.attachments]) : "",
       };
 
       await createProductReview(input);
@@ -111,14 +111,14 @@ export default function AddProductReview({
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-4xl mx-auto p-4 md:p-6 rounded-xl relative"
+      className="w-full max-w-4xl mx-auto p-4 md:p-6 rounded-xl relative bg-white dark:bg-neutral-900 text-black dark:text-white"
     >
       <div className="flex mb-4">
-        <h1 className="text-xl font-semibold">Write a review</h1>
+        <h1 className="text-xl font-semibold text-black dark:text-white">Write a review</h1>
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 z-50 p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-neutral-300 dark:hover:bg-neutral-700 text-gray-500 hover:text-gray-700 dark:hover:text-gray-400 transition-colors"
+          className="absolute top-4 right-4 z-50 p-2 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-gray-500 hover:text-gray-700 dark:text-selected-white dark:hover:text-white transition-colors"
           aria-label="Close review form"
         >
           <svg
@@ -140,7 +140,7 @@ export default function AddProductReview({
       <div className="flex flex-col gap-4">
         <div className="space-y-4">
           {imagePreview ? (
-            <div className="border-2 w-[120px] h-auto max-h-[120px] border-dashed border-gray-300  rounded-xl text-center transition-colors hover:border-primary-500">
+            <div className="border-2 w-[120px] h-auto max-h-[120px] border-dashed border-gray-300 dark:border-neutral-700 rounded-xl text-center transition-colors hover:border-primary-500">
               <div className="space-y-3">
                 <div className="relative mx-auto">
                   <Image
@@ -177,7 +177,7 @@ export default function AddProductReview({
               </div>
             </div>
           ) : (
-            <div className="border-2 border-dashed border-gray-300 w-32 h-32 rounded-xl p-6 text-center transition-colors hover:border-primary-500">
+            <div className="border-2 border-dashed border-gray-300 dark:border-neutral-700 w-32 h-32 rounded-xl p-6 text-center transition-colors hover:border-primary-500">
               <div>
                 <label
                   htmlFor="file-upload"
@@ -188,7 +188,7 @@ export default function AddProductReview({
                   </div>
 
                   <div className="text-sm text-center">
-                    <span className="font-medium">Add Image</span>
+                    <span className="font-medium text-black dark:text-white">Add Image</span>
                   </div>
 
                   <input
@@ -203,12 +203,12 @@ export default function AddProductReview({
               </div>
             </div>
           )}
-          {imageFile && <p className="text-sm">{imageFile}</p>}
+          {imageFile && <p className="text-sm text-black/80 dark:text-selected-white">{imageFile}</p>}
         </div>
 
         <div className="flex flex-col gap-4">
           <div>
-            <label className="block text-base font-semibold  mb-1">
+            <label className="block text-base font-semibold text-black dark:text-white mb-1">
               Rating
             </label>
             <AddRatingStar
@@ -240,8 +240,9 @@ export default function AddProductReview({
             isInvalid={!!errors.title}
             errorMessage={errors.title}
             classNames={{
-              input: "text-sm",
-              label: "px-2 text-base font-semibold",
+              input: "text-sm text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-selected-white",
+              label: "px-2 text-base font-semibold text-black dark:text-white",
+              inputWrapper: "border-gray-300 dark:border-neutral-700 hover:border-gray-400 dark:hover:border-neutral-600 focus-within:!border-black dark:focus-within:!border-white bg-transparent",
             }}
           />
 
@@ -259,8 +260,9 @@ export default function AddProductReview({
             isInvalid={!!errors.comment}
             errorMessage={errors.comment}
             classNames={{
-              input: "text-sm",
-              label: "px-2 text-base font-semibold",
+              input: "text-sm text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-selected-white",
+              label: "px-2 text-base font-semibold text-black dark:text-white",
+              inputWrapper: "border-gray-300 dark:border-neutral-700 hover:border-gray-400 dark:hover:border-neutral-600 focus-within:!border-black dark:focus-within:!border-white bg-transparent",
             }}
           />
           <div className="w-32">

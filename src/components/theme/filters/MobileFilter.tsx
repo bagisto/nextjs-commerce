@@ -8,20 +8,18 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import {
-  AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Select, SelectItem } from "@heroui/select";
 import { SORT, PAGE, QUERY } from "@/utils/constants";
 import { createUrl } from "@/utils/helper";
+import { FilterAttribute, FilterAttributeOption } from "@/components/catalog/type";
 
 export default function MobileFilter({
   filterAttributes,
 }: {
-
-  filterAttributes: any;
+  filterAttributes: FilterAttribute[];
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const searchParams = useSearchParams();
@@ -35,7 +33,7 @@ export default function MobileFilter({
   useEffect(() => {
     if (isOpen) {
       const initialFilters: Record<string, Set<string>> = {};
-      filterAttributes.forEach((attr: any) => {
+      filterAttributes.forEach((attr: FilterAttribute) => {
         const values = searchParams.get(attr.code)?.split(",") || [];
         initialFilters[attr.code] = new Set(values.filter(Boolean));
       });
@@ -89,10 +87,10 @@ export default function MobileFilter({
       <div className="flex flex-wrap gap-3">
         <Button
           size="md"
-          className="flex bg-neutral-100 capitalize dark:bg-neutral-800"
+          className="flex bg-overlay-subtle border-1.5 border-white dark:bg-neutral-800 dark:border-neutral-700 w-[93px] h-[40px] px-[14px] py-[10px] gap-2 rounded-lg cursor-pointer"
           onPress={() => onOpen()}
         >
-          <AdjustmentsHorizontalIcon className="h-6 w-8 fill-none stroke-black dark:stroke-white" />{" "}
+          <Image src="/icons/filter-icon.svg" alt="filter" width={20} height={20} className="dark:invert" />
           <span className="font-outfit text-base tracking-wide">Filter</span>
         </Button>
       </div>
@@ -103,7 +101,7 @@ export default function MobileFilter({
         onOpenChange={onOpenChange}
         hideCloseButton
       >
-        <DrawerContent className="rounded-t-[32px] dark:bg-neutral-900">
+        <DrawerContent className="rounded-t-4xl dark:bg-neutral-900">
           {(_onClose) => (
             <>
               <DrawerHeader className="flex flex-col gap-1 pb-4 pt-2">
@@ -116,7 +114,7 @@ export default function MobileFilter({
                     ) && (
                         <button
                           onClick={clearAllFilters}
-                          className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-neutral-400"
+                          className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-selected-white"
                         >
                           Clear all filters
                         </button>
@@ -135,7 +133,7 @@ export default function MobileFilter({
               </DrawerHeader>
               <DrawerBody className="px-6 pb-12 pt-2">
                 <div className="flex flex-col gap-6">
-                  {filterAttributes?.map((attr: any) => (
+                  {filterAttributes?.map((attr: FilterAttribute) => (
                     <div key={attr.id} className="flex flex-col gap-2">
                       <p className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">
                         Select {formatLabel(attr.adminName)}
@@ -150,23 +148,35 @@ export default function MobileFilter({
                         variant="flat"
                         size="lg"
                         classNames={{
-                          value: "text-neutral-800 dark:text-neutral-200",
-                          trigger: "dark:bg-neutral-800",
+                          value: "text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium",
+                          trigger: "bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 min-h-12 h-12 rounded-xl",
+                          popoverContent: "bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl",
                         }}
                         onSelectionChange={(keys) =>
                           handleFilterChange(attr.code, keys as Set<string>)
                         }
-                        renderValue={(items) => (
-                          <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1">
-                            {items.map((item) => (
-                              <p className="text-nowrap text-neutral-800 dark:text-neutral-200" key={item.key}>
-                                {item.data?.adminName}
+                        renderValue={(items) => {
+                          if (items.length === 0) return null;
+                          if (items.length === 1) {
+                            return (
+                              <p className="text-nowrap text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium">
+                                {items[0].data?.adminName}
                               </p>
-                            ))}
-                          </div>
-                        )}
+                            );
+                          }
+                          return (
+                            <div className="flex items-center gap-1.5 py-0.5">
+                              <p className="text-nowrap text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium">
+                                {items[0].data?.adminName}
+                              </p>
+                              <span className="text-xs font-semibold px-2 py-0.5 rounded-full  text-neutral-800 dark:text-neutral-200 font-outfit">
+                                +{items.length - 1}
+                              </span>
+                            </div>
+                          );
+                        }}
                       >
-                        {(option: any) => (
+                        {(option: FilterAttributeOption) => (
                           <SelectItem
                             key={option.id}
                             textValue={option.adminName}

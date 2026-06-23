@@ -44,14 +44,12 @@ export default function ForgetPasswordForm() {
         email: data?.email,
       });
 
-      // Show success/error API response
       if (result.success) {
         showToast(result.success.msg, "success");
       } else if (result.errors?.apiRes) {
         showToast(result.errors.apiRes?.msg, "danger");
       }
 
-      // Field-specific errors
       if (result.errors?.email) {
         showToast(
           Array.isArray(result.errors.email)
@@ -74,7 +72,7 @@ export default function ForgetPasswordForm() {
           <h2 className="py-1 text-2xl font-semibold sm:text-4xl">
             Recover Password
           </h2>
-          <p className="mt-2 text-base md:text-lg font-normal text-black/60 dark:text-neutral-400">
+          <p className="mt-2 text-base md:text-lg font-normal text-black/60 dark:text-selected-white">
             If you forgot your password, recover it by entering your email
             address.
           </p>
@@ -111,7 +109,7 @@ export default function ForgetPasswordForm() {
             />
             <span className="px-1 mx-auto md:mx-0 font-outfit">
               Back to sign in?{" "}
-              <Link className="text-blue-600 underline" href="/customer/login" aria-label="Go to sign in page">
+              <Link className="text-primary dark:text-primary-soft underline" href="/customer/login" aria-label="Go to sign in page">
                 Sign In
               </Link>
             </span>

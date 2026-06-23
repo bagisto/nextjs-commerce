@@ -6,15 +6,23 @@ export default function UserAccount({
   onOpen,
   onClose,
   isOpen,
+  profile,
 }: {
   children?: React.ReactNode;
   className?: string;
   onOpen?: () => void;
   onClose?: () => void;
   isOpen?: boolean;
+  profile?: any;
 }) {
   return (
-    <CredentialModal className={className} onOpen={onOpen} onClose={onClose} isOpen={isOpen}>
+    <CredentialModal 
+      className={className} 
+      onOpen={onOpen} 
+      onClose={onClose} 
+      isOpen={isOpen}
+      profile={profile}
+    >
       {children}
     </CredentialModal>
   );

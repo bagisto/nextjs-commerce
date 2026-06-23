@@ -1,5 +1,3 @@
-"use client";
-
 import { Shimmer } from "@/components/common/Shimmer";
 
 export function HeroCarouselShimmer() {

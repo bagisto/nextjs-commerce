@@ -24,13 +24,11 @@ function FilterItemList({
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
-  // Always re-calc selected filters when params change
   const selectedFilters = useMemo(
     () => new Set(currentParams.get(list.code)?.split(",") ?? []),
     [list.code, currentParams]
   );
 
-  // Memoize options
   const memoizedOptions = useMemo(() => list.options, [list.options]);
 
   const handleFilterChange = (selectedIds: Set<string>) => {
@@ -68,17 +66,30 @@ function FilterItemList({
         labelPlacement="inside"
         placeholder={placeHolder}
         classNames={{
-          value: "text-neutral-800 dark:text-neutral-200",
+          value: "text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium",
+          trigger: "bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 min-h-10 h-10 rounded-xl",
+          popoverContent: "bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl",
         }}
-        renderValue={(items) => (
-          <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1">
-            {items.map((item) => (
-              <p className="text-nowrap text-neutral-800 dark:text-neutral-200" key={item.key}>
-                {item.data?.adminName}
+        renderValue={(items) => {
+          if (items.length === 0) return null;
+          if (items.length === 1) {
+            return (
+              <p className="text-nowrap text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium">
+                {items[0].data?.adminName}
               </p>
-            ))}
-          </div>
-        )}
+            );
+          }
+          return (
+            <div className="flex items-center gap-1.5 py-0.5">
+              <p className="text-nowrap text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium">
+                {items[0].data?.adminName}
+              </p>
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 dark:bg-neutral-800 dark:text-neutral-200 font-outfit">
+                +{items.length - 1}
+              </span>
+            </div>
+          );
+        }}
         selectedKeys={selectedFilters}
         selectionMode="multiple"
         variant="flat"
@@ -86,15 +97,15 @@ function FilterItemList({
         isLoading={isPending}
       >
         {(item) => (
-          <SelectItem
-            key={item.id}
-            textValue={item.id}
-            className="text-neutral-800 dark:text-neutral-200"
-          >
+            <SelectItem
+              key={item.id}
+              textValue={item.id}
+              className="text-neutral-800 dark:text-neutral-200"
+            >
             <div className="flex items-center gap-2">
               <span className="text-small">{item.adminName}</span>
-            </div>
-          </SelectItem>
+              </div>
+            </SelectItem>
         )}
       </Select>
     </div>
@@ -130,7 +141,6 @@ export default function FilterList({
         ...(query && { [QUERY]: query }),
       })
     );
-    // Shallow routing, backgrounded with startTransition
     startTransition(() => {
       router.replace(newUrl, { scroll: false });
     });

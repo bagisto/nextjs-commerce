@@ -1,11 +1,12 @@
 "use client";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import React, { FC } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Prose from "@/components/theme/search/Prose";
 import ReviewSection from "../review/ReviewSection";
 import ReviewDetail from "../review/ReviewDetail";
 import { additionalDataTypes } from "../type";
+import clsx from "clsx";
 
 export const ProductMoreDetails: FC<{
   description: string;
@@ -24,49 +25,47 @@ export const ProductMoreDetails: FC<{
     <div className="mt-7 sm:my-7">
       <Accordion
         itemClasses={{
-          base: "shadow-none  bg-neutral-100 dark:bg-neutral-800",
+          base: "shadow-none rounded-[8px] border-t-[1.5px] border-white dark:border-neutral-800 bg-[#00000008] dark:bg-neutral-800",
+          title: "font-outfit text-[18px] font-normal leading-[100%] text-[#000000] dark:text-white",
+          trigger: "px-[8px] pt-[24px] pb-[16px] cursor-pointer",
+          content: "px-[8px] pb-[24px] text-[16px] leading-[100%] text-[#00000099] dark:text-selected-white",
         }}
-        className="px-0"
+        className="px-0 gap-4 flex flex-col"
         selectionMode="multiple"
         showDivider={false}
         variant="splitted"
+        disableIndicatorAnimation
         selectedKeys={expandedKeys}
-         onSelectionChange={(keys) => setExpandedKeys(keys as Set<string>)}
+        onSelectionChange={(keys) => setExpandedKeys(keys as Set<string>)}
       >
         <AccordionItem
           key="1"
-          classNames={{
-            title: "text-start",
-            trigger: "cursor-pointer",
-          }}
-          indicator={({ isOpen }) =>
-            isOpen ? (
-              <ChevronLeftIcon className="h-5 w-5 stroke-neutral-800 dark:stroke-white" />
-            ) : (
-              <ChevronRightIcon className="h-5 w-5 stroke-neutral-800 dark:stroke-white" />
-            )
-          }
+          indicator={({ isOpen }) => (
+            <ChevronDownIcon
+              className={clsx(
+                "h-5 w-5 text-black dark:text-white transition-transform duration-300",
+                isOpen ? "-rotate-180" : "rotate-0"
+              )}
+            />
+          )}
           aria-label="Description"
           title="Description"
         >
-          <Prose className="pb-2 text-selected-black dark:text-white font-light" html={description} />
+          <Prose className="text-[#00000099] dark:text-selected-white font-normal font-outfit" html={description} />
         </AccordionItem>
 
         {filterAdditionalData.length > 0
           ?
           <AccordionItem
             key="2"
-            classNames={{
-              title: "text-start",
-              trigger: "cursor-pointer",
-            }}
-            indicator={({ isOpen }) =>
-              isOpen ? (
-                <ChevronLeftIcon className="h-5 w-5 stroke-neutral-800 dark:stroke-white" />
-              ) : (
-                <ChevronRightIcon className="h-5 w-5 stroke-neutral-800 dark:stroke-white" />
-              )
-            }
+            indicator={({ isOpen }) => (
+              <ChevronDownIcon
+                className={clsx(
+                  "h-5 w-5 text-black dark:text-white transition-transform duration-300",
+                  isOpen ? "-rotate-180" : "rotate-0"
+                )}
+              />
+            )}
             aria-label="Additional Information"
             title="Additional Information"
           >
@@ -74,12 +73,12 @@ export const ProductMoreDetails: FC<{
               {filterAdditionalData?.map((item) => (
                 <React.Fragment key={item.label}>
                   <div className="grid">
-                    <p className="text-base font-normal text-selected-black dark:text-white">
+                    <p className="text-[16px] font-normal text-[#00000099] dark:text-selected-white font-outfit">
                       {item?.attribute?.adminName}
                     </p>
                   </div>
                   <div className="grid">
-                    <p className="text-base font-normal text-selected-black dark:text-white">
+                    <p className="text-[16px] font-normal text-[#00000099] dark:text-selected-white font-outfit">
                       {item?.value || "--"}
                     </p>
                   </div>
@@ -90,18 +89,16 @@ export const ProductMoreDetails: FC<{
 
           : null}
         <AccordionItem
+          id="ratings-section"
           key={filterAdditionalData.length > 0 ? "3" : "2"}
-          classNames={{
-            title: "text-start",
-            trigger: "cursor-pointer",
-          }}
-          indicator={({ isOpen }) =>
-            isOpen ? (
-              <ChevronLeftIcon className="h-5 w-5 stroke-neutral-800 dark:stroke-white" />
-            ) : (
-              <ChevronRightIcon className="h-5 w-5 stroke-neutral-800 dark:stroke-white" />
-            )
-          }
+          indicator={({ isOpen }) => (
+            <ChevronDownIcon
+              className={clsx(
+                "h-5 w-5 text-black dark:text-white transition-transform duration-300",
+                isOpen ? "-rotate-180" : "rotate-0"
+              )}
+            />
+          )}
           aria-label="Ratings"
           title="Ratings"
         >
@@ -114,7 +111,7 @@ export const ProductMoreDetails: FC<{
               />
             </>
           ) : (
-            <ReviewSection productId={productId}  totalReview={totalReview} />
+            <ReviewSection productId={productId} totalReview={totalReview} />
           )}
         </AccordionItem>
       </Accordion>

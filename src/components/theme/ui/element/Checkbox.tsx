@@ -8,7 +8,7 @@ const CheckBox = forwardRef<HTMLInputElement, any>(
         <label className="relative flex cursor-pointer items-center gap-x-2">
           <input
             ref={ref}
-            className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 shadow transition-all checked:border-blue-600 checked:bg-blue-600 hover:shadow-md"
+            className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-slate-300 dark:border-neutral-700 shadow transition-all checked:border-primary dark:checked:border-primary-soft checked:bg-primary dark:checked:bg-primary-soft hover:shadow-md"
             defaultChecked={defaultValue}
             id={id}
             name={name}

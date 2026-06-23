@@ -13,11 +13,12 @@ export default function OpenCart({
       <ShoppingCartIcon className={clsx("h-5 w-5", className)} />
 
       {quantity ? (
-        <div className="absolute right-0 top-0 -mr-2 margin-t lg:-mt-2 h-4 w-4 rounded bg-blue-600 text-[11px] font-medium text-white">
+        <div 
+        className="absolute -right-2 -top-1 flex h-4 min-w-[16px] max-w-[34px] items-center justify-center rounded-[100px] bg-[#5A8EFF] px-1 text-center font-outfit text-xs font-medium leading-[16px] text-white lg:left-[35px] lg:right-auto lg:top-[-7px] lg:h-[16px] lg:w-[16px] lg:rounded-[4px] lg:bg-primary lg:text-11"
+        >
           {quantity}
         </div>
       ) : null}
     </div>
   );
 }
-

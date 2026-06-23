@@ -7,8 +7,8 @@ export const HomeIcon = ({ className }: { className?: string }) => {
         "fill-transparent stroke-current dark:fill-transparent",
         className
       )}
-      width="22"
-      height="21"
+      width="24"
+      height="24"
       viewBox="0 0 22 21"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -1,44 +1,54 @@
 {
-  "name": "nextjs-commerce-v3",
+  "name": "bagisto-headless-v3",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "NODE_ENV=production eslint . && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "lint:fix": "next lint --fix",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
     "package-version": "npx npm-check-updates"
   },
+  "engines": {
+    "node": ">=20"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ]
+  },
   "dependencies": {
-    "@apollo/client": "^3.14.0",
+    "@apollo/client": "^4.2.3",
     "@heroicons/react": "^2.2.0",
-    "@heroui/accordion": "^2.2.25",
-    "@heroui/drawer": "^2.2.25",
+    "@heroui/accordion": "^2.2.29",
+    "@heroui/drawer": "^2.2.29",
     "@heroui/react": "^2.8.6",
-    "@heroui/select": "^2.4.29",
-    "@reduxjs/toolkit": "^2.10.1",
+    "@heroui/select": "^2.4.33",
+    "@reduxjs/toolkit": "^2.12.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.23.24",
-    "graphql": "^16.12.0",
-    "lucide-react": "^0.563.0",
-    "next": "16.0.10",
-    "next-auth": "^4.24.13",
+    "framer-motion": "^12.40.0",
+    "graphql": "^17.0.1",
+    "lucide-react": "^1.21.0",
+    "next": "^16.2.9",
+    "next-auth": "^4.24.14",
     "next-themes": "^0.4.6",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "react-hook-form": "^7.66.1",
-    "react-redux": "^9.2.0"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-hook-form": "^7.80.0",
+    "react-redux": "^9.3.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^26.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.10",
+    "eslint": "^10",
+    "eslint-config-next": "16.2.9",
+    "lint-staged": "^17.0.8",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^6"
   }
 }

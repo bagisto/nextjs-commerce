@@ -5,12 +5,24 @@ export const CREATE_ADD_PRODUCT_IN_CART = gql`
     $cartId: Int
     $productId: Int!
     $quantity: Int!
+    $groupedQty: String
+    $bundleOptions: String
+    $bundleOptionQty: String
+    $links: Iterable
+    $booking: String
+    $bookingNote: String
   ) {
     createAddProductInCart(
       input: {
         cartId: $cartId
         productId: $productId
         quantity: $quantity
+        groupedQty: $groupedQty
+        bundleOptions: $bundleOptions
+        bundleOptionQty: $bundleOptionQty
+        links: $links
+        booking: $booking
+        bookingNote: $bookingNote
       }
     ) {
       addProductInCart {

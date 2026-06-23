@@ -2,15 +2,50 @@ import { useCustomToast } from "./useToast";
 import { useAppDispatch } from "@/store/hooks";
 import { addItem, clearCart } from "@/store/slices/cart-slice";
 import { isObject } from "@utils/type-guards";
-import { getCartToken, getCookie } from "@utils/getCartToken";
+import { getCartToken, getGuestCartId, getCookie } from "@utils/getCartToken";
 import { useGuestCartToken } from "./useGuestCartToken";
 import { IS_GUEST } from "@/utils/constants";
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
+import { CombinedGraphQLErrors, ServerError, ServerParseError } from "@apollo/client";
 import {
   CREATE_ADD_PRODUCT_IN_CART,
   REMOVE_CART_ITEM,
   UPDATE_CART_ITEM,
 } from "@/graphql";
+
+
+const getBackendErrorMessage = (err: any): string => {
+  if (CombinedGraphQLErrors.is(err)) {
+    return err.errors?.[0]?.message || err.message;
+  }
+
+  if (ServerError.is(err) || ServerParseError.is(err)) {
+    const bodyText = (err as any).bodyText;
+    if (bodyText) {
+      try {
+        const body = JSON.parse(bodyText);
+        const message =
+          body?.error?.message ||
+          body?.errors?.[0]?.message ||
+          (body?.message && body.message !== "Network error" ? body.message : undefined);
+        if (message) return message;
+      } catch {
+        return bodyText;
+      }
+    }
+  }
+
+  return err?.message ?? "Error";
+};
+
+const isStockWarning = (message: string): boolean => {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes("quantity") ||
+    lower.includes("available") ||
+    lower.includes("stock")
+  );
+};
 
 
 
@@ -23,11 +58,12 @@ export const useAddProduct = () => {
   const [mutateAsync, { loading: isCartLoading }] = useMutation(
     CREATE_ADD_PRODUCT_IN_CART,
     {
-      onCompleted: (res) => {
+      onCompleted: (res: any) => {
         const responseData = res?.createAddProductInCart?.addProductInCart;
 
         if (!responseData?.success) {
-          showToast(responseData?.message || "Error adding to cart", "danger");
+          const message = responseData?.message || "Error adding to cart";
+          showToast(message, isStockWarning(message) ? "warning" : "danger");
           return;
         }
         if (responseData) {
@@ -38,8 +74,9 @@ export const useAddProduct = () => {
         }
       },
 
-      onError: (err) => {
-        showToast(err?.message ?? "Error", "danger");
+      onError: (err: any) => {
+        const message = getBackendErrorMessage(err);
+        showToast(message, isStockWarning(message) ? "warning" : "danger");
       },
     },
   );
@@ -47,14 +84,28 @@ export const useAddProduct = () => {
   const onAddToCart = async ({
     productId,
     quantity,
+    groupedQty,
+    bundleOptions,
+    bundleOptionQty,
+    links,
+    booking,
+    bookingNote,
+    productType,
   }: {
     productId: string;
     quantity: number;
+    groupedQty?: string;
+    bundleOptions?: string;
+    bundleOptionQty?: string;
+    links?: any[];
+    booking?: any;
+    bookingNote?: string;
+    productType?: string;
     token?: string;
     cartId?: number | string;
   }) => {
-    // Ensure token exists - create if needed
     let token = getCartToken();
+    let guestCartId: number | null = null;
 
     if (!token) {
       token = await createGuestToken();
@@ -65,19 +116,75 @@ export const useAddProduct = () => {
       }
     }
 
+
+    const isGuest = getCookie(IS_GUEST);
+    if (isGuest === "true") {
+      guestCartId = getGuestCartId();
+    }
+
+    let formattedBooking = undefined;
+    if (productType === 'booking' && booking) {
+      if (booking.type === 'appointment') {
+        formattedBooking = JSON.stringify({
+          type: 'appointment',
+          date: booking.date,
+          slot: booking.slot,
+        });
+      } else if (booking.type === 'table') {
+        formattedBooking = JSON.stringify({
+          type: 'table',
+          date: booking.date,
+          slot: booking.slot,
+        });
+      } else if (booking.type === 'rental') {
+        if (booking.renting_type === 'daily') {
+          formattedBooking = JSON.stringify({
+            type: 'rental',
+            renting_type: 'daily',
+            date_from: booking.date_from,
+            date_to: booking.date_to,
+          });
+        } else {
+          formattedBooking = JSON.stringify({
+            type: 'rental',
+            renting_type: 'hourly',
+            date: booking.date,
+            slot: booking.slot,
+          });
+        }
+      } else if (booking.type === 'default') {
+        formattedBooking = JSON.stringify({
+          type: 'default',
+          date: booking.date,
+          slot: booking.slot,
+        });
+      } else {
+        formattedBooking = JSON.stringify({
+          type: 'event',
+          qty: booking.qty || {},
+        });
+      }
+    }
+
     await mutateAsync({
       variables: {
         productId: parseInt(productId),
         quantity,
+        cartId: guestCartId,
+        groupedQty,
+        bundleOptions,
+        bundleOptionQty,
+        links: productType === "downloadable" ? links : undefined,
+        booking: formattedBooking,
+        bookingNote,
       },
     });
   };
 
-  //--------Remove Cart Product Quantity--------//
   const [removeFromCart, { loading: isRemoveLoading }] = useMutation(
     REMOVE_CART_ITEM,
     {
-      onCompleted: async (response) => {
+      onCompleted: async (response: any) => {
         const responseData = response?.createRemoveCartItem?.removeCartItem;
         if (isObject(responseData)) {
           const message = "Cart item removed successfully";
@@ -97,7 +204,7 @@ export const useAddProduct = () => {
         }
       },
       onError: (error) => {
-        showToast(error?.message as string, "danger");
+        showToast(getBackendErrorMessage(error), "danger");
       },
     },
   );
@@ -110,7 +217,6 @@ export const useAddProduct = () => {
     });
   };
 
-  //---------Update Cart Product Quantity--------//
   const [updateCartItem, { loading: isUpdateLoading }] = useMutation(
     UPDATE_CART_ITEM,
     {
@@ -125,7 +231,7 @@ export const useAddProduct = () => {
       },
 
       onError: (error) => {
-        showToast(error?.message as string, "danger");
+        showToast(getBackendErrorMessage(error), "danger");
       },
     },
   );

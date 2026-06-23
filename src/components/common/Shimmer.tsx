@@ -1,6 +1,3 @@
-// src/components/common/Shimmer.tsx
-"use client";
-
 import { HTMLAttributes } from "react";
 
 interface ShimmerProps extends HTMLAttributes<HTMLDivElement> {

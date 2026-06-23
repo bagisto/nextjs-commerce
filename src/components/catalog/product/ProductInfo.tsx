@@ -17,7 +17,7 @@ export default async function ProductInfo({
 }) {
   const productSwatchReview = await getProductWithSwatchAndReview(slug);
   const getAllreviews = await getProductReviews(product?.id?.split("/").pop() || '')
-  
+
   return (
     <ProductDescription
       product={product}

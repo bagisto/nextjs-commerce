@@ -13,7 +13,7 @@ export default async function OpenGraphImage(
 ): Promise<ImageResponse> {
   const { title } = {
     ...{
-      title: process.env.SITE_NAME,
+      title: process.env.COMPANY_NAME,
     },
     ...props,
   };

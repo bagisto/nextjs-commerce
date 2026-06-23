@@ -41,4 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 
-~
+.antigravitycli/
+
+
+# design folder
+/design
+
+.kilo/
+

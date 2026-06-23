@@ -5,6 +5,7 @@ import { useDisclosure } from "@heroui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { Avatar } from "@heroui/avatar";
 import { useForm } from "react-hook-form";
@@ -21,6 +22,16 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearUser } from "@/store/slices/user-slice";
 import { clearCart } from "@/store/slices/cart-slice";
 import { EMAIL, removeFromLocalStorage } from "@/store/local-storage";
+import ProfileDrawer from "../ProfileDrawer";
+import ShortcutsDrawer from "../ShortcutsDrawer";
+import { useState } from "react";
+import MobileNavHeader from "@components/layout/navbar/MobileNavHeader";
+import { IMAGES } from "@/utils/constants";
+import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
+
+const ShortcutIcon = () => (
+  <Image src={IMAGES.settings} alt="Shortcuts" width={24} height={24} className="w-6 h-6 invert dark:invert-0" />
+);
 
 
 export default function CredentialModal({
@@ -29,12 +40,14 @@ export default function CredentialModal({
   onOpen,
   onClose,
   isOpen,
+  profile,
 }: {
   children?: React.ReactNode;
   className?: string;
   onOpen?: () => void;
   onClose?: () => void;
   isOpen?: boolean;
+  profile?: any;
 }) {
   const {
     isOpen: internalIsOpen,
@@ -42,6 +55,14 @@ export default function CredentialModal({
     onClose: internalOnClose,
     onOpenChange: _internalOnOpenChange,
   } = useDisclosure();
+  
+  const {
+    isOpen: isProfileDrawerOpen,
+    onOpen: onProfileDrawerOpen,
+    onClose: onProfileDrawerClose,
+  } = useDisclosure();
+
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
   const isControlled = isOpen !== undefined;
   const finalIsOpen = isControlled ? isOpen : internalIsOpen;
@@ -172,7 +193,7 @@ export default function CredentialModal({
                 isDesktop ? "text-xl" : "text-3xl")}>
                 Welcome Guest
               </h4>
-              <p className={clsx("text-default-500 dark:text-neutral-400",
+              <p className={clsx("text-default-500 dark:text-selected-white",
                 isDesktop ? "text-sm" : "text-lg")}>
                 Manage Cart, Orders
                 <span aria-label="confetti" className="px-2" role="img">
@@ -182,41 +203,69 @@ export default function CredentialModal({
             </div>
           </header>
 
-          <footer className="flex gap-4">
-            <Link className="w-full" href="/customer/login" onClick={finalOnClose} aria-label="Go to sign in page">
-              <button
-                className={clsx(
-                  "w-full rounded-full bg-blue-600 px-5 py-3 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800",
-                  pathname === "/customer/login"
-                    ? " cursor-not-allowed"
-                    : " cursor-pointer"
-                )}
-                disabled={pathname === "/customer/login"}
-                type="button"
-              >
-                Sign In
-              </button>
-            </Link>
+          <footer className="flex flex-col gap-4">
+            <div className="flex gap-4">
+              <Link className="w-full" href="/customer/login" onClick={finalOnClose} aria-label="Go to sign in page">
+                <button
+                  className={clsx(
+                    "w-full rounded-full bg-primary px-5 py-3 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-primary dark:hover:bg-blue-700 dark:focus:ring-blue-800",
+                    pathname === "/customer/login"
+                      ? " cursor-not-allowed"
+                      : " cursor-pointer"
+                  )}
+                  disabled={pathname === "/customer/login"}
+                  type="button"
+                >
+                  Sign In
+                </button>
+              </Link>
 
-            <Link className="w-full" href="/customer/register" onClick={finalOnClose} aria-label="Go to create account page">
-              <button
-                className={clsx(
-                  "w-full rounded-full bg-[#1e293b] px-5 py-3 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700",
-                  pathname === "/customer/register"
-                    ? " cursor-not-allowed"
-                    : " cursor-pointer"
-                )}
-                disabled={pathname === "/customer/register"}
-                type="button"
-              >
-                Sign Up
-              </button>
-            </Link>
+              <Link className="w-full" href="/customer/register" onClick={finalOnClose} aria-label="Go to create account page">
+                <button
+                  className={clsx(
+                    "w-full rounded-full bg-surface-navy px-5 py-3 text-sm font-medium text-white hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700",
+                    pathname === "/customer/register"
+                      ? " cursor-not-allowed"
+                      : " cursor-pointer"
+                  )}
+                  disabled={pathname === "/customer/register"}
+                  type="button"
+                >
+                  Sign Up
+                </button>
+              </Link>
+            </div>
           </footer>
         </>
       )}
     </div>
   );
+
+  if (isObject(session?.user)) {
+    return (
+      <>
+        <button
+          type="button"
+          aria-label="Open profile drawer"
+          className={clsx(className, "cursor-pointer bg-transparent")}
+          onClick={isDesktop ? onProfileDrawerOpen : () => router.push("/account")}
+        >
+          {children ? children : <OpenAuth />}
+        </button>
+        {isDesktop ? (
+          <ProfileDrawer 
+            isOpen={isProfileDrawerOpen} 
+            onClose={onProfileDrawerClose} 
+            user={session.user} 
+            profile={profile}
+          />
+        ) : (
+          <>
+          </>
+        )}
+      </>
+    );
+  }
 
   if (isDesktop) {
     return (
@@ -272,30 +321,53 @@ export default function CredentialModal({
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
-              className="fixed right-0 z-50 flex flex-col border-l border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black lg:hidden"
+              className="fixed right-0 z-50 flex flex-col bg-white dark:bg-black lg:hidden overflow-hidden"
               style={{
-                top: "68px",
+                top: 0,
                 bottom: "64px",
                 width: "100%",
                 maxWidth: "448px",
-                height: "calc(var(--visual-viewport-height) - 132px)",
               }}
             >
-              <div className="flex flex-col gap-1 border-b border-neutral-100 p-4 dark:border-neutral-800">
-                <div className="flex items-center justify-between">
-                  <p className="text-xl font-semibold dark:text-white">Account</p>
+              <HideMainNavOnMobile />
+              <MobileNavHeader onBack={finalOnClose} />
+
+              <div className="flex flex-1 flex-col drawer-scrollbar-hidden w-full overflow-y-auto">
+                <div className="w-full flex flex-col gap-6 pt-5 px-4 pb-8 flex-1">
+                  <div className="pb-2.5 w-full flex items-center h-[30px] gap-2.5">
+                    <h2 className="font-outfit font-semibold text-2xl text-black dark:text-white leading-none text-left">
+                      Account
+                    </h2>
+                  </div>
+
+                  <div className="flex-1 flex flex-col justify-center">
+                    {innerContent(finalOnClose)}
+                  </div>
+
+                  <div className="mt-auto pt-10 flex justify-center w-full">
+                    <button
+                      onClick={() => setIsShortcutsOpen(true)}
+                      className="w-[181px] h-[47px] bg-surface-muted text-black dark:bg-surface-navy dark:text-white rounded-full flex items-center justify-center gap-1 font-outfit font-medium text-lg leading-none px-10 py-3 shadow-none border-none outline-none"
+                    >
+                      <ShortcutIcon />
+                      <span>Shortcuts</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              <div className="flex flex-1 flex-col justify-center px-4 py-0 drawer-scrollbar-hidden">
-                {innerContent(finalOnClose)}
-              </div>
-
-              <div className="p-4" />
             </motion.div>
           </>
         )}
       </AnimatePresence>
+
+      <ShortcutsDrawer 
+        isOpen={isShortcutsOpen} 
+        onClose={() => setIsShortcutsOpen(false)} 
+        onNavigate={() => {
+          setIsShortcutsOpen(false);
+          finalOnClose?.();
+        }}
+      />
     </>
   );
 }

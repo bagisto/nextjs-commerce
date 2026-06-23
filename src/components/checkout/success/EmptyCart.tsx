@@ -47,7 +47,7 @@ function SubmitButton({
   return (
     <button
       className={clsx(
-        "sm:my-3 my-0 w-auto items-center cursor-pointer justify-center rounded-full border-white bg-blue-600 px-12 py-4 text-sm font-bold tracking-wide text-white",
+        "sm:my-3 my-0 w-auto items-center cursor-pointer justify-center rounded-full border-white bg-primary px-12 py-4 text-sm font-bold tracking-wide text-white",
         pending ? "cursor-wait" : "cursor-pointer"
       )}
       disabled={pending}

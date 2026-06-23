@@ -1,8 +1,19 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Prose from "@components/theme/search/Prose";
 import { getPage } from "@utils/bagisto";
+import { getCmsPageMetadata } from "@utils/helper";
 import { PageData } from "@/types/theme/theme-customization";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ page: string }>;
+}): Promise<Metadata> {
+  const { page: pageParams } = await params;
+  const pageDataArray: PageData[] = await getPage({ urlKey: pageParams });
+  return getCmsPageMetadata(pageDataArray?.[0]?.translation);
+}
 
 export default async function Page({
   params,

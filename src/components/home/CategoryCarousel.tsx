@@ -5,7 +5,7 @@ import { cachedGraphQLRequest } from "@/utils/hooks/useCache";
 import { GridTileImage } from "../theme/ui/grid/Tile";
 import { NOT_IMAGE } from "@/utils/constants";
 import { GET_HOME_CATEGORIES } from "@/graphql";
-import { CategoriesResponse } from "@/types/category/type";
+import { CategoriesResponse, CategoryEdge } from "@/types/category/type";
 
 interface CategoryCarouselProps {
   options: {
@@ -14,7 +14,7 @@ interface CategoryCarouselProps {
 }
 
 interface MobileCategoryItemProps {
-  category: any;
+  category: CategoryEdge["node"];
   size: "full" | "half";
   priority?: boolean;
 }
@@ -71,6 +71,8 @@ interface CategoryCarouselProps {
 const CategoryCarousel: FC<CategoryCarouselProps> = async ({
   options: _options,
 }) => {
+  let topCategories: CategoriesResponse["categories"]["edges"][number]["node"][] = [];
+
   try {
     const data = await cachedGraphQLRequest<CategoriesResponse>(
       "home",
@@ -81,20 +83,24 @@ const CategoryCarousel: FC<CategoryCarouselProps> = async ({
     const categories =
       data?.categories?.edges?.map((edge) => edge.node) || [];
 
-    const topCategories = categories
+    topCategories = categories
       .filter((category) => category.id !== "1")
       .sort((a, b) => (a.position || 0) - (b.position || 0))
       .slice(1, 4);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return null;
+  }
 
-    if (!topCategories.length) return null;
+  if (!topCategories.length) return null;
 
-    return (
-      <section className="pt-8 sm:pt-12 lg:pt-20">
-        <div className="md:max-w-4.5xl mx-auto mb-10 w-auto text-center md:px-36">
+  return (
+    <section className="pt-6 sm:pt-12 lg:pt-20">
+        <div className="md:max-w-4.5xl mx-auto mb-5 sm:mb-10 w-auto text-center md:px-36">
           <h2 className="mb-2 text-xl md:text-4xl  font-semibold">
             Shop by Category
           </h2>
-          <p className="text-sm md:text-base font-normal text-black/60 dark:text-neutral-300">
+          <p className="text-sm md:text-lg font-normal text-selected-black dark:text-selected-white">
             Discover the latest trends! Fresh products just added—shop new
             styles, tech, and essentials before they&apos;re gone.
           </p>
@@ -123,7 +129,7 @@ const CategoryCarousel: FC<CategoryCarouselProps> = async ({
             )}
           </div>
 
-          <ul className="m-0 hidden grid-cols-1 gap-7 p-0 xxs:grid-cols-2 sm:grid sm:grid-cols-3">
+          <ul className="m-0 hidden grid-cols-1 gap-5 lg:gap-7 p-0 xxs:grid-cols-2 sm:grid sm:grid-cols-3">
             {topCategories.map((category) => (
               <li
                 key={category.id}
@@ -154,11 +160,7 @@ const CategoryCarousel: FC<CategoryCarouselProps> = async ({
           </ul>
         </div>
       </section>
-    );
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return null;
-  }
+  );
 };
 
 export default CategoryCarousel;

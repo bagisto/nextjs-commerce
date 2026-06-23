@@ -16,11 +16,13 @@ import {
 } from "@/graphql";
 import { cachedGraphQLRequest, cachedCategoryRequest } from "@/utils/hooks/useCache";
 import { SortByFields } from "@utils/constants";
+import SearchNoResult from "@/components/theme/search/SearchNoResult";
 import { CategoryDetail } from "@components/theme/search/CategoryDetail";
 import { Suspense } from "react";
 import FilterListSkeleton from "@components/common/skeleton/FilterSkeleton";
 import { TreeCategoriesResponse } from "@/types/theme/category-tree";
 import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
+import CategoryHeaderClient from "@components/layout/navbar/CategoryHeaderClient";
 import { extractNumericId, findCategoryBySlug, getFilterAttributes, buildProductFilters } from "@utils/helper";
 
 
@@ -102,7 +104,7 @@ export default async function CategoryPage({
   }
 
   const filterInput = JSON.stringify(filterObject);
-  
+
   const [data] = await Promise.all([
     cachedCategoryRequest<ProductsResponse>(
       categorySlug,
@@ -126,6 +128,7 @@ export default async function CategoryPage({
 
   return (
     <>
+      <CategoryHeaderClient />
       <MobileSearchBar />
       <section>
         <Suspense fallback={<FilterListSkeleton />}>
@@ -134,6 +137,7 @@ export default async function CategoryPage({
 
           />
         </Suspense>
+
         <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between w-full max-w-screen-2xl mx-auto px-4">
           <FilterList filterAttributes={filterAttributes} />
           <SortOrder sortOrders={SortByFields} title="Sort by" />
@@ -144,17 +148,13 @@ export default async function CategoryPage({
         </div>
 
         {isArray(products) && products.length > 0 ? (
-         <Grid
-                   className="grid grid-flow-row grid-cols-2 gap-5 lg:gap-11.5 w-full max-w-screen-2xl mx-auto md:grid-cols-3 lg:grid-cols-4 px-4 xss:px-7.5"
-                 >
-            <ProductGridItems products={products} />
+          <Grid
+            className="grid grid-flow-row grid-cols-2 gap-5 lg:gap-11.5 w-full max-w-screen-2xl mx-auto md:grid-cols-3 lg:grid-cols-4 px-4 xss:px-7.5"
+          >
+            <ProductGridItems products={products} backUrl={`/search/${categorySlug}`} />
           </Grid>
         ) : (
-          <div className="px-4">
-            <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-neutral-300">
-              <p className="text-neutral-500">No products found in this category.</p>
-            </div>
-          </div>
+          <SearchNoResult />
         )}
 
         {isArray(products) && (totalCount > itemsPerPage || pageInfo?.hasNextPage) && (

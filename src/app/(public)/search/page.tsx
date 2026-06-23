@@ -1,6 +1,6 @@
 import dynamicImport from "next/dynamic";
 import Grid from "@/components/theme/ui/grid/Grid";
-import NotFound from "@/components/theme/search/not-found";
+import SearchNoResult from "@/components/theme/search/SearchNoResult";
 import { isArray } from "@/utils/type-guards";
 import { GET_FILTER_PRODUCTS } from "@/graphql";
 import { GET_PRODUCTS, GET_PRODUCTS_PAGINATION } from "@/graphql";
@@ -171,33 +171,32 @@ export default async function SearchPage({
   const products = data?.products?.edges?.map((e) => e.node) || [];
   const pageInfo = data?.products?.pageInfo;
   const totalCount = data?.products?.totalCount;
+  const hasProducts = isArray(products) && products.length > 0;
 
   return (
     <>
       <MobileSearchBar />
-      <h2 className="text-2xl sm:text-4xl font-semibold mx-auto mt-7.5 w-full max-w-screen-2xl my-3 mx-auto px-4 xss:px-7.5">
-        All Top Products
-      </h2>
+      {hasProducts && (
+        <h2 className="text-2xl sm:text-4xl font-semibold mx-auto mt-7.5 w-full max-w-screen-2xl my-3 mx-auto px-4 xss:px-7.5">
+          All Top Products
+        </h2>
+      )}
 
-      <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between w-full mx-auto max-w-screen-2xl px-4 xss:px-7.5">
-        <FilterList filterAttributes={filterAttributes} />
+      {hasProducts && (
+        <div className="my-10 hidden gap-4 md:flex md:items-baseline md:justify-between w-full mx-auto max-w-screen-2xl px-4 xss:px-7.5">
+          <FilterList filterAttributes={filterAttributes} />
+          <SortOrder sortOrders={SortByFields} title="Sort by" />
+        </div>
+      )}
+      {hasProducts && (
+        <div className="flex items-center justify-between gap-4 py-8 md:hidden mx-auto w-full max-w-screen-2xl px-4 xss:px-7.5">
+          <MobileFilter filterAttributes={filterAttributes} />
+          <SortOrder sortOrders={SortByFields} title="Sort by" />
+        </div>
+      )}
 
-        <SortOrder sortOrders={SortByFields} title="Sort by" />
-      </div>
-      <div className="flex items-center justify-between gap-4 py-8 md:hidden  mx-auto w-full max-w-screen-2xl px-4 xss:px-7.5">
-        <MobileFilter filterAttributes={filterAttributes} />
-
-        <SortOrder sortOrders={SortByFields} title="Sort by" />
-      </div>
-
-      {!isArray(products) && (
-        <NotFound
-          msg={`${
-            searchValue
-              ? `There are no products that match Showing : ${searchValue}`
-              : "There are no products that match Showing"
-          } `}
-        />
+      {!hasProducts && (
+        <SearchNoResult searchQuery={searchValue} />
       )}
       {isArray(products) ? (
         <Grid className="grid grid-flow-row grid-cols-2 gap-5 lg:gap-11.5 w-full max-w-screen-2xl mx-auto md:grid-cols-3 lg:grid-cols-4 px-4 xss:px-7.5">
@@ -205,7 +204,7 @@ export default async function SearchPage({
         </Grid>
       ) : null}
 
-      {!isFilterApplied && isArray(products) && totalCount > itemsPerPage && (
+      {hasProducts && !isFilterApplied && totalCount > itemsPerPage && (
         <nav
           aria-label="Collection pagination"
           className="my-10 block items-center sm:flex"
@@ -220,7 +219,7 @@ export default async function SearchPage({
         </nav>
       )}
 
-      {isFilterApplied && isArray(products) && pageInfo?.hasNextPage && (
+      {hasProducts && isFilterApplied && pageInfo?.hasNextPage && (
         <nav
           aria-label="Filtered pagination"
           className="my-10 block items-center sm:flex"

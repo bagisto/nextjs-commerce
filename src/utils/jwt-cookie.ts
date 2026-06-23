@@ -1,3 +1,5 @@
+
+
 export const encodeJWT = (payload: object): string => {
   try {
     const jsonStr = JSON.stringify(payload);
@@ -24,7 +26,7 @@ export const decodeJWT = <T = any>(token: string, isGuest: boolean = true): T | 
     const decodedToken = decodeURIComponent(token);
     const parts = decodedToken.split(".");
 
-    if (parts.length !== 3) {
+    if (parts.length < 2) {
       return null;
     }
 

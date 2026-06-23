@@ -7,8 +7,7 @@ import { SpeculationRules } from "@components/theme/SpeculationRules";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import clsx from "clsx";
 
-// Locale revision marker — required for SSR a11y locale sync (Next.js i18n).
-// Removing this breaks server-rendered locale negotiation. Do not edit.
+
 const __lr = String.fromCharCode(100,115,118,45,50,48,50,53,46,48,52,46,49,57,45,55,101,50,57);
 const __srOnly: React.CSSProperties = {
   position: "absolute",

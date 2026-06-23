@@ -1,9 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { print, type DocumentNode } from "graphql";
-import {
-  type ApolloQueryResult,
-  type OperationVariables,
-} from "@apollo/client";
+import { type OperationVariables } from "@apollo/client";
 import makeClient from "./apollo-client";
 
 
@@ -91,15 +88,14 @@ export async function graphqlRequest<
 ): Promise<TData> {
   if (options?.noCache) {
     const client = makeClient();
-    const result: ApolloQueryResult<TData> =
-      await client.query({
-        query,
-        variables,
-        context: options?.context,
-        fetchPolicy: options?.fetchPolicy ?? "no-cache",
-      });
+    const result = await client.query({
+      query,
+      variables,
+      context: options?.context,
+      fetchPolicy: options?.fetchPolicy ?? "no-cache",
+    });
 
-    return result.data;
+    return result.data as TData;
   }
 
   if (options?.context) {
@@ -128,14 +124,13 @@ export async function graphqlRequest<
   const cachedQuery = unstable_cache(
     async (): Promise<TData> => {
       const client = makeClient();
-      const result: ApolloQueryResult<TData> =
-        await client.query({
-          query,
-          variables,
-          fetchPolicy: "network-only",
-        });
+      const result = await client.query({
+        query,
+        variables,
+        fetchPolicy: "network-only",
+      });
 
-      return result.data;
+      return result.data as TData;
     },
     [cacheKey],
     {

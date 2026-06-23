@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { CREATE_PRODUCT_REVIEW } from "@/graphql";
 import { useCustomToast } from "./useToast";
 import { CreateProductReviewInput, ProductReviewResponse } from "@/types/review";

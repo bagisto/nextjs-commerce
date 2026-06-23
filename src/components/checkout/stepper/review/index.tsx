@@ -1,19 +1,21 @@
 import { FC } from "react";
-import { AddressDataTypes } from "@/types/types";
+import { MappedCheckoutAddress } from "@/types/checkout/type";
 import OrderReview from "./OrderReview";
 
 export const Review: FC<{
   selectedPaymentTitle?: string;
-  shippingAddress?: AddressDataTypes;
-  billingAddress?: AddressDataTypes;
+  shippingAddress?: MappedCheckoutAddress | null;
+  billingAddress?: MappedCheckoutAddress | null;
   selectedShippingRate?: string;
   selectedShippingRateTitle?: string;
+  isShippingRequired?: boolean;
 }> = ({
   selectedPaymentTitle,
   shippingAddress,
   billingAddress,
   selectedShippingRate,
   selectedShippingRateTitle,
+  isShippingRequired,
 }) => {
   return (
     <OrderReview
@@ -22,6 +24,7 @@ export const Review: FC<{
       selectedShipping={selectedShippingRate}
       selectedShippingRateTitle={selectedShippingRateTitle}
       shippingAddress={shippingAddress}
+      isShippingRequired={isShippingRequired}
     />
   );
 };

@@ -1,16 +1,6 @@
 import { gql } from "@apollo/client";
 import { PRODUCT_CORE_FRAGMENT } from "../fragments";
 
-/**
- * Fetch filtered products with pagination
- * @param filter - JSON string of filter criteria
- * @param sortKey - Field to sort by
- * @param reverse - Sort in reverse order
- * @param first - Number of items to fetch forward
- * @param last - Number of items to fetch backward
- * @param after - Cursor for forward pagination
- * @param before - Cursor for backward pagination
- */
 export const GET_FILTER_PRODUCTS = gql`
   ${PRODUCT_CORE_FRAGMENT}
   query getProducts(

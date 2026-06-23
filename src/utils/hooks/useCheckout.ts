@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { useRouter } from "next/navigation";
 import { useCustomToast } from "./useToast";
 import { useDispatch } from "react-redux";
@@ -6,7 +6,7 @@ import {
   clearCart,
 } from "@/store/slices/cart-slice";
 import { getCartToken, getCookie } from "@utils/getCartToken";
-import { setCookie } from "@utils/helper";
+import { isShippingRequired, setCookie } from "@utils/helper";
 import { useGuestCartToken } from "./useGuestCartToken";
 import { ORDER_ID, IS_GUEST } from "@utils/constants";
 import { useCartDetail } from "./useCartDetail";
@@ -17,6 +17,7 @@ import {
   CREATE_CHECKOUT_SHIPPING_METHODS,
   GET_CHECKOUT_ADDRESSES,
 } from "@/graphql";
+import { useAppSelector } from "@/store/hooks";
 
 export const useCheckout = () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ export const useCheckout = () => {
   const { showToast } = useCustomToast();
   const dispatch = useDispatch();
   const { getCartDetail } = useCartDetail();
+  const cart = useAppSelector((state) => state.cartDetail.cart);
 
   const handleMutationError = (error: any) => {
     showToast(error?.message || "An error occurred", "danger");
@@ -36,7 +38,11 @@ export const useCheckout = () => {
       awaitRefetchQueries: true,
       onCompleted: () => {
         showToast("Address saved successfully", "success");
-        router.replace("/checkout?step=shipping");
+        if (isShippingRequired(cart)) {
+          router.replace("/checkout?step=shipping");
+        } else {
+          router.replace("/checkout?step=payment");
+        }
       },
       onError: handleMutationError,
     },
@@ -55,7 +61,7 @@ export const useCheckout = () => {
   const [saveShipping, { loading: isSaving }] = useMutation(
     CREATE_CHECKOUT_SHIPPING_METHODS,
     {
-      onCompleted: (response) => {
+      onCompleted: (response: any) => {
         const responseData =
           response?.createCheckoutShippingMethod?.checkoutShippingMethod;
         if (responseData?.success) {
@@ -86,7 +92,7 @@ export const useCheckout = () => {
   const [savePayment, { loading: isPaymentLoading }] = useMutation(
     CREATE_CHECKOUT_PAYMENT_METHODS,
     {
-      onCompleted: (response) => {
+      onCompleted: (response: any) => {
         const responseData =
           response?.createCheckoutPaymentMethod?.checkoutPaymentMethod;
         if (responseData?.success) {
@@ -116,7 +122,7 @@ export const useCheckout = () => {
   const [placeOrder, { loading: isPlaceOrder }] = useMutation(
     CREATE_CHECKOUT_ORDER,
     {
-      onCompleted: (response) => {
+      onCompleted: (response: any) => {
         const responseData = response?.createCheckoutOrder?.checkoutOrder;
         if (responseData) {
           showToast("Order placed successfully!", "success");

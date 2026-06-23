@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-const dots = "mx-[1px] inline-block h-1 w-1 animate-blink rounded-md";
+const dots = "mx-px inline-block h-1 w-1 animate-blink rounded-md";
 
 const LoadingDots = ({ className }: { className: string }) => {
   return (

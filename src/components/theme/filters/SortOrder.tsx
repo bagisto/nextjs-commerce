@@ -13,7 +13,7 @@ import {
   Button,
   useDisclosure,
 } from "@heroui/react";
-import { SortIcon } from "@components/common/icons/SortIcon";
+import Image from "next/image";
 
 
 
@@ -30,6 +30,7 @@ const SortOrder: FC<{
   const [tempSort, setTempSort] = useState(sort);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTempSort(sort);
   }, [sort]);
 
@@ -57,7 +58,6 @@ const SortOrder: FC<{
 
   return (
     <>
-      {/* Desktop View */}
       <section className="hidden md:flex w-64 items-center gap-x-2.5">
         <p
           id="sort-label"
@@ -99,27 +99,26 @@ const SortOrder: FC<{
         </Select>
       </section>
 
-      {/* Mobile View Toggle */}
       <div className="md:hidden flex flex-wrap gap-3">
         <Button
           size="md"
           variant="flat"
-          className="bg-neutral-100 dark:bg-neutral-800"
+          className="bg-overlay-subtle border-1.5 border-white dark:bg-neutral-800 dark:border-neutral-700 w-[81px] h-[40px] px-[14px] py-[10px] gap-2 rounded-lg cursor-pointer"
           onPress={onOpen}
         >
-          <SortIcon />
+          <Image src="/icons/sort-icon.svg" alt="sort" width={20} height={20} className="dark:invert" />
           <span className="font-outfit text-base tracking-wide"> Sort</span>
         </Button>
+
       </div>
 
-      {/* Mobile Bottom Sheet */}
       <Drawer
         isOpen={isOpen}
         placement="bottom"
         onOpenChange={onOpenChange}
         hideCloseButton
       >
-        <DrawerContent className="rounded-t-[32px] dark:bg-neutral-900">
+        <DrawerContent className="rounded-t-4xl dark:bg-neutral-900">
           {(_onClose) => (
             <>
               <DrawerHeader className="flex flex-col gap-1 pb-4 pt-2">
@@ -130,7 +129,7 @@ const SortOrder: FC<{
                     {Array.from(searchParams.keys()).some((key) => key !== "q") && (
                       <button
                         onClick={clearFilters}
-                        className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-neutral-400"
+                        className="text-sm font-medium underline underline-offset-4 text-neutral-600 dark:text-selected-white"
                       >
                         Clear all filters
                       </button>

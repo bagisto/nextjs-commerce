@@ -4,7 +4,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createUrl } from "@/utils/helper";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { useMediaQuery } from "@utils/hooks/useMediaQueryHook";
 
 export default function Search({
   search = false,
@@ -67,10 +66,8 @@ export default function Search({
       handleSubmit();
     }
   };
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-
   return (
-  <div className={`${isDesktop ? "max-w-[550px]" : ""} relative w-full mx-auto xl:min-w-[516px] outline-none hover:outline-none`}>
+  <div className="relative w-full mx-auto lg:max-w-[550px] xl:min-w-[516px] outline-none hover:outline-none">
       {setSearch && (
         <button
           onClick={() => setSearch(!search)}
@@ -87,7 +84,7 @@ export default function Search({
         onChange={(e) => setSearchValue(e.target.value)}
         onKeyDown={handleKeyDown}
         autoComplete="off"
-        className="input w-full rounded-lg border border-neutral-200 bg-white py-2 pl-3 pr-10 text-sm text-black outline-none placeholder:text-neutral-500 focus:ring-2 focus:ring-neutral-300 dark:border-neutral-800 dark:bg-transparent dark:text-white dark:placeholder:text-neutral-400 md:pl-4"
+        className="input w-full rounded-lg border border-neutral-200 bg-white py-2 pl-3 pr-10 text-sm text-black outline-none placeholder:text-selected-black focus:ring-2 focus:ring-neutral-300 dark:border-neutral-800 dark:bg-transparent dark:text-white dark:placeholder:text-neutral-400 md:pl-4"
         name="search"
         placeholder="Search for products..."
         type="text"
@@ -95,7 +92,7 @@ export default function Search({
 
       <div
         onClick={handleSubmit}
-        className="absolute bottom-0 right-1 top-0 flex w-9 cursor-pointer items-center justify-center border-l border-neutral-200 dark:border-neutral-700 md:border-0"
+        className="absolute bottom-0 right-1 top-0 flex w-9 cursor-pointer items-center justify-center "
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

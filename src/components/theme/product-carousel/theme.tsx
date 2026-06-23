@@ -10,10 +10,10 @@ const Theme: FC<{
   return (
     <section>
       <div className="md:max-w-4.5xl mx-auto mb-6 w-full px-0 text-center xss:mb-10 md:px-36">
-        <h2 className="mb-2 text-[28px] font-semibold text-black dark:text-white xss:mb-4 xss:text-4xl">
+        <h2 className="mb-2 text-28 font-semibold text-black dark:text-white xss:mb-4 xss:text-4xl">
           {name}
         </h2>
-        <p className="font-normal text-black/60 dark:text-neutral-300 text-lg">
+        <p className="font-normal text-black/60 dark:text-selected-white text-lg">
           Discover the latest trends! Fresh products just added—shop new styles,
           tech, and essentials before they&apos;re gone.
         </p>
@@ -34,7 +34,7 @@ const Theme: FC<{
 
             return (
               <ProductCard
-                key={index}
+                key={product?.id ?? index}
                 currency={currency}
                 imageUrl={imageUrl}
                 price={price}

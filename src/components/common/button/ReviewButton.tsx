@@ -16,7 +16,7 @@ export const ReviewButton = ({ setShowForm, className }: { setShowForm: (show: b
     return (
         <button
             onClick={handleAddReview}
-            className={`relative flex w-full min-w-[18rem] max-w-[20rem] cursor-pointer h-fit items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white mt-6 ${className}`}
+            className={`relative flex w-full min-w-[18rem] max-w-[20rem] cursor-pointer h-fit items-center justify-center rounded-full bg-primary  p-4 tracking-wide text-white mt-6 mb-[8px] ${className}`}
         > 
             Write a review
         </button>

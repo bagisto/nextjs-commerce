@@ -1,62 +1,68 @@
-import { DEFAULT_OPTION } from "@/utils/constants";
+import { CURRENCY_CODE, DEFAULT_OPTION, NOT_IMAGE } from "@/utils/constants";
 import { GridTileImage } from "@components/theme/ui/grid/Tile";
 import { Price } from "@components/theme/ui/Price";
 import CartItemAccordion from "./CartItemAccordian";
-import { NOT_IMAGE } from "@utils/constants";
 import Link from "next/link";
-import { createUrl, safeParse } from "@utils/helper";
-type MerchandiseSearchParams = {
-  [key: string]: string;
-};
+import { createUrl, isShippingRequired, safeParse } from "@utils/helper";
+import type { CartItemEdge, CartSummaryView } from "@/types/cart/type";
 
-export default function CheckoutCart({ cartItems, selectedShippingRate: _id }: { cartItems: any, selectedShippingRate?: any }) {
 
-  const cart = Array.isArray(cartItems?.items?.edges)
-    ? cartItems?.items?.edges
+export default function CheckoutCart({
+  cartItems,
+}: {
+  cartItems?: CartSummaryView;
+  selectedShippingRate?: string;
+}) {
+  const cart: CartItemEdge[] = Array.isArray(cartItems?.items?.edges)
+    ? cartItems.items.edges
     : [];
+
+  const shippingRequired = isShippingRequired(cartItems);
+
   return (
     <>
       <CartItemAccordion cartItems={cartItems} />
       <div className="hidden h-full min-h-[100dvh] flex-col justify-between py-4 pl-4 pr-8 lg:flex">
         <div className="">
-          <h1 className="p-6 font-outfit text-xl font-medium text-black dark:text-neutral-300">
+          <h1 className="p-6 font-outfit text-xl font-medium text-black dark:text-selected-white">
             Order Summary
           </h1>
           <ul className="m-0 flex max-h-[calc(100dvh-292px)] flex-col gap-y-6 overflow-y-auto px-4 py-6 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-500 dark:scrollbar-thumb-neutral-300 lg:h-[calc(100dvh-124px)] lg:overflow-hidden lg:overflow-y-auto">
-            {Array.isArray(cart) &&
-              cart &&
-              cart?.map((item: any, i: number) => {
-                const merchandiseSearchParams = {} as MerchandiseSearchParams;
-                const merchandiseUrl = createUrl(
-                  `/product/${item?.node.productUrlKey}`,
-                  new URLSearchParams(merchandiseSearchParams)
-                );
-                const baseImage: any = safeParse(item?.node?.baseImage);
+            {cart.map((item, i) => {
+              const node = item?.node;
+              const merchandiseUrl = createUrl(
+                `/product/${node?.productUrlKey}`,
+                new URLSearchParams(),
+              );
+              const baseImage = safeParse(node?.baseImage) as
+                | { medium_image_url?: string; small_image_url?: string }
+                | undefined;
 
                 return (
                   <li key={i} className="flex w-full flex-col">
                     <div className="relative flex w-full flex-row justify-between">
                       <Link
-                        className="z-30 flex flex-row items-center space-x-4"
+                        className="z-30 flex flex-row items-start space-x-4"
                         aria-label={`${item?.node?.name}`}
                         href={merchandiseUrl}
                       >
-                        <div className="relative h-[120px] w-[120px] cursor-pointer rounded-2xl bg-neutral-300 xl:h-[162px] xl:w-[194px]">
+                        <div className="relative h-[120px] w-[120px] cursor-pointer rounded-[15.73px] bg-neutral-100 xl:h-[161.78px] xl:w-[194px] overflow-hidden">
                           <GridTileImage
-                            alt={item?.node?.baseImage || item?.product?.name}
-                            className="h-full w-full object-cover"
-                            height={64}
-                            src={baseImage?.small_image_url || ""}
-                            width={74}
-                            onError={(e) => (e.currentTarget.src = NOT_IMAGE)}
-                          />
+                             alt={item?.node?.name}
+                             className="h-full w-full object-cover"
+                             height={200}
+                             rounded="rounded-[15.73px]"
+                             src={baseImage?.medium_image_url || baseImage?.small_image_url || ""}
+                             width={200}
+                             onError={(e) => (e.currentTarget.src = NOT_IMAGE)}
+                           />
                         </div>
-                        <div className="flex flex-1 flex-col text-base">
+                        <div className="flex flex-1 flex-col text-base items-start">
                           <h1 className="font-outfit text-lg font-medium">
                             {item?.node?.name}
                           </h1>
-                          {item.name !== DEFAULT_OPTION ? (
-                            <p className="text-sm font-normal text-neutral-500 dark:text-neutral-400">
+                          {item?.node?.name !== DEFAULT_OPTION ? (
+                            <p className="text-sm font-normal text-selected-black dark:text-selected-white">
                               {item?.node?.sku}
                             </p>
                           ) : null}
@@ -85,7 +91,7 @@ export default function CheckoutCart({ cartItems, selectedShippingRate: _id }: {
               })}
           </ul>
         </div>
-        <div className="px-4 py-4 text-sm text-neutral-500 dark:text-neutral-400">
+        <div className="px-4 py-4 text-sm text-selected-black dark:text-selected-white">
           <div className="mb-3 flex items-center justify-between pb-1">
             <p className="text-black[60%] font-outfit text-base font-normal">
               Subtotal
@@ -93,32 +99,34 @@ export default function CheckoutCart({ cartItems, selectedShippingRate: _id }: {
             <Price
               amount={cartItems?.subtotal || "0"}
               className="text-right text-base text-black dark:text-white"
-              currencyCode={"USD"}
+              currencyCode={CURRENCY_CODE}
             />
           </div>
-          <div className="mb-3 flex items-center justify-between pb-1 pt-1">
-            <p className="text-black[60%] font-outfit text-base font-normal">
-              {" "}
-              Shipping
-            </p>
-            {cartItems?.shippingAmount ? (
-              <Price
-                amount={cartItems?.shippingAmount}
-                className="text-right text-base text-black dark:text-white"
-                currencyCode={"USD"}
-              />
-            ) : (
-              <p className="text-right text-base">Calculated at Next Step</p>
-            )}
-          </div>
+          {shippingRequired && (
+            <div className="mb-3 flex items-center justify-between pb-1 pt-1">
+              <p className="text-black[60%] font-outfit text-base font-normal">
+                {" "}
+                Shipping
+              </p>
+              {cartItems?.shippingAmount ? (
+                <Price
+                  amount={cartItems?.shippingAmount}
+                  className="text-right text-base text-black dark:text-white"
+                  currencyCode={CURRENCY_CODE}
+                />
+              ) : (
+                <p className="text-right text-base">Calculated at Next Step</p>
+              )}
+            </div>
+          )}
           <div className="my-6 flex items-center justify-between">
             <p className="font-outfit text-2xl font-normal text-black/[60%] dark:text-white">
               Grand Total
             </p>
             <Price
-              amount={(cartItems as any)?.grandTotal || "0"}
+              amount={cartItems?.grandTotal || "0"}
               className="text-right font-outfit text-2xl font-normal text-black dark:text-white"
-              currencyCode={"USD"}
+              currencyCode={CURRENCY_CODE}
             />
           </div>
         </div>

@@ -1,15 +1,16 @@
 import { ProductCard } from "@components/catalog/product/ProductCard";
 import { ProductsSectionProps } from "@components/catalog/type";
 import { baseUrl, getImageUrl, NOT_IMAGE } from "@utils/constants";
+import { resolveCardPrice } from "@utils/helper";
 
 const Theme = ({ title, description, products }: ProductsSectionProps) => {
   return (
-    <section className="pt-8 sm:pt-12 lg:pt-20">
-      <div className="md:max-w-4.5xl mx-auto mb-6 w-full px-0 text-center xss:mb-10 md:px-36">
+    <section className="pt-6 sm:pt-12 lg:pt-20">
+      <div className="md:max-w-4.5xl mx-auto mb-6 w-full px-0 text-center md:text-start xss:mb-10">
         <h2 className="mb-4 font-outfit text-xl md:text-4xl font-semibold text-black dark:text-white">
           {title}
         </h2>
-        <p className="text-sm md:text-base font-normal text-black/60 dark:text-neutral-300">
+        <p className="text-sm md:text-lg font-normal text-selected-black dark:text-selected-white">
           {description}
         </p>
       </div>
@@ -22,10 +23,7 @@ const Theme = ({ title, description, products }: ProductsSectionProps) => {
               baseUrl,
               NOT_IMAGE,
             );
-            const ProductPrice =
-              item?.type === "configurable"
-                ? (item?.minimumPrice ?? "0")
-                : (item?.price ?? "0");
+            const ProductPrice = resolveCardPrice(item);
 
             return (
               <ProductCard

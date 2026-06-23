@@ -113,7 +113,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
     };
 
     return (
-        <section className="mt-7.5 w-full">
+        <section className="mt-5 lg:mt-7.5 w-full">
             <div
                 className="group relative w-full overflow-hidden rounded-xl md:rounded-2xl aspect-[1.97/1]"
                 style={{
@@ -135,7 +135,7 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
 
                     return (
                         <div
-                            key={index}
+                            key={img.image ?? index}
                             className={`absolute inset-0 transition-opacity duration-700 ${isActive ? "opacity-100 z-0" : "opacity-0 z-0"}`}
                             style={{
                                 position: 'absolute',
@@ -181,12 +181,12 @@ const ImageCarousel: FC<ImageCarouselProps> = ({ options }) => {
                 })}
 
                 {images.length > 1 && (
-                    <div className="absolute bottom-4 left-1/2 z-0 flex -translate-x-1/2 gap-2 rounded-full bg-black/30 px-3 py-2 backdrop-blur-sm md:bottom-6">
-                        {images.map((_, index) => (
+                    <div className="absolute bottom-4 left-1/2 z-0 flex -translate-x-1/2 gap-1.5 md:gap-2 rounded-full bg-black/30 px-2 py-1.5 md:px-3 md:py-2 backdrop-blur-sm md:bottom-6">
+                        {images.map((img, index) => (
                             <button
-                                key={index}
+                                key={img.image ?? index}
                                 onClick={() => handleDotClick(index)}
-                                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${index === currentIndex
+                                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer scale-75 md:scale-100 ${index === currentIndex
                                     ? "w-8 bg-white"
                                     : "w-2.5 bg-white/50 hover:bg-white/80 hover:w-4"
                                     }`}

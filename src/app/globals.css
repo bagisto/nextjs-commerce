@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@plugin '../../hero.ts';
+@plugin '../config/hero.ts';
 @source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
 @custom-variant dark (&:is(.dark *));
 
@@ -54,6 +54,75 @@ body::-webkit-scrollbar-thumb {
   --font-family-outfit: var(--font-outfit), system-ui, sans-serif;
 }
 
+
+@theme {
+  /* Brand / interactive */
+  --color-primary: #2563eb;
+  --color-primary-soft: #79a3ff;
+  --color-primary-strong: #0052cc;
+  --color-accent: #006aff;
+  --color-accent-strong: #0041ff;
+  --color-info: #02b1fd;
+
+  /* Status */
+  --color-danger: #ff4a4a;
+  --color-danger-strong: #ff0000;
+  --color-success: #5ba34b;
+  --color-compare-active: #00ae00;
+  --color-rating: #fbbf24;
+
+  /* Text */
+  --color-muted: #7d7d7d;
+  --color-muted-strong: #525252;
+  --color-muted-cool: #818a9c;
+  --color-ink: #2c2c2c;
+  --color-light-primary: #E9E9E9;
+  --color-dark-primary: #404040;
+  --color-light-secondary: #333333;
+  --color-tertiary: #F8AF00;
+  --color-quaternary: #e5e7eb;
+  --color-quinary: #666666;
+  --color-senary: #171717;
+  --color-septenary: #f2f2f2;
+  --color-octonary: #5a8eff;
+  --color-novenary: #e3ecff;
+  --color-denary: #314779;
+
+
+  /* Borders */
+  --color-border: #e9e9e9;
+  --color-border-muted: #e5e7eb;
+  --color-border-cool: #91a4b633;
+  /* #404040 dark-mode border uses the existing `dark-grey` token */
+
+  /* Misc brand */
+  --color-brand-navy: #060c3b;
+  /* Surfaces */
+  --color-surface-cool: #f5f7fa;
+  --color-surface-muted: #ebebeb;
+  --color-surface-dark: #262626;
+  --color-surface-darker: #222222;
+  --color-surface-darkest: #171717;
+  --color-surface-navy: #1e2939;
+  --color-surface-slate: #415161;
+
+  /* Overlays (translucent black/white) */
+  --color-overlay-subtle: #00000008;
+  --color-overlay: #0000001a;
+  --color-overlay-strong: #0000004d;
+  --color-overlay-light: #ffffffb2;
+  --color-overlay-light-subtle: #ffffff08;
+
+  /* Non-standard font sizes (standard sizes use Tailwind text-xs…text-4xl) */
+  --text-11: 11px;
+  --text-13: 13px;
+  --text-15: 15px;
+  --text-22: 22px;
+  --text-25: 25px;
+  --text-26: 26px;
+  --text-28: 28px;
+}
+
 /* GLOBAL VARIABLES */
 :root {
   /* Font families */
@@ -61,6 +130,7 @@ body::-webkit-scrollbar-thumb {
   --background: #ffffff;
   --foreground: #000;
   --color-selected-black: #00000099;
+  --color-selected-white: #FFFFFF99;
 
   --hero-background: #ffffff;
   --hero-foreground: #000;
@@ -104,6 +174,7 @@ body::-webkit-scrollbar-thumb {
   --color-foreground: var(--foreground);
   --color-font-color: var(--font-color);
   --color-selected-black: var(--color-selected-black);
+  --color-selected-white: var(--color-selected-white);
 
   --color-dark-grey: var(--dark-grey);
   --color-selected-color: var(--selected-color);
@@ -120,6 +191,30 @@ body {
 }
 
 @layer components {
+
+  /* Custom scrollbar for compare table horizontal scrolling */
+  .compare-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #6b7280 transparent;
+  }
+
+  .compare-scrollbar::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+  }
+
+  .compare-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .compare-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #6b7280;
+    border-radius: 9999px;
+  }
+
+  .dark .compare-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #d4d4d4;
+  }
 
   /* Hide scrollbar for drawer content */
   .drawer-scrollbar-hidden {
@@ -197,5 +292,15 @@ body {
     left: 0;
     touch-action: none;
     -webkit-overflow-scrolling: none;
+  }
+
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

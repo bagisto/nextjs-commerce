@@ -3,15 +3,19 @@ export interface SingleProductResponse {
 }
 
 export interface ProductSectionNode {
-  isSaleable: string | undefined;
+  isSaleable?: string;
   id: string;
   sku: string;
   type: string;
   urlKey?: string;
   name?: string;
   baseImageUrl?: string;
+  minimumPrice?: string | number;
   price?: string | number;
   specialPrice?: string;
+  priceHtml?: {
+    currencyCode?: string;
+  };
   images?: {
     edges: Array<{
       node: {
@@ -26,6 +30,7 @@ export interface ProductVariantNode {
   sku: string;
   name?: string;
   price?: number;
+  baseImageUrl?: string;
   attributeValues?: {
     edges: Array<{
       node: {
@@ -38,13 +43,89 @@ export interface ProductVariantNode {
   };
 }
 
+export interface ProductDownloadableLinkNode {
+  _id: string;
+  type: string;
+  price: string;
+  formattedPrice: string;
+  translation: {
+    title: string;
+  };
+  sampleType?: string;
+  sampleFile?: string;
+  sampleFileUrl?: string;
+  sampleUrl?: string;
+}
+
+export interface ProductDownloadableSampleNode {
+  _id: string;
+  type: string;
+  file?: string;
+  fileUrl?: string;
+  url?: string;
+  translation: {
+    title: string;
+  };
+}
+
+export interface BookingEventTicketTranslation {
+  locale: string;
+  name: string;
+  description: string;
+}
+
+export interface ProductBookingEventTicketNode {
+  id: string;
+  _id: string;
+  bookingProductId: string;
+  price: string;
+  qty: number;
+  specialPrice: string;
+  specialPriceFrom?: string;
+  specialPriceTo?: string;
+  formattedPrice: string;
+  formattedSpecialPrice: string;
+  translation: BookingEventTicketTranslation;
+}
+
+export interface BookingProductNode {
+  _id: string;
+  type: string;
+  location: string;
+  availableFrom: string;
+  availableTo: string;
+  availableEveryWeek?: boolean;
+  qty?: number;
+  eventTickets?: {
+    edges: Array<{ node: ProductBookingEventTicketNode }>;
+  };
+  appointmentSlot?: any;
+  rentalSlot?: any;
+  defaultSlot?: any;
+  tableSlot?: any;
+}
+
 export interface ProductNode {
+  categories?: {
+    edges: Array<{
+      node: {
+        _id: string;
+        displayMode?: string;
+        additional?: string;
+        translation: {
+          name: string;
+          slug: string;
+        };
+      };
+    }>;
+  };
   variants: {
     edges: Array<{ node: ProductVariantNode }>;
   };
   id: string;
   sku: string;
   type: string;
+  isSaleable?: string;
   name?: string;
   urlKey?: string;
   description?: string;
@@ -72,6 +153,50 @@ export interface ProductNode {
   upSells?: {
     edges: Array<{ node: ProductSectionNode }>;
   };
+  groupedProducts?: {
+    edges: Array<{
+      node: {
+        id: string;
+        qty: number;
+        sortOrder: number;
+        associatedProduct: {
+          id: string;
+          name: string;
+          sku: string;
+          price: string;
+          formattedPrice: string;
+          specialPrice: string;
+          formattedSpecialPrice: string;
+          images?: {
+            edges: Array<{
+              node: {
+                id: string;
+                publicPath: string;
+              };
+            }>;
+          };
+        };
+      };
+    }>;
+  };
+  downloadableLinks?: {
+    edges: Array<{ node: ProductDownloadableLinkNode }>;
+  };
+  downloadableSamples?: {
+    edges: Array<{ node: ProductDownloadableSampleNode }>;
+  };
+  bookingProducts?: {
+    edges: Array<{ node: BookingProductNode }>;
+  };
+  images?: {
+    edges: Array<{
+      node: {
+        id: string;
+        publicPath: string;
+        position: string;
+      };
+    }>;
+  };
 }
 
 export interface ProductsResponse {
@@ -84,25 +209,6 @@ export interface ProductsResponse {
       hasPreviousPage: boolean;
     };
     totalCount: number;
-  };
-}
-
-export interface ProductSectionNode {
-  id: string;
-  sku: string;
-  type: string;
-  urlKey?: string;
-  name?: string;
-  baseImageUrl?: string;
-  minimumPrice?: string | number;
-  price?: string | number;
-  specialPrice?: string;
-  images?: {
-    edges: Array<{
-      node: {
-        publicPath: string;
-      };
-    }>;
   };
 }
 
@@ -127,6 +233,18 @@ export interface ProductFilterAttributeResponse {
   };
 }
 
+export interface FilterAttributeOption {
+  id: string;
+  adminName: string;
+}
+
+export interface FilterAttribute {
+  id: string;
+  code: string;
+  adminName: string;
+  options: FilterAttributeOption[];
+}
+
 export type ProductReview = {
   rating: number;
 };
@@ -149,6 +267,19 @@ export interface ProductReviewNode {
 }
 
 export interface ProductData {
+  categories?: {
+    edges: Array<{
+      node: {
+        _id: string;
+        displayMode?: string;
+        additional?: string;
+        translation: {
+          name: string;
+          slug: string;
+        };
+      };
+    }>;
+  };
   urlKey: string;
   variants?: {
     edges?: {
@@ -190,6 +321,50 @@ export interface ProductData {
     attributes?: unknown[];
     index?: unknown[];
   } | null;
+  groupedProducts?: {
+    edges: Array<{
+      node: {
+        id: string;
+        qty: number;
+        sortOrder: number;
+        associatedProduct: {
+          id: string;
+          name: string;
+          sku: string;
+          price: string;
+          formattedPrice: string;
+          specialPrice: string;
+          formattedSpecialPrice: string;
+          images?: {
+            edges: Array<{
+              node: {
+                id: string;
+                publicPath: string;
+              };
+            }>;
+          };
+        };
+      };
+    }>;
+  };
+  downloadableLinks?: {
+    edges: Array<{ node: ProductDownloadableLinkNode }>;
+  };
+  downloadableSamples?: {
+    edges: Array<{ node: ProductDownloadableSampleNode }>;
+  };
+  bookingProducts?: {
+    edges: Array<{ node: BookingProductNode }>;
+  };
+  images?: {
+    edges: Array<{
+      node: {
+        id: string;
+        publicPath: string;
+        position: string;
+      };
+    }>;
+  };
 }
 
 export interface AttributeType {
@@ -211,7 +386,6 @@ export type additionalDataTypes = {
   type: string;
 };
 
-// Product review
 
 export interface RatingTypes {
   length?: number;
@@ -240,4 +414,3 @@ export interface ReviewDatatypes {
     imageUrl: string;
   };
 }
-

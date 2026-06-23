@@ -58,38 +58,42 @@ const ReviewDetail: FC<ReviewDetailProps> = ({
                   style={{ flex: count as number }}
                   className="min-h-4"
                 >
-                  <Tooltip
-                    content={
-                      <p className="text-center">
-                        {star} Star <br /> {count as number}{" "}
-                        {(count as number) >= 2 ? "Reviews" : "Review"}
-                      </p>
-                    }
-                    placement="top"
-                    className="cursor-pointer"
-                  >
-                    <div
-                      className={clsx(
-                        "h-full w-full !cursor-pointer",
-                        star === "5"
-                          ? "bg-green-700"
-                          : star === "4"
-                            ? "bg-cyan-400"
-                            : star === "3"
-                              ? "bg-violet-600"
-                              : star === "2"
-                                ? "bg-yellow-400"
-                                : "bg-red-600",
-                      )}
-                    />
-                  </Tooltip>
+                    <Tooltip
+                      content={
+                        <div className="relative">
+                          <p className="text-center font-outfit text-[12px] font-normal leading-[100%]">
+                            {star} Star <br /> {count as number} Rating
+                          </p>
+                          <div className="absolute -bottom-[18px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-[#000000E5]"></div>
+                        </div>
+                      }
+                      placement="top"
+                      classNames={{
+                        base: "before:content-none after:content-none overflow-visible",
+                        content: "bg-[#000000E5] text-white rounded-[8px] p-[8px_10px] w-[91px] h-[46px] flex items-center justify-center gap-[10px] !border-none !shadow-none"
+                      }}
+                    >
+                      <div
+                        className={clsx(
+                          "h-full w-full !cursor-pointer",
+                          star === "5"
+                            ? "bg-green-700"
+                            : star === "4"
+                              ? "bg-[#0084D1]"
+                              : star === "3"
+                                ? "bg-violet-600"
+                                : star === "2"
+                                  ? "bg-yellow-400"
+                                  : "bg-red-600",
+                        )}
+                      />
+                    </Tooltip>
                 </div>
               ))}
           </div>
         </div>
 
         <div className="flex w-full flex-1 flex-col gap-5 py-2 sm:pt-6">
-          {/* Scrollable Container */}
           <div
             className="max-h-[380px] overflow-y-auto pr-2 
         scrollbar-thin scrollbar-track-transparent 
@@ -134,7 +138,7 @@ const ReviewDetail: FC<ReviewDetailProps> = ({
                     <div className="flex gap-4">
                       <div className="flex w-full items-center gap-2">
                         <Avatar
-                          className="h-[56px] min-w-[56px] border border-solid border-black/10 bg-white text-large dark:bg-neutral-900"
+                          className="h-14 min-w-14 border border-solid border-black/10 bg-white text-large dark:bg-neutral-900"
                           name={getInitials(name)}
                           src={customer?.imageUrl}
                         />
@@ -150,7 +154,7 @@ const ReviewDetail: FC<ReviewDetailProps> = ({
                     </div>
 
                     {isArray(images) && images && images.length > 0 && (
-                      <div className="mt-2 flex h-full min-h-[50px] w-full max-w-[60px] flex-wrap gap-2">
+                      <div className="mt-2 flex h-full min-h-[50px] w-full max-w-15 flex-wrap gap-2">
                         {images.map((img) => (
                           <GridTileImage
                             key={img.reviewId}

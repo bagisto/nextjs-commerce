@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { useAppDispatch } from "@/store/hooks";
 import { addItem } from "@/store/slices/cart-slice";
 import { CREATE_MERGE_CART } from "@/graphql";
@@ -10,7 +10,7 @@ export function useMergeCart() {
   const dispatch = useAppDispatch();
 
   const [mergeCart, { loading: isLoading }] = useMutation(CREATE_MERGE_CART, {
-    onCompleted: (response) => {
+    onCompleted: (response: any) => {
       const responseData = response?.createMergeCart?.mergeCart;
       if (!responseData) {
         return;

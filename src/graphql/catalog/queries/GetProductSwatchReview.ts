@@ -1,9 +1,5 @@
 import { gql } from "@apollo/client";
 
-/**
- * Fetch product swatch and review data
- * @param urlKey - Product URL key
- */
 export const GET_PRODUCT_SWATCH_REVIEW = gql`
   query ProductSwatchReview($urlKey: String!) {
     product(urlKey: $urlKey) {
@@ -13,9 +9,106 @@ export const GET_PRODUCT_SWATCH_REVIEW = gql`
       type
       urlKey
       price
+      specialPrice
+      minimumPrice
       isSaleable
       combinations
+      groupedProducts {
+        edges {
+          node {
+            id
+            qty
+            sortOrder
+            associatedProduct {
+              id
+              name
+              sku
+              price
+              formattedPrice
+              specialPrice
+              formattedSpecialPrice
+              images(first: 3) {
+                edges {
+                  node {
+                    id
+                    publicPath
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      bundleOptions {
+        edges {
+          node {
+            id
+            type
+            isRequired
+            sortOrder
+            translation {
+              label
+            }
+            bundleOptionProducts {
+              edges {
+                node {
+                  id
+                  qty
+                  isDefault
+                  isUserDefined
+                  sortOrder
+                  product {
+                    id
+                    name
+                    sku
+                    price
+                    images(first: 3) {
+                      edges {
+                        node {
+                          id
+                          publicPath
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       superAttributeOptions
+      downloadableLinks {
+        edges {
+          node {
+            _id
+            type
+            translation {
+              title
+            }
+            price
+            formattedPrice
+            sampleType
+            sampleFile
+            sampleFileUrl
+            sampleUrl
+          }
+        }
+      }
+      downloadableSamples {
+        edges {
+          node {
+            _id
+            type
+            file
+            fileUrl
+            url
+            translation {
+              title
+            }
+          }
+        }
+      }
       attributeValues {
         edges {
           cursor
@@ -44,6 +137,19 @@ export const GET_PRODUCT_SWATCH_REVIEW = gql`
                 }
               }
             }
+          }
+        }
+      }
+      bookingProducts {
+        edges {
+          node {
+            _id
+            type
+            availableFrom
+            availableTo
+            qty
+            location
+            availableEveryWeek
           }
         }
       }

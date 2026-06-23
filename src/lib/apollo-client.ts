@@ -23,10 +23,20 @@ async function getCachedSession(): Promise<BagistoSession | null> {
 
   const now = Date.now();
 
+  
   if (sessionCache && now - sessionCache.timestamp < SESSION_CACHE_TTL) {
     return sessionCache.session;
   }
+
+
   const session = (await getSession()) as BagistoSession | null;
+
+ 
+  if (!session) {
+    sessionCache = null;
+    return null;
+  }
+
   sessionCache = { session, timestamp: now };
   return session;
 }
@@ -41,12 +51,15 @@ function createApolloClient() {
   });
 
   const authLink = setContext(async (_, { headers }) => {
+    const storefrontKey =
+      process.env.BAGISTO_STOREFRONT_KEY ||
+      process.env.NEXT_PUBLIC_BAGISTO_STOREFRONT_KEY ||
+      "";
+    const session = await getCachedSession();
+    const userToken = session?.user?.accessToken;
+    const guestToken = !userToken ? getCartToken() : null;
+    const token = userToken || guestToken;
     if (ssrMode) {
-      const storefrontKey =
-        process.env.BAGISTO_STOREFRONT_KEY ||
-        process.env.NEXT_PUBLIC_BAGISTO_STOREFRONT_KEY ||
-        "";
-
       return {
         headers: {
           ...headers,
@@ -55,15 +68,13 @@ function createApolloClient() {
       };
     }
 
-    const session = await getCachedSession();
-    const userToken = session?.user?.accessToken;
-    const guestToken = !userToken ? getCartToken() : null;
-    const token = userToken || guestToken;
+   
 
     return {
       headers: {
         ...headers,
         ...(token && { Authorization: `Bearer ${token}` }),
+        "X-STOREFRONT-KEY": storefrontKey,
         "Content-Type": "application/json",
       },
     };

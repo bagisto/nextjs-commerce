@@ -56,7 +56,7 @@ export const AddRatingStar = ({
                             size || "size-6",
                             getFillState(index)
                                 ? "text-yellow-500"
-                                : "text-gray-300",
+                                : "text-gray-300 dark:text-neutral-700",
                             "transition-colors"
                         )}
                     />

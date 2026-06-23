@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="flex gap-4">
             <button
               onClick={() => window.location.reload()}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               Refresh Page
             </button>
@@ -77,7 +77,6 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-// Specialized error boundaries for different sections
 export function NavbarErrorBoundary({ children }: { children: ReactNode }) {
   return (
     <ErrorBoundary
