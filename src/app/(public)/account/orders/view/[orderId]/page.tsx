@@ -7,6 +7,8 @@ import AccountBreadcrumbs from "@/components/layout/AccountBreadcrumbs";
 import MobileNavHeader from "@/components/layout/navbar/MobileNavHeader";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
 
+export const dynamic = "force-dynamic";
+
 export default async function OrderViewPage({
     params,
     searchParams

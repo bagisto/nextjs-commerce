@@ -570,3 +570,15 @@ export const resolveCardPrice = (product: {
   const value = raw && typeof raw === "object" ? raw.value : raw;
   return value ?? "0";
 };
+
+
+export const formatPrice = (amount: string | number | undefined, currency: string = "USD") => {
+    if (amount === undefined || amount === null) return "";
+    const parsed = typeof amount === "string" ? parseFloat(amount) : amount;
+    if (isNaN(parsed)) return "";
+    return new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency,
+        currencyDisplay: "narrowSymbol",
+    }).format(parsed);
+};

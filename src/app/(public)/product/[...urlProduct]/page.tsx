@@ -42,7 +42,7 @@ import { CompareToggle } from "@/components/catalog/product/CompareToggle";
 import { getProductMetadata } from "@/utils/helper";
 
 const productCache = new LRUCache<ProductNode>(100, 10);
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 
 async function getSingleProduct(urlKey: string) {

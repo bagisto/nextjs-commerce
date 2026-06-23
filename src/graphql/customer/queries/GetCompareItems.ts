@@ -16,11 +16,8 @@ export const GET_COMPARE_ITEMS = `
             description
             shortDescription
             price
-            formattedPrice
             minimumPrice
-            formattedMinimumPrice
             maximumPrice
-            formattedMaximumPrice
             guestCheckout
             locale
             channel

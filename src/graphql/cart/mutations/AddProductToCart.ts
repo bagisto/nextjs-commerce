@@ -8,7 +8,7 @@ export const CREATE_ADD_PRODUCT_IN_CART = gql`
     $groupedQty: String
     $bundleOptions: String
     $bundleOptionQty: String
-    $links: Iterable
+    $links: String
     $booking: String
     $bookingNote: String
   ) {

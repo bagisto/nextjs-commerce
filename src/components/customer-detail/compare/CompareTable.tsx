@@ -10,8 +10,9 @@ import { useCustomToast } from "@/utils/hooks/useToast";
 import { useRouter } from "next/navigation";
 import { useCartDetail } from "@/utils/hooks/useCartDetail";
 import clsx from "clsx";
-import { IMAGES } from "@/utils/constants";
+import { IMAGES, CURRENCY_CODE } from "@/utils/constants";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
+import { formatPrice } from "@utils/helper";
 
 
 const HtmlExpandable = ({ html }: { html: string }) => {
@@ -187,11 +188,18 @@ export default function CompareTable({ items }: { items: any[] }) {
             (reviews?.totalCount || 0) > 0
                 ? totalRating / (reviews?.totalCount || 1)
                 : 0;
+        const formattedMinimumPrice = product?.formattedMinimumPrice || formatPrice(product?.minimumPrice, CURRENCY_CODE);
+        const formattedPrice = product?.formattedPrice || formatPrice(product?.price, CURRENCY_CODE);
+        const formattedMaximumPrice = product?.formattedMaximumPrice || formatPrice(product?.maximumPrice, CURRENCY_CODE);
+
         return {
             ...product,
             compareId: item?.node?.id || item?.id,
             avgRating,
             totalReviews: reviews?.totalCount || 0,
+            formattedMinimumPrice,
+            formattedPrice,
+            formattedMaximumPrice,
         };
     });
 

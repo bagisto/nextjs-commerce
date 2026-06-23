@@ -11,9 +11,7 @@ export const DELETE_COMPARE_ITEM = `
           type
           name
           price
-          formattedPrice
           minimumPrice
-          formattedMinimumPrice
         }
       }
     }

@@ -174,7 +174,7 @@ export const useAddProduct = () => {
         groupedQty,
         bundleOptions,
         bundleOptionQty,
-        links: productType === "downloadable" ? links : undefined,
+        links: productType === "downloadable" && links ? JSON.stringify(links) : undefined,
         booking: formattedBooking,
         bookingNote,
       },
