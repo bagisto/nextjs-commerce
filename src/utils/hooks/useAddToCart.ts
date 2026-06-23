@@ -9,9 +9,11 @@ import { useMutation } from "@apollo/client/react";
 import { CombinedGraphQLErrors, ServerError, ServerParseError } from "@apollo/client";
 import {
   CREATE_ADD_PRODUCT_IN_CART,
+  CREATE_ADD_GROUPED_PRODUCT_IN_CART,
   REMOVE_CART_ITEM,
   UPDATE_CART_ITEM,
 } from "@/graphql";
+
 
 
 const getBackendErrorMessage = (err: any): string => {
@@ -80,6 +82,33 @@ export const useAddProduct = () => {
       },
     },
   );
+
+  const onAddToCartCompletedHandler = (res: any) => {
+    const responseData = res?.createAddProductInCart?.addProductInCart;
+    if (!responseData?.success) {
+      const message = responseData?.message || "Error adding to cart";
+      showToast(message, isStockWarning(message) ? "warning" : "danger");
+      return;
+    }
+    if (responseData?.success) {
+      dispatch(addItem(responseData as any));
+      showToast("Product added to cart successfully", "success");
+    }
+  };
+
+  const onAddToCartErrorHandler = (err: any) => {
+    const message = getBackendErrorMessage(err);
+    showToast(message, isStockWarning(message) ? "warning" : "danger");
+  };
+
+  const [mutateGroupedAsync, { loading: isGroupedCartLoading }] = useMutation(
+    CREATE_ADD_GROUPED_PRODUCT_IN_CART,
+    {
+      onCompleted: onAddToCartCompletedHandler,
+      onError: onAddToCartErrorHandler,
+    },
+  );
+
 
   const onAddToCart = async ({
     productId,
@@ -166,20 +195,31 @@ export const useAddProduct = () => {
       }
     }
 
-    await mutateAsync({
-      variables: {
-        productId: parseInt(productId),
-        quantity,
-        cartId: guestCartId,
-        groupedQty,
-        bundleOptions,
-        bundleOptionQty,
-        links: productType === "downloadable" && links ? JSON.stringify(links) : undefined,
-        booking: formattedBooking,
-        bookingNote,
-      },
-    });
+    if (productType === "grouped") {
+      await mutateGroupedAsync({
+        variables: {
+          productId: parseInt(productId),
+          quantity,
+          cartId: guestCartId,
+          groupedQty,
+        },
+      });
+    } else {
+      await mutateAsync({
+        variables: {
+          productId: parseInt(productId),
+          quantity,
+          cartId: guestCartId,
+          bundleOptions,
+          bundleOptionQty,
+          links: productType === "downloadable" ? links : undefined,
+          booking: formattedBooking,
+          bookingNote,
+        },
+      });
+    }
   };
+
 
   const [removeFromCart, { loading: isRemoveLoading }] = useMutation(
     REMOVE_CART_ITEM,
@@ -257,11 +297,12 @@ export const useAddProduct = () => {
   };
 
   return {
-    isCartLoading,
+    isCartLoading: isCartLoading || isGroupedCartLoading,
     onAddToCart,
     isRemoveLoading,
     onAddToRemove,
     onUpdateCart,
     isUpdateLoading,
   };
+
 };

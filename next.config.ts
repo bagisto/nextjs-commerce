@@ -8,34 +8,36 @@ const nextConfig: NextConfig = {
   },
   images: {
     unoptimized: false,
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 86400,
     remotePatterns: [
       ...(process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT
         ? (() => {
-            try {
-              const url = new URL(process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT);
-              return [
-                {
-                  protocol: (url.protocol.replace(":", "") === "http" ? "http" : "https") as "http" | "https",
-                  hostname: url.hostname,
-                }
-              ];
-            } catch {
-              console.warn(
-                "Invalid NEXT_PUBLIC_BAGISTO_ENDPOINT URL:",
-                process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT,
-              );
-              return [];
-            }
-          })()
+          try {
+            const url = new URL(process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT);
+            return [
+              {
+                protocol: url.protocol.replace(":", "") as "https" | "http",
+                hostname: url.hostname,
+              },
+            ];
+          } catch {
+            console.warn(
+              "Invalid NEXT_PUBLIC_BAGISTO_ENDPOINT URL:",
+              process.env.NEXT_PUBLIC_BAGISTO_ENDPOINT,
+            );
+            return [];
+          }
+        })()
         : []),
     ],
   },
+
   async headers() {
     return configHeader;
   },
-  compress: true, 
+  compress: true,
   experimental: {
-    optimizePackageImports: ["@heroui/react", "framer-motion", "lucide-react"],
     serverActions: {
       bodySizeLimit: "2mb",
     },

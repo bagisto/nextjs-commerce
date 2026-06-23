@@ -1,4 +1,4 @@
-export {CREATE_ADD_PRODUCT_IN_CART} from './AddProductToCart';
+export {CREATE_ADD_PRODUCT_IN_CART, CREATE_ADD_GROUPED_PRODUCT_IN_CART} from './AddProductToCart';
 export {REMOVE_CART_ITEM} from './RemoveCartItem';
 export {UPDATE_CART_ITEM} from './UpdateCartItems';
 export {GET_CART_ITEM} from './GetCartItem';

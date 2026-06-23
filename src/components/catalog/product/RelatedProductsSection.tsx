@@ -56,7 +56,7 @@ export async function RelatedProductsSection({
         </p>
       </div>
 
-      <div className="w-full lg:h-[352px] grid grid-cols-2 md:grid-cols-3 lg:flex lg:flex-row lg:justify-between gap-6 lg:gap-0">
+      <div className="w-full lg:h-[352px] grid grid-cols-2 md:grid-cols-3 lg:flex lg:flex-row lg:justify-start gap-6">
         {relatedProducts.map((item, index) => {
           const imageUrl = getImageUrl(item?.baseImageUrl, baseUrl, NOT_IMAGE);
           const ProductPrice =

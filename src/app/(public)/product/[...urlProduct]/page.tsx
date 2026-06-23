@@ -27,7 +27,6 @@ import {
   ProductNode,
   ProductVariantNode,
   ProductData,
-  SingleProductResponse,
 } from "@/components/catalog/type";
 import { RelatedProductsSection } from "@components/catalog/product/RelatedProductsSection";
 import ProductInfo from "@components/catalog/product/ProductInfo";
@@ -42,8 +41,27 @@ import { CompareToggle } from "@/components/catalog/product/CompareToggle";
 import { getProductMetadata } from "@/utils/helper";
 
 const productCache = new LRUCache<ProductNode>(100, 10);
+
 export const dynamic = "force-dynamic";
 
+
+interface ProductListResponse {
+  products?: {
+    edges?: Array<{ node?: { urlKey?: string | null } | null } | null>;
+  } | null;
+}
+
+export interface SingleProductResponse {
+  product: ProductNode;
+}
+
+const BOOKING_SUBTYPE_QUERY_MAP = {
+  appointment: GET_APPOINTMENT_BOOKING_DETAILS,
+  table: GET_TABLE_BOOKING_DETAILS,
+  event: GET_EVENT_BOOKING_DETAILS,
+  rental: GET_RENTAL_BOOKING_DETAILS,
+  default: GET_DEFAULT_BOOKING_DETAILS,
+} as const;
 
 async function getSingleProduct(urlKey: string) {
   const cachedProduct = productCache.get(urlKey);
@@ -60,31 +78,34 @@ async function getSingleProduct(urlKey: string) {
 
     let product = dataById?.product || null;
 
-
-    if (product?.type === 'booking') {
-      const bookingType = (product as any).bookingProducts?.edges?.[0]?.node?.type;
-      let bookingQuery;
-
-      switch (bookingType) {
-        case 'appointment': bookingQuery = GET_APPOINTMENT_BOOKING_DETAILS; break;
-        case 'table': bookingQuery = GET_TABLE_BOOKING_DETAILS; break;
-        case 'event': bookingQuery = GET_EVENT_BOOKING_DETAILS; break;
-        case 'rental': bookingQuery = GET_RENTAL_BOOKING_DETAILS; break;
-        case 'default': bookingQuery = GET_DEFAULT_BOOKING_DETAILS; break;
-      }
+    if (product?.type === "booking") {
+      const bookingType = (product as any)?.bookingProducts?.edges?.[0]?.node
+        ?.type as keyof typeof BOOKING_SUBTYPE_QUERY_MAP | undefined;
+      const bookingQuery = bookingType
+        ? BOOKING_SUBTYPE_QUERY_MAP[bookingType]
+        : undefined;
 
       if (bookingQuery) {
-        const bookingData = await cachedProductRequest<SingleProductResponse>(
-          `${urlKey}-${bookingType}`,
-          bookingQuery,
-          { urlKey }
-        );
-
-        if (bookingData?.product?.bookingProducts) {
-          product = {
-            ...product,
-            bookingProducts: bookingData.product.bookingProducts,
-          } as ProductNode;
+        try {
+          const bookingData = await cachedProductRequest<SingleProductResponse>(
+            `${urlKey}-${bookingType}`,
+            bookingQuery,
+            { urlKey }
+          );
+          if (bookingData?.product?.bookingProducts) {
+            product = {
+              ...product,
+              bookingProducts: bookingData.product.bookingProducts,
+            } as typeof product;
+          }
+        } catch (bookingError) {
+          if (bookingError instanceof Error) {
+            console.error("Error fetching booking sub-type:", {
+              message: bookingError.message,
+              urlKey,
+              bookingType,
+            });
+          }
         }
       }
     }
