@@ -14,7 +14,7 @@ import {
   GET_FILTER_PRODUCTS,
   GET_TREE_CATEGORIES,
 } from "@/graphql";
-import { cachedGraphQLRequest, cachedCategoryRequest } from "@/utils/hooks/useCache";
+import { cachedGraphQLRequest, cachedCategoryRequest, getFilterAttributes } from "@/lib/cached-graphql";
 import { SortByFields } from "@utils/constants";
 import SearchNoResult from "@/components/theme/search/SearchNoResult";
 import { CategoryDetail } from "@components/theme/search/CategoryDetail";
@@ -23,7 +23,7 @@ import FilterListSkeleton from "@components/common/skeleton/FilterSkeleton";
 import { TreeCategoriesResponse } from "@/types/theme/category-tree";
 import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
 import CategoryHeaderClient from "@components/layout/navbar/CategoryHeaderClient";
-import { extractNumericId, findCategoryBySlug, getFilterAttributes, buildProductFilters } from "@utils/helper";
+import { extractNumericId, findCategoryBySlug, buildProductFilters } from "@utils/helper";
 
 
 export async function generateMetadata({

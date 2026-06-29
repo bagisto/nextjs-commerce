@@ -38,7 +38,7 @@ const ReviewDetail: FC<ReviewDetailProps> = ({
   return (
     <>
       <div className="flex flex-col flex-wrap gap-x-5 sm:gap-x-10">
-        <div className="my-2 flex w-full flex-col flex-wrap justify-between gap-4 sm:flex-row sm:items-center min-[1350px]:flex-nowrap">
+        <div className="my-2 flex w-full flex-col justify-between gap-4 xxl:flex-row xxl:items-center xxl:flex-nowrap">
           <div className="flex items-center gap-x-2">
             <Rating
               length={5}
@@ -58,36 +58,36 @@ const ReviewDetail: FC<ReviewDetailProps> = ({
                   style={{ flex: count as number }}
                   className="min-h-4"
                 >
-                    <Tooltip
-                      content={
-                        <div className="relative">
-                          <p className="text-center font-outfit text-[12px] font-normal leading-[100%]">
-                            {star} Star <br /> {count as number} Rating
-                          </p>
-                          <div className="absolute -bottom-[18px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-[#000000E5]"></div>
-                        </div>
-                      }
-                      placement="top"
-                      classNames={{
-                        base: "before:content-none after:content-none overflow-visible",
-                        content: "bg-[#000000E5] text-white rounded-[8px] p-[8px_10px] w-[91px] h-[46px] flex items-center justify-center gap-[10px] !border-none !shadow-none"
-                      }}
-                    >
-                      <div
-                        className={clsx(
-                          "h-full w-full !cursor-pointer",
-                          star === "5"
-                            ? "bg-green-700"
-                            : star === "4"
-                              ? "bg-[#0084D1]"
-                              : star === "3"
-                                ? "bg-violet-600"
-                                : star === "2"
-                                  ? "bg-yellow-400"
-                                  : "bg-red-600",
-                        )}
-                      />
-                    </Tooltip>
+                  <Tooltip
+                    content={
+                      <div className="relative">
+                        <p className="text-center font-outfit text-[12px] font-normal leading-[100%]">
+                          {star} Star <br /> {count as number} Rating
+                        </p>
+                        <div className="absolute -bottom-[18px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-[#000000E5]"></div>
+                      </div>
+                    }
+                    placement="top"
+                    classNames={{
+                      base: "before:content-none after:content-none overflow-visible",
+                      content: "bg-[#000000E5] text-white rounded-[8px] p-[8px_10px] w-[91px] h-[46px] flex items-center justify-center gap-[10px] !border-none !shadow-none"
+                    }}
+                  >
+                    <div
+                      className={clsx(
+                        "h-full w-full !cursor-pointer",
+                        star === "5"
+                          ? "bg-green-700"
+                          : star === "4"
+                            ? "bg-[#0084D1]"
+                            : star === "3"
+                              ? "bg-violet-600"
+                              : star === "2"
+                                ? "bg-yellow-400"
+                                : "bg-red-600",
+                      )}
+                    />
+                  </Tooltip>
                 </div>
               ))}
           </div>

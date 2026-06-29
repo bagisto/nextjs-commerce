@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { cachedGraphQLRequest } from "@/utils/hooks/useCache";
+import { cachedGraphQLRequest } from "@/lib/cached-graphql";
 import { ThreeItemGrid } from "./ThreeItemGrid";
 import Theme from "./ProductCarouselTheme";
 import { GET_PRODUCTS } from "@/graphql";

@@ -1,5 +1,5 @@
 import { GET_PRODUCT_REVIEWS } from "@/graphql";
-import { cachedProductRequest } from "./useCache";
+import { cachedProductRequest } from "@/lib/cached-graphql";
 
 
 

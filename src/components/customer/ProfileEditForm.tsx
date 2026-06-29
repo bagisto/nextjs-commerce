@@ -13,6 +13,8 @@ import { CustomDatePicker } from "@components/ui/CustomDatePicker";
 import { GENDER_OPTIONS } from "@/utils/constants";
 import MobileNavHeader from "@/components/layout/navbar/MobileNavHeader";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setUser } from "@/store/slices/user-slice";
 
 interface ProfileEditFormProps {
   user: any;
@@ -20,6 +22,8 @@ interface ProfileEditFormProps {
 
 export default function ProfileEditForm({ user }: ProfileEditFormProps) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const reduxUser = useAppSelector((state) => state.user.user);
   const { showToast } = useCustomToast();
   const { updateProfile, isLoading: loading } = useUpdateProfile();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -81,6 +85,13 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
       const result = await updateProfile(input, selectedFile || undefined);
 
       if (result.success) {
+        if (result.data) {
+          dispatch(setUser({
+            ...(reduxUser || {}),
+            ...result.data,
+            name: `${result.data.firstName || ""} ${result.data.lastName || ""}`.trim() || result.data.name || reduxUser?.name || ""
+          }));
+        }
         router.push("/account/profile");
         router.refresh();
       }

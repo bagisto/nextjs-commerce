@@ -5,7 +5,7 @@ import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useCustomToast } from "@/utils/hooks/useToast";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearUser } from "@/store/slices/user-slice";
 import { clearCart } from "@/store/slices/cart-slice";
 import { logoutAction } from "@utils/actions";
@@ -24,15 +24,17 @@ interface ProfileDetailsProps {
 export default function ProfileDetails({ user }: ProfileDetailsProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const reduxUser = useAppSelector((state) => state.user.user);
+  const activeUser = reduxUser || user;
   const { showToast } = useCustomToast();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const details = [
-    { label: "First Name", value: user?.firstName },
-    { label: "Last Name", value: user?.lastName },
-    { label: "Gender", value: user?.gender || "Not specified" },
-    { label: "Date of Birth", value: user?.dateOfBirth || "Not specified" },
-    { label: "Email", value: user?.email },
+    { label: "First Name", value: activeUser?.firstName },
+    { label: "Last Name", value: activeUser?.lastName },
+    { label: "Gender", value: activeUser?.gender || "Not specified" },
+    { label: "Date of Birth", value: activeUser?.dateOfBirth || "Not specified" },
+    { label: "Email", value: activeUser?.email },
   ];
 
   const handleLogout = async () => {

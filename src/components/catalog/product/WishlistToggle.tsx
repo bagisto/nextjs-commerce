@@ -30,12 +30,12 @@ export function WishlistToggle({ productId, initialIsWishlisted = false }: Wishl
 
   const productIdStr = String(productId);
 
-  
+
   const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
   const [isChecking, setIsChecking] = useState<boolean>(true);
   const [isPending, startTransition] = useTransition();
 
-  
+
   useEffect(() => {
     let cancelled = false;
     Promise.resolve().then(() => {
@@ -64,12 +64,12 @@ export function WishlistToggle({ productId, initialIsWishlisted = false }: Wishl
     };
   }, []);
 
- 
+
   useEffect(() => {
     const prevStatus = prevStatusRef.current;
     prevStatusRef.current = status;
 
-   
+
     if (prevStatus === "authenticated" && status !== "authenticated") {
       if (fetchInitiated.current) return;
       fetchInitiated.current = true;
@@ -88,7 +88,7 @@ export function WishlistToggle({ productId, initialIsWishlisted = false }: Wishl
       return;
     }
 
-    
+
     if (status !== "authenticated") {
       return;
     }
@@ -147,10 +147,9 @@ export function WishlistToggle({ productId, initialIsWishlisted = false }: Wishl
       onClick={handleToggle}
       disabled={isPending || isChecking}
       className={clsx(
-        "relative flex shrink-0 items-center justify-center rounded-full border-[1.02px] border-white transition-all duration-300",
-        "h-[42px] w-14 sm:h-14 sm:w-[74px]",
-        "bg-overlay-light shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
-        "backdrop-blur-[12.28px]",
+        "relative flex shrink-0 items-center justify-center rounded-[10233px] border-[1.02px] border-white transition-all duration-300",
+        "w-[40px] h-[40px] p-[10px] lg:w-[48px] lg:h-[48px] lg:p-[12px]",
+        "bg-action backdrop-blur-[12.28px] cursor-pointer shadow-md",
         isWishlisted
           ? "text-danger"
           : "text-neutral-900 hover:text-danger"
@@ -166,7 +165,7 @@ export function WishlistToggle({ productId, initialIsWishlisted = false }: Wishl
             exit={{ opacity: 0 }}
             className="flex items-center justify-center w-full h-full"
           >
-            <Loader2 className="animate-spin text-danger size-5 sm:size-[22px]" />
+            <Loader2 className="animate-spin text-danger size-5 lg:size-6" />
           </motion.div>
         ) : (
           <motion.div
@@ -179,7 +178,7 @@ export function WishlistToggle({ productId, initialIsWishlisted = false }: Wishl
           >
             <Heart
               className={clsx(
-                "transition-colors duration-300 size-5 sm:size-[22px]",
+                "transition-colors duration-300 size-5 lg:size-6",
                 isWishlisted ? "fill-current" : "fill-none"
               )}
               strokeWidth={isWishlisted ? 2.5 : 2}

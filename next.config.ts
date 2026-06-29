@@ -38,6 +38,7 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   experimental: {
+    useCache: true,
     serverActions: {
       bodySizeLimit: "2mb",
     },

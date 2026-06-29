@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GET_TREE_CATEGORIES } from "@/graphql";
 import MobileMenu from "./MobileMenu";
-import { cachedGraphQLRequest } from "@utils/hooks/useCache";
+import { cachedGraphQLRequest } from "@/lib/cached-graphql";
 import { CategoryNode, TreeCategoriesResponse } from "@/types/theme/category-tree";
 
 export async function CategoriesMenu({ type }: { type?: "mobile" | "desktop" }) {

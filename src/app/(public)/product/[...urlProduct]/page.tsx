@@ -22,7 +22,7 @@ import {
   GET_DEFAULT_BOOKING_DETAILS
 } from "@/graphql";
 import { isArray } from "@/utils/type-guards";
-import { cachedProductRequest } from "@/utils/hooks/useCache";
+import { cachedProductRequest } from "@/lib/cached-graphql";
 import {
   ProductNode,
   ProductVariantNode,
@@ -30,26 +30,16 @@ import {
 } from "@/components/catalog/type";
 import { RelatedProductsSection } from "@components/catalog/product/RelatedProductsSection";
 import ProductInfo from "@components/catalog/product/ProductInfo";
-import { LRUCache } from "@/utils/LRUCache";
 import ProductHeaderClient from "@components/catalog/product/ProductHeaderClient";
 import {
   HeroCarouselShimmer,
-  HeroCarouselThumbnailShimmer,
 } from "@components/common/slider";
 import { WishlistToggle } from "@/components/catalog/product/WishlistToggle";
 import { CompareToggle } from "@/components/catalog/product/CompareToggle";
 import { getProductMetadata } from "@/utils/helper";
 
-const productCache = new LRUCache<ProductNode>(100, 10);
-
 export const dynamic = "force-dynamic";
 
-
-interface ProductListResponse {
-  products?: {
-    edges?: Array<{ node?: { urlKey?: string | null } | null } | null>;
-  } | null;
-}
 
 export interface SingleProductResponse {
   product: ProductNode;
@@ -64,11 +54,6 @@ const BOOKING_SUBTYPE_QUERY_MAP = {
 } as const;
 
 async function getSingleProduct(urlKey: string) {
-  const cachedProduct = productCache.get(urlKey);
-  if (cachedProduct) {
-    return cachedProduct;
-  }
-
   try {
     const dataById = await cachedProductRequest<SingleProductResponse>(
       urlKey,
@@ -110,9 +95,6 @@ async function getSingleProduct(urlKey: string) {
       }
     }
 
-    if (product) {
-      productCache.set(urlKey, product);
-    }
     return product;
   } catch (error) {
     if (error instanceof Error) {
@@ -215,10 +197,7 @@ export default async function ProductPage({
         <div className="relative h-full w-full max-w-[885px] max-1366:max-w-[650px] max-lg:max-w-full overflow-hidden rounded-2xl">
           <Suspense
             fallback={
-              <>
                 <HeroCarouselShimmer />
-                <HeroCarouselThumbnailShimmer count={displayImages.length || 3} />
-              </>
             }
           >
             <HeroCarousel images={displayImages} />

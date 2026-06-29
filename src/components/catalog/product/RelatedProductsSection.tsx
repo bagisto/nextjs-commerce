@@ -1,10 +1,12 @@
 import { GET_RELATED_PRODUCTS } from "@/graphql";
 import { SingleProductResponse } from "@/components/catalog/type";
-import { cachedProductRequest } from "@/utils/hooks/useCache";
+import { cachedProductRequest } from "@/lib/cached-graphql";
 import Link from "next/link";
 import { NextImage } from "@/components/common/NextImage";
 import { Price } from "@/components/theme/ui/Price";
 import ProductCardActions from "@/components/catalog/product/ProductCardActions";
+import { WishlistToggle } from "@/components/catalog/product/WishlistToggle";
+import { CompareToggle } from "@/components/catalog/product/CompareToggle";
 import { baseUrl, getImageUrl, NOT_IMAGE } from "@/utils/constants";
 
 export async function RelatedProductsSection({
@@ -78,7 +80,14 @@ export async function RelatedProductsSection({
                     />
                   </div>
                 </Link>
-                <div className="absolute bottom-[10px] lg:bottom-[16px] left-1/2 -translate-x-1/2 z-10 w-[calc(100%-20px)] max-w-[112px] lg:max-w-[160px] h-8 lg:h-14 flex items-center justify-center rounded-4xl lg:rounded-full border-[0.52px] lg:border-[1.02px] border-white bg-white/80 lg:bg-overlay-light shadow-lg lg:shadow-2xl backdrop-blur-none lg:backdrop-blur-[12.28px] px-4 lg:px-6 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+
+               
+                <div className="absolute top-2 right-2 z-10 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <WishlistToggle productId={item.id} />
+                    <CompareToggle productId={item.id} />
+                </div>
+
+                <div className="absolute bottom-[10px] lg:bottom-[16px] left-1/2 -translate-x-1/2 z-10 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <ProductCardActions
                     productType={item.type}
                     productId={item.id}

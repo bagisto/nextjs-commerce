@@ -1,6 +1,6 @@
 import { SingleProductResponse } from "@/components/catalog/type";
 import { GET_PRODUCT_SWATCH_REVIEW } from "@/graphql";
-import { cachedProductRequest } from "@/utils/hooks/useCache";
+import { cachedProductRequest } from "@/lib/cached-graphql";
 
 
 export async function getProductWithSwatchAndReview(urlKey: string) {

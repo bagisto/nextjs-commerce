@@ -4,10 +4,9 @@ import SearchNoResult from "@/components/theme/search/SearchNoResult";
 import { isArray } from "@/utils/type-guards";
 import { GET_FILTER_PRODUCTS } from "@/graphql";
 import { GET_PRODUCTS, GET_PRODUCTS_PAGINATION } from "@/graphql";
-import { cachedGraphQLRequest } from "@/utils/hooks/useCache";
+import { cachedGraphQLRequest, getFilterAttributes } from "@/lib/cached-graphql";
 import {
   generateMetadataForPage,
-  getFilterAttributes,
   buildProductFilters,
 } from "@/utils/helper";
 import SortOrder from "@/components/theme/filters/SortOrder";

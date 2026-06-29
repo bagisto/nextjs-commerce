@@ -33,7 +33,7 @@ const ServiceContent: FC<ServiceContentDataTypes> = ({ serviceData }) => {
   }
 
   return (
-    <div className="mx-auto my-16 mt-16 sm:mt-0 w-full lg:my-12 md:my-20 md:max-w-4xl px-4 py-8">
+    <div className="mx-auto mt-0 w-full lg:mt-12 md:mt-20 md:max-w-4xl px-4 pt-8  lg:pb-12 pb-24">
       {serviceData?.slice(0, 1)?.map((service, index: number) => {
         const options =
           typeof service.options === "string"

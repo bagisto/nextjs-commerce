@@ -8,7 +8,7 @@ export default function DownloadableProductPagination(props: {
   return (
     <AccountPagination
       {...props}
-      inactiveClassName="text-selected-black hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium"
+      inactiveClassName="text-selected-black dark:text-selected-white hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium"
     />
   );
 }

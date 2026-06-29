@@ -9,7 +9,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { signOut } from "next-auth/react";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearUser, setUser } from "@/store/slices/user-slice";
 import { clearCart } from "@/store/slices/cart-slice";
 import { logoutAction, getCustomerProfileAction } from "@utils/actions";
@@ -206,6 +206,8 @@ export default function AccountDrawer({ isOpen, onClose, user: initialUser, prof
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const reduxUser = useAppSelector((state) => state.user.user);
+  const activeUser = reduxUser || customer;
   const { showToast } = useCustomToast();
 
   const isPageMode = pathname === "/account";
@@ -307,7 +309,7 @@ export default function AccountDrawer({ isOpen, onClose, user: initialUser, prof
         }}
       >
         <DrawerContent
-          customer={customer}
+          customer={activeUser}
           loading={loading}
           isLoggingOut={isLoggingOut}
           handleLogout={handleLogout}
@@ -341,7 +343,7 @@ export default function AccountDrawer({ isOpen, onClose, user: initialUser, prof
             <MobileNavHeader onBack={onClose} variant="close" hideBack={true} />
 
             <DrawerContent
-              customer={customer}
+              customer={activeUser}
               loading={loading}
               isLoggingOut={isLoggingOut}
               handleLogout={handleLogout}

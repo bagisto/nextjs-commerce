@@ -97,9 +97,9 @@ export default function OrderFilters({
         return () => clearTimeout(timeoutId);
     }, [searchValue, pathname, router, searchParams]);
 
-    const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handleLimitChange = (value: string) => {
         const params = new URLSearchParams(searchParams.toString());
-        params.set("limit", e.target.value);
+        params.set("limit", value);
         params.delete("cursor");
         params.delete("page");
         router.push(`${pathname}?${params.toString()}`);
@@ -189,7 +189,7 @@ export default function OrderFilters({
                         <Select
                             placeholder="10"
                             selectedKeys={[String(initialLimit)]}
-                            onChange={(e) => handleLimitChange(e)}
+                                onChange={(e) => handleLimitChange(e.target.value)}
                             classNames={{
                                 trigger: "h-9 min-h-9 rounded-md border border-transparent bg-overlay-subtle dark:bg-neutral-800 shadow-none px-5 transition-all cursor-pointer",
                                 value: "font-outfit font-medium text-xs leading-[20px] text-muted dark:text-selected-white",
@@ -261,15 +261,21 @@ export default function OrderFilters({
                             Items per page
                         </span>
                         <div className="relative w-[85px] h-10">
-                            <select
-                                value={initialLimit}
-                                onChange={handleLimitChange}
-                                className="appearance-none w-full h-full bg-neutral-100 dark:bg-surface-dark rounded-md pl-4 pr-8 font-outfit font-medium text-xs leading-[20px] text-center text-black dark:text-white cursor-pointer outline-none border-none"
+                            <Select
+                                placeholder="10"
+                                selectedKeys={[String(initialLimit)]}
+                                onChange={(e) => handleLimitChange(e.target.value)}
+                                classNames={{
+                                    trigger: "h-9 min-h-9 rounded-md border border-transparent bg-overlay-subtle dark:bg-neutral-800 shadow-none px-5 transition-all cursor-pointer ",
+                                    value: "font-outfit font-medium text-xs leading-[20px] text-muted dark:text-selected-white",
+                                    base: "w-full",
+                                    selectorIcon: "hidden"
+                                }}
                             >
                                 {PER_PAGE_LIMIT_OPTIONS.map((opt) => (
-                                    <option key={opt} value={opt}>{opt}</option>
+                                    <SelectItem key={String(opt)}>{String(opt)}</SelectItem>
                                 ))}
-                            </select>
+                            </Select>
                             <div className="pointer-events-none absolute inset-y-0 right-[10px] flex items-center">
                                 <Image
                                     src={IMAGES.sortBy}

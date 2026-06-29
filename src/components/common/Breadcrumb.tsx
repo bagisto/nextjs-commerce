@@ -15,20 +15,20 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
         return (
-          <div key={index} className="flex items-center">
+          <div key={index} className="flex items-center min-w-0">
             {index > 0 && (
-              <span className="mx-[8px] text-black dark:text-white font-normal text-base leading-[100%]">
+              <span className="mx-[8px] text-black dark:text-white font-normal text-base leading-[100%] shrink-0">
                 /
               </span>
             )}
             {isLast ? (
-              <span className="text-selected-black dark:text-selected-white font-normal text-base leading-[100%] capitalize">
+              <span className="text-selected-black dark:text-selected-white font-normal text-base leading-[100%] capitalize truncate block">
                 {item.label}
               </span>
             ) : (
               <Link
                 href={item.href || "#"}
-                className="text-black dark:text-white transition-colors font-normal text-base leading-[100%] capitalize"
+                className="text-black dark:text-white transition-colors font-normal text-base leading-[100%] capitalize truncate block"
               >
                 {item.label}
               </Link>

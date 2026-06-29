@@ -48,7 +48,8 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
         if (cached !== undefined) {
           setIsCompared(cached);
         }
-      } catch {
+      } catch (error) {
+        console.error("Failed to read compare cache", error);
       } finally {
         if (!cancelled) setIsChecking(false);
       }
@@ -71,7 +72,8 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
           clearCompareCache();
           setIsCompared(false);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Failed to clear compare cache", error);
         })
         .finally(() => {
           setIsChecking(false);
@@ -91,7 +93,8 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
       .then(() => {
         setIsCompared(isIdInCache(productIdStr));
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error("Failed to load compare ids", error);
       })
       .finally(() => {
         setIsChecking(false);
@@ -139,10 +142,11 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
       disabled={isPending || isChecking}
       className={clsx(
         "relative flex shrink-0 items-center justify-center rounded-full border-[1.02px] border-white transition-all duration-300",
-        "h-[42px] w-14 sm:h-14 sm:w-[74px]",
-        "bg-overlay-light shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
-        "backdrop-blur-[12.28px] hover:border-neutral-300 disabled:opacity-50",
-        isCompared ? "text-primary" : "text-neutral-900"
+        "w-[40px] h-[40px] p-[10px] lg:w-[48px] lg:h-[48px] lg:p-[12px]",
+        "bg-action backdrop-blur-[12.28px] cursor-pointer shadow-md",
+        isCompared
+          ? "text-primary"
+          : "text-neutral-900 hover:text-primary"
       )}
       title={isCompared ? "Remove from comparison list" : "Add to comparison list"}
     >
@@ -155,7 +159,7 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
             exit={{ opacity: 0 }}
             className="flex items-center justify-center w-full h-full"
           >
-            <Loader2 className="animate-spin size-5 sm:size-[22px]" />
+            <Loader2 className="animate-spin size-5 lg:size-6" />
           </motion.div>
         ) : (
           <motion.div
@@ -167,7 +171,7 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
             className="flex items-center justify-center w-full h-full"
           >
             <ArrowRightLeft
-              className="transition-colors duration-300 size-5 sm:size-[22px]"
+              className="transition-colors duration-300 size-5 lg:size-6"
               strokeWidth={isCompared ? 2.5 : 2}
             />
           </motion.div>

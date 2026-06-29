@@ -1,5 +1,5 @@
 import { GET_TREE_CATEGORIES } from "@/graphql";
-import { cachedGraphQLRequest } from "@utils/hooks/useCache";
+import { cachedGraphQLRequest } from "@/lib/cached-graphql";
 import { CategoryNode, TreeCategoriesResponse } from "@/types/theme/category-tree";
 import CategoriesPageClient from "@/components/categories/CategoriesPageClient";
 

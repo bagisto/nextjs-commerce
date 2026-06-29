@@ -100,7 +100,7 @@ export default function WishlistCard({ item }: WishlistCardProps) {
                     <div className="flex flex-col gap-3 md:gap-4 2xl:gap-6 flex-1">
                         <div className="flex items-start justify-between w-full">
                             <Link href={`/product/${product.urlKey}`} className="flex-1">
-                                <h3 className="font-outfit font-normal md:font-medium text-base md:text-xl 2xl:text-xl leading-[100%] md:leading-[100%] text-black dark:text-white hover:text-accent transition-colors line-clamp-2 cursor-pointer">
+                                <h3 className="font-outfit font-normal md:font-medium text-base md:text-xl 2xl:text-xl leading-[100%] md:leading-[100%] text-black dark:text-white hover:text-accent dark:hover:text-primary-soft transition-colors line-clamp-2 cursor-pointer">
                                     {product.name}
                                 </h3>
                             </Link>

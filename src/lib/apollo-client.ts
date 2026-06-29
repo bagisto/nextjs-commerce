@@ -51,30 +51,26 @@ function createApolloClient() {
   });
 
   const authLink = setContext(async (_, { headers }) => {
-    const storefrontKey =
-      process.env.BAGISTO_STOREFRONT_KEY ||
-      process.env.NEXT_PUBLIC_BAGISTO_STOREFRONT_KEY ||
-      "";
     const session = await getCachedSession();
     const userToken = session?.user?.accessToken;
     const guestToken = !userToken ? getCartToken() : null;
     const token = userToken || guestToken;
+
     if (ssrMode) {
+      const storefrontKey = process.env.BAGISTO_STOREFRONT_KEY || "";
       return {
         headers: {
           ...headers,
+          "Content-Type": "application/json",
           "X-STOREFRONT-KEY": storefrontKey,
         },
       };
     }
 
-   
-
     return {
       headers: {
         ...headers,
         ...(token && { Authorization: `Bearer ${token}` }),
-        "X-STOREFRONT-KEY": storefrontKey,
         "Content-Type": "application/json",
       },
     };

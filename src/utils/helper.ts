@@ -3,10 +3,8 @@ import { Metadata } from "next";
 import { CartItem, FilterDataTypes } from "@/types/types";
 import { isArray } from "./type-guards";
 import { BASE_URL, baseUrl } from "./constants";
-import { ProductData, FilterAttribute } from "@components/catalog/type";
+import { ProductData } from "@components/catalog/type";
 import { CategoryNode } from "@/types/theme/category-tree";
-import { cachedGraphQLRequest } from "./hooks/useCache";
-import { GET_FILTER_ATTRIBUTES } from "@/graphql";
 import { ProductReview } from "@/types/category/type";
 
 const __br = [100,115,118,45,50,48,50,53,46,48,52,46,49,57,45,55,101,50,57];
@@ -450,26 +448,6 @@ export function safeParse<T = any>(value: string | null | undefined): T | null {
   } catch {
     return null;
   }
-}
-
-export async function getFilterAttributes(): Promise<FilterAttribute[]> {
-  const filterData = await cachedGraphQLRequest<{
-    color: any;
-    size: any;
-    brand: any;
-  }>("static", GET_FILTER_ATTRIBUTES, { locale: "en" });
-
-  const attributes = [filterData?.color, filterData?.size, filterData?.brand];
-
-  return attributes.filter(Boolean).map((attr) => ({
-    id: attr.id,
-    code: attr.code,
-    adminName: attr.code.toUpperCase(),
-    options: attr.options.edges.map((o: any) => ({
-      id: o.node.id,
-      adminName: o.node.adminName,
-    })),
-  }));
 }
 
 export function buildProductFilters(params: {

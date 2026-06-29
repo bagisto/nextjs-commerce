@@ -31,7 +31,9 @@ const BottomNavbar = memo(function BottomNavbar({
     "/account/reviews",
     "/account/addresses",
     "/account/addresses/create",
-    "/account/wishlist"
+    "/account/wishlist",
+    "/account/profile",
+    "/account/profile/edit",
   ].includes(pathname) ||
     pathname.startsWith("/account/orders/view/") ||
     pathname.startsWith("/account/addresses/edit/");

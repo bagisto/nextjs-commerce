@@ -12,4 +12,4 @@ export * from "./customer/queries/GetWishlist";
 export * from "./customer/queries/GetCompareItems";
 export * from "./customer/mutations";
 export * from "./customer/mutations/DeleteCompareItem";
-export { graphqlRequest, graphqlRequestNoCache } from "../lib/graphql-fetch";
+export { graphqlRequestNoCache } from "../lib/graphql-fetch";

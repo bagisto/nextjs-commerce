@@ -22,7 +22,7 @@ export default async function AccountLayout({
   const user = await getCustomerProfile();
 
   return (
-    <div className="mx-auto max-w-[1920px] w-full py-12 min-h-screen">
+    <div className="mx-auto max-w-[1920px] w-full pt-12 lg:py-12 min-h-screen">
       <div className="px-4 xl:px-[185px] pt-7_5">
         <AccountLayoutWrapper sidebar={<AccountSidebar user={user} />}>
           {children}

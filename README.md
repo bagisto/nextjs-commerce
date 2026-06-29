@@ -192,17 +192,28 @@ Once the order is placed, it is instantly synchronized with the Bagisto backend,
 
 ## Customer Panel
 
-Registered customers get a dedicated account dashboard to manage their profile and activity across the store. Authentication is handled securely via **NextAuth.js**, ensuring each customer's data stays protected.
+Registered customers get a dedicated account dashboard to manage their profile and activity across the store. Authentication is handled securely via **NextAuth.js**, ensuring each customer's data stays protected. On desktop the panel renders as a full-page layout with a persistent sidebar, while on mobile it opens as a slide-in drawer for a native, app-like experience.
 
 The customer panel includes:
 
-- **Profile** – View and edit personal details, including name, email, and password.
+- **Profile** – View and edit personal details such as name, email, and password.
+
+  ![Customer profile page](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-customer-profile.png)
+
 - **Addresses** – Create, edit, and remove multiple shipping and billing addresses for faster checkout.
-- **Orders** – Browse complete order history and open any order to view its detailed summary and status.
-- **Downloadable Products** – Access and download purchased digital products from one place.
-- **Reviews** – Track and manage product reviews submitted by the customer.
-- **Wishlist** – Save favorite products to revisit and purchase later.
+- **Orders** – Browse the complete order history and open any order to view its detailed summary, items, and current status.
+
+  ![Customer order history](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-customer-order.png)
+
+- **Downloadable Products** – Access and re-download purchased digital products from a single place.
+- **Reviews** – Track and manage the product reviews submitted by the customer.
+- **Wishlist** – Save favorite products to revisit, move to the cart, or purchase later.
+
+  ![Customer wishlist](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-customer-wishlist.png)
+
 - **Compare** – Add products to a comparison list to evaluate their attributes side by side.
+
+  ![Product comparison](https://raw.githubusercontent.com/bagisto/temp-media/refs/heads/master/bagisto-headless-commerce-customer-compare.png)
 
 All customer actions are synchronized in real time with the Bagisto backend through its GraphQL APIs.
 

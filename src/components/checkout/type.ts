@@ -1,11 +1,11 @@
-import { Radio } from "@heroui/react";
+import { RadioProps } from "@heroui/react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 
 export type CustomRadioProps = {
   children: React.ReactNode;
   description?: string;
   value: string;
-} & typeof Radio.defaultProps;
+} & RadioProps;
 
 export type ShippingMethodType = {
   method?: string;

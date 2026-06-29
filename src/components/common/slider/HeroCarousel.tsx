@@ -271,7 +271,6 @@ export default function HeroCarousel({
                       active={isActive}
                       alt={image.altText}
                       fill
-                      objectFit="cover"
                       draggable={false}
                       src={image.src}
                       sizes="(max-width: 768px) 16vw, 10vw"
@@ -281,12 +280,6 @@ export default function HeroCarousel({
               );
             })}
           </ul>
-        </div>
-      ) : isLoading ? (
-        <div className="my-3 sm:my-7 lg:mb-0">
-          <div className="relative aspect-square w-16 md:w-32">
-            <Shimmer className="h-full w-full" rounded="lg" />
-          </div>
         </div>
       ) : null}
     </>

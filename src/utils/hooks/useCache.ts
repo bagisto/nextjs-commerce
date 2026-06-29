@@ -1,5 +1,4 @@
-import { type DocumentNode, type OperationVariables } from "@apollo/client";
-import { graphqlRequest, type CacheLifeOption } from "@/lib/graphql-fetch";
+import { type CacheLifeOption } from "@/lib/graphql-fetch";
 
 export interface PageCacheConfig {
   tags: string[];
@@ -53,38 +52,3 @@ export function getCategoryCacheConfig(categoryId: string): PageCacheConfig {
   };
 }
 
-export async function cachedGraphQLRequest<
-  TData = unknown,
-  TVariables extends OperationVariables = OperationVariables,
->(
-  page: keyof typeof PAGE_CACHE_CONFIG,
-  query: DocumentNode,
-  variables?: TVariables,
-): Promise<TData> {
-  const config = getPageCacheConfig(page);
-  return graphqlRequest<TData, TVariables>(query, variables, config);
-}
-
-export async function cachedProductRequest<
-  TData = unknown,
-  TVariables extends OperationVariables = OperationVariables,
->(
-  productId: string,
-  query: DocumentNode,
-  variables?: TVariables,
-): Promise<TData> {
-  const config = getProductCacheConfig(productId);
-  return graphqlRequest<TData, TVariables>(query, variables, config);
-}
-
-export async function cachedCategoryRequest<
-  TData = unknown,
-  TVariables extends OperationVariables = OperationVariables,
->(
-  categoryId: string,
-  query: DocumentNode,
-  variables?: TVariables,
-): Promise<TData> {
-  const config = getCategoryCacheConfig(categoryId);
-  return graphqlRequest<TData, TVariables>(query, variables, config);
-}

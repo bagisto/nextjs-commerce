@@ -18,10 +18,6 @@ export const ProductPageSkeleton = () => {
 export const ProductDetailSkeleton = () => {
   return (
     <div className="flex flex-row gap-x-8">
-      <div className="flex min-w-[878px] items-center justify-center">
-        <div className="h-[736px] w-full animate-pulse rounded-2xl bg-neutral-100 dark:bg-neutral-900" />
-      </div>
-
       <div className="flex w-full flex-col space-y-6">
         <div className="h-12 w-full animate-pulse rounded-md bg-neutral-100 dark:bg-neutral-900" />
         <div className="h-12 w-1/2 animate-pulse rounded-md bg-neutral-100 dark:bg-neutral-900" />
@@ -72,7 +68,7 @@ export const RelatedProductSkeleton = () => {
       </div>
 
       <div className="mt-10 grid grid-flow-row grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {Array(4)
+        {Array(2)
           .fill(0)
           .map((_, index) => {
             return (

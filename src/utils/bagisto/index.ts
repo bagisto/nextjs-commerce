@@ -36,7 +36,7 @@ import {
   PAGE_BY_URL_KEY,
 } from "@/graphql";
 import { SUBSCRIBE_TO_NEWSLETTER } from "@/graphql/theme/mutations";
-import { cachedGraphQLRequest } from "@/utils/hooks/useCache";
+import { cachedGraphQLRequest } from "@/lib/cached-graphql";
 import { authOptions } from "@utils/auth";
 import { RegisterInputs } from "@components/customer/types";
 import {

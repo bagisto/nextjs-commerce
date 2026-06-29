@@ -120,7 +120,7 @@ export default function CartPage() {
                                 {item?.node?.name}
                               </span>
                               {item.name !== DEFAULT_OPTION && (
-                                <p className="text-sm lowercase line-clamp-1 text-black dark:text-selected-white">
+                                <p className="text-sm lowercase line-clamp-1 text-black dark:text-selected-white truncate" style={{maxWidth : "130px"}}>
                                   {item?.node?.sku}
                                 </p>
                               )}

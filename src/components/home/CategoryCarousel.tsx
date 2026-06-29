@@ -1,7 +1,7 @@
 import { FC } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import { cachedGraphQLRequest } from "@/utils/hooks/useCache";
+import { cachedGraphQLRequest } from "@/lib/cached-graphql";
 import { GridTileImage } from "../theme/ui/grid/Tile";
 import { NOT_IMAGE } from "@/utils/constants";
 import { GET_HOME_CATEGORIES } from "@/graphql";

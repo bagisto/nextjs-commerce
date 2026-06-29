@@ -2,6 +2,8 @@ import Link from "next/link";
 import { FC } from "react";
 import Grid from "@/components/theme/ui/grid/Grid";
 import ProductCardActions from "@/components/catalog/product/ProductCardActions";
+import { WishlistToggle } from "@/components/catalog/product/WishlistToggle";
+import { CompareToggle } from "@/components/catalog/product/CompareToggle";
 import { NextImage } from "@/components/common/NextImage";
 import { Price } from "@/components/theme/ui/Price";
 
@@ -38,8 +40,8 @@ export const ProductCard: FC<ProductCardProps> = ({
       className="animate-fadeIn gap-y-4.5 flex flex-col"
     >
       <div className="group relative overflow-hidden rounded-lg">
-        <Link 
-          href={backUrl ? `/product/${product.urlKey}?backUrl=${encodeURIComponent(backUrl)}` : `/product/${product.urlKey}`} 
+        <Link
+          href={backUrl ? `/product/${product.urlKey}?backUrl=${encodeURIComponent(backUrl)}` : `/product/${product.urlKey}`}
           aria-label={`View ${product.name}`}
         >
           <div className="aspect-[353/283] h-auto truncate rounded-lg">
@@ -55,8 +57,15 @@ export const ProductCard: FC<ProductCardProps> = ({
           </div>
         </Link>
 
+
+        <div className="absolute top-2 right-2 z-10 flex flex-col gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <WishlistToggle productId={product.id} />
+          <CompareToggle productId={product.id} />
+        </div>
+
+
         <div
-          className="absolute bottom-[10px] lg:bottom-[16px] left-1/2 -translate-x-1/2 z-10 w-[calc(100%-20px)] max-w-[112px] lg:max-w-[160px] h-8 lg:h-14 flex items-center justify-center rounded-4xl lg:rounded-full border-[0.52px] lg:border-[1.02px] border-white bg-white/80 lg:bg-overlay-light shadow-lg lg:shadow-2xl backdrop-blur-none lg:backdrop-blur-[12.28px] px-4 lg:px-6 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className="absolute bottom-[10px] lg:bottom-[16px] left-1/2 -translate-x-1/2 z-10 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
           <ProductCardActions productType={product.type} productId={product.id} productUrlKey={product.urlKey} isSaleable={product?.isSaleable} backUrl={backUrl} />
         </div>
@@ -73,7 +82,7 @@ export const ProductCard: FC<ProductCardProps> = ({
               {product?.type === "configurable" ? "As low as" : "Starting at"}
             </span>
           )}
-          {specialPrice ? (
+          {specialPrice && specialPrice != price ? (
             <div className="flex items-center gap-2">
               <Price
                 amount={specialPrice}

@@ -95,14 +95,14 @@ export default async function ReviewsPage({
 
                                         <div className="flex flex-col gap-2 lg:gap-3 flex-1">
                                             <Link href={`/product/${product?.urlKey}`}>
-                                                <h3 className="font-outfit text-lg lg:text-xl font-medium text-black dark:text-white hover:text-accent transition-colors leading-tight lg:leading-none">
+                                                <h3 className="font-outfit text-lg lg:text-xl font-medium text-black dark:text-white hover:text-accent dark:hover:text-primary-soft transition-colors leading-tight lg:leading-none">
                                                     {productName}
                                                 </h3>
                                             </Link>
                                             <div className="lg:hidden">
                                                 <ReviewRating star={review.rating} />
                                             </div>
-                                            <p 
+                                            <p
                                                 className="font-outfit text-sm lg:text-base text-muted font-normal leading-relaxed lg:leading-[30px] line-clamp-3"
                                             >
                                                 {review.comment}

@@ -630,6 +630,7 @@ export type BagistoUser = {
   token?: string;
   rememberToken?: string | null;
   name: string;
+  image?: string | null;
 };
 
 export type SuperAttribute = {

@@ -256,8 +256,9 @@ export default function CompareTable({ items }: { items: any[] }) {
                                                 )}
                                             </button>
 
-                                            <div
-                                                className="relative overflow-hidden bg-septenary dark:bg-neutral-800 flex-shrink-0"
+                                            <Link
+                                                href={`/product/${product.urlKey}`}
+                                                className="relative overflow-hidden bg-septenary dark:bg-neutral-800 flex-shrink-0 block"
                                                 style={{ width: 152, height: 140, borderRadius: 8 }}
                                             >
                                                 <Image
@@ -267,16 +268,18 @@ export default function CompareTable({ items }: { items: any[] }) {
                                                     className="object-cover"
                                                     sizes="152px"
                                                 />
-                                            </div>
-
-                                            <Link
-                                                href={`/product/${product.urlKey}`}
-                                                className="font-outfit font-normal text-sm leading-[1.3] text-neutral-800 dark:text-white line-clamp-2"
-                                            >
-                                                {product.name}
                                             </Link>
 
-                                            <div className="flex items-center gap-2 flex-wrap">
+                                            <div className="min-h-10">
+                                                <Link
+                                                    href={`/product/${product.urlKey}`}
+                                                    className="font-outfit font-normal text-sm leading-[1.3] text-neutral-800 dark:text-white line-clamp-2"
+                                                >
+                                                    {product.name}
+                                                </Link>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 flex-wrap min-h-[20px]">
                                                 <span className="font-outfit font-medium text-base leading-none text-black dark:text-white">
                                                     {product.formattedMinimumPrice}
                                                 </span>
@@ -415,14 +418,17 @@ export default function CompareTable({ items }: { items: any[] }) {
                                                 </button>
 
                                                 <div className="flex flex-col gap-4">
-                                                    <div className="relative h-[220px] w-full rounded-3xl overflow-hidden bg-surface-cool dark:bg-neutral-800 shadow-sm group-hover:shadow-md transition-shadow">
+                                                    <Link
+                                                        href={`/product/${product.urlKey}`}
+                                                        className="relative h-[220px] w-full rounded-3xl overflow-hidden bg-surface-cool dark:bg-neutral-800 shadow-sm group-hover:shadow-md transition-shadow block"
+                                                    >
                                                         <Image
                                                             src={product.baseImageUrl || IMAGES.placeholder}
                                                             alt={product.name || "Product Image"}
                                                             fill
                                                             className="object-cover hover:scale-105 transition-transform duration-500"
                                                         />
-                                                    </div>
+                                                    </Link>
 
                                                     <div className="flex flex-col gap-2">
                                                         <div className="min-h-11">

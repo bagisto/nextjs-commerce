@@ -1,10 +1,6 @@
-import { unstable_cache } from "next/cache";
-import { print, type DocumentNode } from "graphql";
+import { type DocumentNode } from "graphql";
 import { type OperationVariables } from "@apollo/client";
 import makeClient from "./apollo-client";
-
-
-
 
 
 export type CacheLifePreset =
@@ -17,9 +13,11 @@ export type CacheLifePreset =
 
 export type CacheLifeOption = number | CacheLifePreset;
 
-export function getRevalidateTime(
-  life?: CacheLifeOption
-): number | false {
+/**
+ * Resolves a {@link CacheLifeOption} to seconds (or `false` for "never
+ * revalidate"). Consumed by the `cacheLife()` mapping in `cached-graphql.ts`.
+ */
+export function getRevalidateTime(life?: CacheLifeOption): number | false {
   if (!life) return false;
   if (typeof life === "number") return life;
 
@@ -41,126 +39,30 @@ export function getRevalidateTime(
   }
 }
 
-
-
-const queryPrintMemo = new WeakMap<DocumentNode, string>();
-
-export function stableStringify(value: unknown): string {
-  if (value === null || typeof value !== "object") {
-    return JSON.stringify(value);
-  }
-
-  if (Array.isArray(value)) {
-    return `[${value.map(stableStringify).join(",")}]`;
-  }
-
-  const obj = value as Record<string, unknown>;
-  return `{${Object.keys(obj)
-    .sort()
-    .map(
-      (key) => `"${key}":${stableStringify(obj[key])}`
-    )
-    .join(",")}}`;
-}
-
-
-
-
-export interface GraphQLRequestOptions {
-  tags?: string[];
-  life?: CacheLifeOption;
-  noCache?: boolean;
+export interface GraphQLRequestNoCacheOptions {
   context?: Record<string, unknown>;
-  fetchPolicy?:
-  | "cache-first"
-  | "network-only"
-  | "no-cache"
-  | "cache-only";
+  fetchPolicy?: "cache-first" | "network-only" | "no-cache" | "cache-only";
 }
 
-export async function graphqlRequest<
-  TData = unknown,
-  TVariables extends OperationVariables = OperationVariables
->(
-  query: DocumentNode,
-  variables?: TVariables,
-  options?: GraphQLRequestOptions
-): Promise<TData> {
-  if (options?.noCache) {
-    const client = makeClient();
-    const result = await client.query({
-      query,
-      variables,
-      context: options?.context,
-      fetchPolicy: options?.fetchPolicy ?? "no-cache",
-    });
-
-    return result.data as TData;
-  }
-
-  if (options?.context) {
-    throw new Error(
-      "graphqlRequest: Caching with `context` is unsafe. Use noCache instead."
-    );
-  }
-
-  let queryString: string;
-  const cachedQueryString = queryPrintMemo.get(query);
-
-  if (cachedQueryString) {
-    queryString = cachedQueryString;
-  } else {
-    queryString = print(query);
-    queryPrintMemo.set(query, queryString);
-  }
-
-  const cacheKey = `graphql:${stableStringify({
-    query: queryString,
-    variables,
-  })}`;
-
-  const revalidate = getRevalidateTime(options?.life);
-
-  const cachedQuery = unstable_cache(
-    async (): Promise<TData> => {
-      const client = makeClient();
-      const result = await client.query({
-        query,
-        variables,
-        fetchPolicy: "network-only",
-      });
-
-      return result.data as TData;
-    },
-    [cacheKey],
-    {
-      tags: options?.tags,
-      revalidate,
-    }
-  );
-
-  return cachedQuery();
-}
-
-
-
+/**
+ * Uncached GraphQL request. Use this for personalized / request-time data that
+ * must never be shared across requests (it bypasses the `'use cache'` layer).
+ */
 export async function graphqlRequestNoCache<
   TData = unknown,
-  TVariables extends OperationVariables = OperationVariables
+  TVariables extends OperationVariables = OperationVariables,
 >(
   query: DocumentNode,
   variables?: TVariables,
-  options?: Omit<
-    GraphQLRequestOptions,
-    "noCache" | "tags" | "life"
-  >
+  options?: GraphQLRequestNoCacheOptions,
 ): Promise<TData> {
-  return graphqlRequest<TData, TVariables>(
+  const client = makeClient();
+  const result = await client.query({
     query,
     variables,
-    {
-      ...options,
-      noCache: true,
-    }
-  );
+    context: options?.context,
+    fetchPolicy: options?.fetchPolicy ?? "no-cache",
+  });
+
+  return result.data as TData;
 }

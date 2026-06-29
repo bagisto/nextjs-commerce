@@ -41,12 +41,22 @@ export default function AccountSidebar({ user }: AccountSidebarProps) {
   const reduxUser = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
-    if (user && (!reduxUser?.firstName && !reduxUser?.lastName)) {
-      dispatch(setUser({
-        ...(reduxUser || {}),
-        ...user,
-        name: `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.name || reduxUser?.name || ""
-      }));
+    if (user) {
+      const serverName = `${user.firstName || ""} ${user.lastName || ""}`.trim() || user.name || "";
+      const currentName = `${reduxUser?.firstName || ""} ${reduxUser?.lastName || ""}`.trim() || reduxUser?.name || "";
+      if (
+        user.image !== reduxUser?.image ||
+        user.firstName !== reduxUser?.firstName ||
+        user.lastName !== reduxUser?.lastName ||
+        user.email !== reduxUser?.email ||
+        serverName !== currentName
+      ) {
+        dispatch(setUser({
+          ...(reduxUser || {}),
+          ...user,
+          name: serverName || reduxUser?.name || ""
+        }));
+      }
     }
   }, [user, reduxUser, dispatch]);
 

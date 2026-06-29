@@ -33,7 +33,7 @@ export default function AddressForm({ initialData }: { initialData?: any }) {
 
     const onSubmit = async (data: any) => {
         setLoading(true);
-        
+
         const input = {
             ...data,
             addressId: data.addressId ? parseInt(data.addressId) : undefined,
@@ -78,7 +78,7 @@ export default function AddressForm({ initialData }: { initialData?: any }) {
             "group-data-[invalid=true]:!border-border",
             "dark:group-data-[invalid=true]:!border-neutral-800",
         ],
-        input: "font-outfit text-base font-medium !text-black dark:!text-white placeholder:text-muted dark:placeholder:text-selected-black",
+        input: "font-outfit text-base font-medium !text-black dark:!text-white placeholder:text-muted dark:placeholder:text-neutral-400",
         mainWrapper: "w-full",
     };
 
@@ -170,7 +170,7 @@ export default function AddressForm({ initialData }: { initialData?: any }) {
 
             <div className="mb-[15px]">
                 <Input
-                    {...register("phone", { 
+                    {...register("phone", {
                         required: "Mobile number is mandatory",
                         pattern: {
                             value: /^[0-9+\-\s()]*$/,
@@ -188,16 +188,16 @@ export default function AddressForm({ initialData }: { initialData?: any }) {
             </div>
 
             <div className="mb-7_5">
-                         <Checkbox
+                <Checkbox
                     {...register("defaultAddress")}
-                         classNames={{
+                    classNames={{
                         label: "font-outfit text-sm leading-[100%] text-muted dark:text-white font-normal",
                         wrapper: "before:border-border after:bg-primary",
                     }}
                     size="lg"
-                    >
+                >
                     Set as Default Address
-                     </Checkbox>
+                </Checkbox>
             </div>
 
             <div>
