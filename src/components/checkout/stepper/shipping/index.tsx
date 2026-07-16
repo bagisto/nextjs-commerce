@@ -7,6 +7,7 @@ import { FC } from "react";
 import { ShippingMethodType } from "@components/checkout/type";
 import { GET_CHECKOUT_SHIPPING_RATES } from "@/graphql";
 import { getCartToken } from "@/utils/getCartToken";
+import { GetCheckoutShippingRatesData, CheckoutShippingRate } from "@/types/checkout/type";
 
 const Shipping: FC<{
   selectedShippingRate?: string;
@@ -14,7 +15,7 @@ const Shipping: FC<{
 }> = ({ selectedShippingRate, currentStep }) => {
   const token = getCartToken();
 
-  const { data, loading: isLoading } = useQuery(GET_CHECKOUT_SHIPPING_RATES, {
+  const { data, loading: isLoading } = useQuery<GetCheckoutShippingRatesData>(GET_CHECKOUT_SHIPPING_RATES, {
     variables: { token: token || "" },
     skip: !token,
     fetchPolicy: "cache-first",
@@ -27,8 +28,8 @@ const Shipping: FC<{
 
   
 
-  const uniqueShippingMethods = (data as any)?.collectionShippingRates?.reduce(
-    (acc: ShippingMethodType[], current: ShippingMethodType) => {
+  const uniqueShippingMethods = data?.collectionShippingRates?.reduce(
+    (acc: ShippingMethodType[], current: CheckoutShippingRate) => {
       const exists = acc.find((item) => item.method === current.method);
       return exists ? acc : acc.concat([current]);
     },

@@ -17,6 +17,7 @@ import { EMAIL, getLocalStorage } from "@/store/local-storage";
 import Link from "next/link";
 import { createUrl, isCheckout, safeParse } from "@utils/helper";
 import { useAddressesFromApi } from "@utils/hooks/getAddress";
+import type { CartSummaryView, CartItemEdge } from "@/types/cart/type";
 import MobileNavHeader from "@/components/layout/navbar/MobileNavHeader";
 import { notFound } from 'next/navigation'
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
@@ -37,7 +38,7 @@ export default function CartPage() {
   const cart = Array.isArray(cartDetail?.cart?.items?.edges)
     ? cartDetail?.cart?.items?.edges
     : [];
-  const cartObj: any = cartDetail?.cart ?? {};
+  const cartObj: CartSummaryView = (cartDetail?.cart ?? {}) as CartSummaryView;
 
   return (
     <>
@@ -75,7 +76,7 @@ export default function CartPage() {
             <div className="flex h-full flex-col justify-between">
               <ul className="my-0 flex-grow overflow-auto py-0">
                 {Array.isArray(cart) &&
-                  cart?.map((item: any, i: number) => {
+                  cart?.map((item: CartItemEdge, i: number) => {
                     const merchandiseSearchParams = {
                       backUrl: "/cart",
                     } as MerchandiseSearchParams;
@@ -83,7 +84,7 @@ export default function CartPage() {
                       `/product/${item?.node.productUrlKey}`,
                       new URLSearchParams(merchandiseSearchParams),
                     );
-                    const baseImage: any = safeParse(
+                    const baseImage = safeParse<{ small_image_url?: string }>(
                       item?.node?.baseImage,
                     );
 
@@ -104,7 +105,7 @@ export default function CartPage() {
                               <Image
                                 alt={
                                   item?.node?.baseImage ||
-                                  item?.product?.name
+                                  item?.node?.name
                                 }
                                 className="h-full w-full object-cover"
                                 height={64}
@@ -119,13 +120,14 @@ export default function CartPage() {
                               <span className="line-clamp-1 font-outfit text-base font-medium">
                                 {item?.node?.name}
                               </span>
-                              {item.name !== DEFAULT_OPTION && (
-                                <p className="text-sm lowercase line-clamp-1 text-black dark:text-selected-white truncate" style={{maxWidth : "130px"}}>
-                                  {item?.node?.sku}
-                                </p>
-                              )}
+                                 {item.node.name !== DEFAULT_OPTION && (
+                            <p className="text-sm lowercase line-clamp-1 text-black dark:text-selected-white truncate" style={{maxWidth : "130px"}}>
+                              {item?.node?.sku}
+                            </p>
+                          )}
                             </div>
                           </Link>
+          
                           <div className="flex h-16 flex-col justify-between">
                             <Price
                               amount={item?.node?.price}
@@ -148,13 +150,13 @@ export default function CartPage() {
               </ul>
 
               <div className="border-0 border-t border-solid border-neutral-200 dark:border-dark-grey py-8 text-sm text-selected-black dark:text-selected-white">
-                {(cartDetail as any)?.cart?.taxAmount > 0 && (
+                {cartDetail?.cart?.taxAmount != null && cartDetail.cart.taxAmount > 0 && (
                   <div className="mb-3 flex items-center justify-between">
                     <p className="text-base font-normal text-black/[60%] dark:text-white">
                       Taxes
                     </p>
                     <Price
-                      amount={(cartDetail as any)?.cart?.taxAmount}
+                      amount={String(cartDetail?.cart?.taxAmount ?? 0)}
                       className="text-right text-base font-medium text-black dark:text-white"
                       currencyCode={"USD"}
                     />
@@ -165,7 +167,7 @@ export default function CartPage() {
                     Total
                   </p>
                   <Price
-                    amount={(cartDetail as any)?.cart?.grandTotal}
+                    amount={String(cartDetail?.cart?.grandTotal ?? 0)}
                     className="text-right text-base font-medium text-black dark:text-white"
                     currencyCode={"USD"}
                   />
@@ -174,7 +176,7 @@ export default function CartPage() {
                 <form action={redirectToCheckout}>
                   <CheckoutButton
                     cartDetails={cartObj?.items?.edges ?? []}
-                    isGuest={cartObj?.isGuest}
+                    isGuest={cartObj?.isGuest ?? false}
                     isEmail={
                       cartObj?.customerEmail ?? getLocalStorage(EMAIL)
                     }
@@ -204,7 +206,7 @@ function CheckoutButton({
   isSelectShipping,
   isSelectPayment,
 }: {
-  cartDetails: Array<any>;
+  cartDetails: CartItemEdge[];
   isGuest: boolean;
   isEmail: string;
   isSeclectAddress: boolean;

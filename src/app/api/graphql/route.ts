@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        const response = await bagistoFetch<any>({
+        const response = await bagistoFetch<{ data: unknown; variables: Record<string, unknown> }>({
             query,
             variables: finalVariables,
             cache: "no-store",

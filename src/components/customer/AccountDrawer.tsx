@@ -9,6 +9,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { signOut } from "next-auth/react";
+import { clearSessionCache } from "@/lib/apollo-client";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearUser, setUser } from "@/store/slices/user-slice";
 import { clearCart } from "@/store/slices/cart-slice";
@@ -21,12 +22,13 @@ import LoadingDots from "@components/common/icons/LoadingDots";
 import MobileNavHeader from "../layout/navbar/MobileNavHeader";
 import ShortcutsDrawer from "./ShortcutsDrawer";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
+import type { CustomerProfile } from "@/types/customer/type";
 
 interface AccountDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  user: any;
-  profile?: any;
+  user: CustomerProfile | null;
+  profile?: CustomerProfile;
 }
 
 const Icon = ({ path, isActive, className }: { path: string, isActive: boolean, className?: string }) => (
@@ -68,7 +70,7 @@ function DrawerContent({
   handleLogout,
   isPageMode,
 }: {
-  customer: any;
+  customer: CustomerProfile | null;
   loading: boolean;
   isLoggingOut: boolean;
   handleLogout: () => void;
@@ -200,7 +202,7 @@ function DrawerContent({
 }
 
 export default function AccountDrawer({ isOpen, onClose, user: initialUser, profile }: AccountDrawerProps) {
-  const [customer, setCustomer] = useState(profile || initialUser);
+  const [customer, setCustomer] = useState<CustomerProfile | null>(profile || initialUser);
   const [loading, setLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const pathname = usePathname();
@@ -244,7 +246,7 @@ export default function AccountDrawer({ isOpen, onClose, user: initialUser, prof
     if (profile) {
       setCustomer(profile);
     } else {
-      setCustomer((prev: any) => {
+      setCustomer((prev: CustomerProfile | null) => {
         if (prev?.firstName || prev?.lastName) {
           return prev;
         }
@@ -273,6 +275,8 @@ export default function AccountDrawer({ isOpen, onClose, user: initialUser, prof
         callbackUrl: "/customer/login",
         redirect: false,
       });
+
+      clearSessionCache();
 
       dispatch(clearUser());
       dispatch(clearCart());

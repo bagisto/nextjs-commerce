@@ -22,7 +22,7 @@ export function DownloadableProductSelector({
     const [selectedLinks, setSelectedLinks] = useState<string[]>([]);
     const lastSentRef = useRef<string>("");
 
-    const getTitle = (node: any) => {
+    const getTitle = (node: { translation?: { title?: string } | Array<{ title?: string }> }) => {
         if (!node.translation) return "Sample";
         if (Array.isArray(node.translation)) {
             return node.translation[0]?.title || "Sample";

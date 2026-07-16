@@ -1,6 +1,6 @@
 import { FC, Suspense } from "react";
 import { safeParse } from "@utils/helper";
-import { CategoryCarouselOptions, ProductCarouselOptions, ThemeCustomizationResponse } from "@/types/theme/theme-customization";
+import { CategoryCarouselOptions, ImageCarouselOptions, ProductCarouselOptions, ThemeCustomizationResponse } from "@/types/theme/theme-customization";
 import ImageCarousel from "./ImageCarousel";
 import ProductCarousel from "./ProductCarousel";
 import CategoryCarousel from "./CategoryCarousel";
@@ -8,6 +8,14 @@ import { MobileSearchBar } from "@components/layout/navbar/MobileSearch";
 import { CategoryCarouselSkeleton } from "@components/common/skeleton/CategoryCarouselSkeleton";
 import { ThemeSkeleton } from "@components/common/skeleton/ThemeSkeleton";
 import { ThreeItemGridSkeleton } from "@components/theme/ui/grid/ThreeItemsSkeleton";
+
+type ImageCarouselComponentOptions = {
+  images: {
+    image: string;
+    link: string;
+    title?: string;
+  }[];
+};
 
 interface RenderThemeCustomizationProps {
     themeCustomizations: ThemeCustomizationResponse['themeCustomizations'];
@@ -30,14 +38,17 @@ const RenderThemeCustomization: FC<RenderThemeCustomizationProps> = ({ themeCust
                     const translation = node.translations.edges.find(e => e.node.locale === 'en') || node.translations.edges[0];
                     if (!translation) return null;
 
-                    const options = safeParse(translation.node.options) || {};
+                    const options =
+                      safeParse<ImageCarouselOptions>(
+                        translation.node.options
+                      ) || ({} as ImageCarouselOptions);
                     if (Object.keys(options).length === 0) {
                         console.error("Error parsing options for", node.type);
                     }
 
                     switch (node.type) {
                         case "image_carousel":
-                            return <ImageCarousel key={node.id} options={options as any} />;
+                            return <ImageCarousel key={node.id} options={options as ImageCarouselComponentOptions} />;
                         case "product_carousel": {
                             productCarouselIndex++;
                             const opts = options as ProductCarouselOptions;

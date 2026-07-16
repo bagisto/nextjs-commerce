@@ -1,7 +1,8 @@
 import { getCustomerAddresses } from "@/utils/bagisto";
+import type { CustomerEdge, CustomerAddress } from "@/types/customer/type";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import ReviewPagination from "@/components/customer-detail/review/ReviewPagination"; 
+import ReviewPagination from "@/components/customer-detail/review/ReviewPagination";
 import AddressCard from "@/components/customer-detail/addresses/AddressCard";
 import Image from "next/image";
 import AccountBreadcrumbs from "@/components/layout/AccountBreadcrumbs";
@@ -79,7 +80,7 @@ export default async function AddressesPage({
             ) : (
                 <div className="flex flex-col w-full">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[1170px]">
-                        {addresses.map((edge: any) => (
+                        {addresses.map((edge: CustomerEdge<CustomerAddress>) => (
                             <AddressCard key={edge.node._id} address={edge.node} />
                         ))}
                     </div>

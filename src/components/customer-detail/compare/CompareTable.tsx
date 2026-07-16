@@ -13,6 +13,21 @@ import clsx from "clsx";
 import { IMAGES, CURRENCY_CODE } from "@/utils/constants";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { formatPrice } from "@utils/helper";
+import OrderPagination from "../orders/OrderPagination";
+import {
+    CompareProduct,
+    CompareProductView,
+    CompareReviewNode,
+    CompareItemNode,
+    CustomerEdge,
+} from "@/types/customer/type";
+
+interface CompareTableItem {
+    node?: CompareItemNode;
+    product?: CompareProduct;
+    id?: string;
+}
+
 
 
 const HtmlExpandable = ({ html }: { html: string }) => {
@@ -86,7 +101,7 @@ const StarCell = ({
     product,
     mobile,
 }: {
-    product: any;
+    product: CompareProductView;
     mobile?: boolean;
 }) => (
     <div
@@ -122,7 +137,21 @@ const StarCell = ({
     </div>
 );
 
-export default function CompareTable({ items }: { items: any[] }) {
+export default function CompareTable({
+    items,
+    totalPages,
+    currentPage,
+    nextCursor,
+    limit,
+    totalCount
+}: {
+    items: CompareTableItem[];
+    totalPages: number;
+    currentPage: number;
+    nextCursor?: string;
+    limit: number;
+    totalCount: number;
+}) {
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [isDeletingAll, setIsDeletingAll] = useState(false);
     const [addingToCartId, setAddingToCartId] = useState<string | null>(null);
@@ -157,7 +186,7 @@ export default function CompareTable({ items }: { items: any[] }) {
         setIsDeletingAll(false);
     };
 
-    const handleAddToCart = async (product: any) => {
+    const handleAddToCart = async (product: CompareProductView) => {
         const complexTypes = ["configurable", "downloadable", "booking", "bundle", "grouped"];
         if (complexTypes.includes(product.type)) {
             showToast("Please select product options before adding to cart", "warning");
@@ -176,12 +205,12 @@ export default function CompareTable({ items }: { items: any[] }) {
         setAddingToCartId(null);
     };
 
-    const products = items.map((item: any) => {
+    const products: CompareProductView[] = items.map((item: CompareTableItem) => {
         const product = item?.node?.product || item?.product;
         const reviews = product?.reviews;
         const reviewEdges = reviews?.edges || [];
         const totalRating = reviewEdges.reduce(
-            (acc: number, edge: any) => acc + (edge?.node?.rating || 0),
+            (acc: number, edge: CustomerEdge<CompareReviewNode>) => acc + (edge?.node?.rating || 0),
             0
         );
         const avgRating =
@@ -200,10 +229,16 @@ export default function CompareTable({ items }: { items: any[] }) {
             formattedMinimumPrice,
             formattedPrice,
             formattedMaximumPrice,
-        };
+        } as CompareProductView;
     });
 
-    const compareFields = [
+    const compareFields: {
+        label: string;
+        key: keyof CompareProductView;
+        customRender?: boolean;
+        isHtml?: boolean;
+        getValue?: (val: unknown) => string;
+    }[] = [
         { label: "Customer Ratings", key: "avgRating", customRender: true },
         { label: "Product Name", key: "name" },
         { label: "Price", key: "formattedMinimumPrice" },
@@ -212,7 +247,7 @@ export default function CompareTable({ items }: { items: any[] }) {
         {
             label: "Availability",
             key: "guestCheckout",
-            getValue: (val: any) => (val === "1" ? "In Stock" : "Out of Stock"),
+            getValue: (val: unknown) => (val === "1" ? "In Stock" : "Out of Stock"),
         },
     ];
 
@@ -355,10 +390,10 @@ export default function CompareTable({ items }: { items: any[] }) {
                                                     {field.getValue(product[field.key])}
                                                 </span>
                                             ) : field.isHtml ? (
-                                                <HtmlExpandable html={product[field.key]} />
+                                                <HtmlExpandable html={product[field.key] as string} />
                                             ) : (
                                                 <span className="font-outfit text-base text-neutral-600 dark:text-selected-white">
-                                                    {product[field.key] || "N/A"}
+                                                    {(product[field.key] as string) || "N/A"}
                                                 </span>
                                             )}
                                         </td>
@@ -366,8 +401,20 @@ export default function CompareTable({ items }: { items: any[] }) {
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
-                </ScrollableContainer>
+                        </table>
+                    </ScrollableContainer>
+                    {totalPages > 1 && (
+                        <div className="flex flex-row justify-between items-center h-10 mt-6 px-4">
+                            <p className="font-outfit font-normal text-xs leading-[20px] text-black dark:text-white">
+                                Showing {(currentPage - 1) * limit + 1} to {Math.min((currentPage - 1) * limit + products.length, totalCount)} of {totalCount} entries
+                            </p>
+                            <OrderPagination
+                                totalPages={totalPages}
+                                currentPage={currentPage}
+                                nextCursor={nextCursor}
+                            />
+                        </div>
+                    )}
             </div>
 
             <div className="hidden lg:block w-full">
@@ -496,9 +543,9 @@ export default function CompareTable({ items }: { items: any[] }) {
                                                     ) : field.getValue ? (
                                                         field.getValue(product[field.key])
                                                     ) : field.isHtml ? (
-                                                        <HtmlExpandable html={product[field.key]} />
+                                                        <HtmlExpandable html={product[field.key] as string} />
                                                     ) : (
-                                                        product[field.key] || "N/A"
+                                                        (product[field.key] as string) || "N/A"
                                                     )}
                                                 </div>
                                             </td>
@@ -508,6 +555,18 @@ export default function CompareTable({ items }: { items: any[] }) {
                             </tbody>
                         </table>
                     </ScrollableContainer>
+                    {totalPages > 1 && (
+                        <div className="flex flex-row justify-between items-center h-10 mt-6 px-4">
+                            <p className="font-outfit font-normal text-xs leading-[20px] text-black dark:text-white">
+                                Showing {(currentPage - 1) * limit + 1} to {Math.min((currentPage - 1) * limit + products.length, totalCount)} of {totalCount} entries
+                            </p>
+                            <OrderPagination
+                                totalPages={totalPages}
+                                currentPage={currentPage}
+                                nextCursor={nextCursor}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

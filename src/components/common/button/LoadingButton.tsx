@@ -35,14 +35,13 @@ export function Button({
       type={type ?? "reset"}
       {...rest}
     >
-      <div className="mx-2 flex items-center justify-center gap-2">
-        {loading ? (
-          <>
-            <LoadingDots className="bg-white" />
-            <span>loading</span>
-          </>
-        ) : (
-          <span>{title}</span>
+      <div className="relative flex items-center justify-center w-full">
+        <span className={clsx(loading ? "invisible" : "visible")}>{title}</span>
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center gap-2">
+            <LoadingDots className="bg-current" />
+            <span className="">loading</span>
+          </div>
         )}
       </div>
     </button>

@@ -10,6 +10,104 @@ import {
   ImageInfo,
 } from "@/types/types";
 import {
+  CustomerProfile,
+  UpdateCustomerProfileInput,
+  CreateCustomerAddressInput,
+  CustomerOrdersConnection,
+  CustomerOrderDetail,
+  CustomerDownloadableProductsConnection,
+  CustomerReviewsConnection,
+  CustomerAddressesConnection,
+  WishlistConnection,
+  WishlistItemNode,
+  CustomerEdge,
+  WishlistIdsConnection,
+  CompareItemsConnection,
+  CompareIdsConnection,
+  CustomerAddress,
+} from "@/types/customer/type";
+import { AddToCartData } from "@/types/cart/type";
+
+interface MutationResult<T = unknown> {
+  success: boolean;
+  data?: T | null;
+  message?: string;
+}
+
+interface AddressLike {
+  _id?: string | number;
+  id?: string | number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  address1?: string;
+  address?: string;
+  address2?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postcode?: string;
+  phone?: string;
+}
+
+interface UpdateCustomerProfileData {
+  createCustomerProfileUpdate?: {
+    customerProfileUpdate?: CustomerProfile;
+  };
+}
+
+interface CreateAddUpdateCustomerAddressData {
+  createAddUpdateCustomerAddress?: {
+    addUpdateCustomerAddress?: CustomerAddress;
+  };
+}
+
+interface DeleteCustomerAddressData {
+  createDeleteCustomerAddress?: {
+    deleteCustomerAddress?: unknown;
+  };
+}
+
+interface ToggleWishlistPayload {
+  wishlist?: unknown;
+}
+
+interface ToggleWishlistData {
+  toggleWishlist?: ToggleWishlistPayload;
+}
+
+interface DeleteWishlistData {
+  deleteWishlist?: {
+    wishlist?: unknown;
+  };
+}
+
+interface MoveWishlistToCartData {
+  moveWishlistToCart?: {
+    wishlistToCart?: unknown;
+  };
+}
+
+interface CreateCompareItemData {
+  createCompareItem?: {
+    compareItem?: unknown;
+  };
+}
+
+interface DeleteCompareItemData {
+  deleteCompareItem?: {
+    compareItem?: unknown;
+  };
+}
+
+interface DeleteAllCompareItemsData {
+  createDeleteAllCompareItems?: {
+    deleteAllCompareItems?: {
+      message?: string;
+    };
+  };
+}
+import {
   BAGISTO_SESSION,
   HIDDEN_PRODUCT_TAG,
   STOREFRONT_KEY,
@@ -265,8 +363,9 @@ export async function createUserToLogin(
     });
 
     return res.body.data.createCustomer.customer;
-  } catch (error: any) {
-    throw new Error(error?.message || "Registration failed");
+  } catch (error: unknown) {
+    const err = error as { message?: string };
+    throw new Error(err?.message || "Registration failed");
   }
 }
 
@@ -444,7 +543,7 @@ export async function getPage(input: { urlKey: string }): Promise<PageData[]> {
 export const getCustomerProfile = cache(async () => {
   try {
     const res = await bagistoFetch<{
-      data: { readCustomerProfile: any };
+      data: { readCustomerProfile: CustomerProfile };
     }>({
       query: GET_CUSTOMER_PROFILE,
       cache: "no-store",
@@ -452,15 +551,30 @@ export const getCustomerProfile = cache(async () => {
     });
 
     return res.body.data?.readCustomerProfile;
-  } catch (error) {
+  } catch (error: unknown) {
+    
+    const err = error as { digest?: string; message?: string };
+
+    if (
+      err?.digest === "HANGING_PROMISE_REJECTION" || 
+      err?.message?.includes("cookies()")
+    ) {
+      throw error;
+    }
+
     console.error("getCustomerProfile error:", error);
     return null;
   }
 });
 
-export async function updateCustomerProfile(input: any) {
+export async function updateCustomerProfile(
+  input: UpdateCustomerProfileInput,
+): Promise<MutationResult<CustomerProfile>> {
   try {
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: UpdateCustomerProfileData;
+      variables: { input: UpdateCustomerProfileInput };
+    }>({
       query: UPDATE_CUSTOMER_PROFILE,
       variables: { input },
       cache: "no-store",
@@ -469,13 +583,14 @@ export async function updateCustomerProfile(input: any) {
 
     return {
       success: true,
-      data: res.body.data?.createCustomerProfileUpdate?.customerProfileUpdate
+      data: res.body.data?.createCustomerProfileUpdate?.customerProfileUpdate,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("updateCustomerProfile error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
@@ -483,8 +598,8 @@ export async function updateCustomerProfile(input: any) {
 export async function getCustomerOrders(variables?: { first?: number; after?: string }) {
   try {
     const res = await bagistoFetch<{
-      data: { customerOrders: any };
-      variables: any;
+      data: { customerOrders: CustomerOrdersConnection };
+      variables: { first?: number; after?: string };
     }>({
       query: GET_CUSTOMER_ORDERS,
       variables: variables || { first: 10 },
@@ -502,8 +617,8 @@ export async function getCustomerOrders(variables?: { first?: number; after?: st
 export async function getCustomerOrder(id: string) {
   try {
     const res = await bagistoFetch<{
-      data: { customerOrder: any };
-      variables: any;
+      data: { customerOrder: CustomerOrderDetail };
+      variables: { id: string };
     }>({
       query: GET_CUSTOMER_ORDER,
       variables: { id },
@@ -527,8 +642,8 @@ export async function getCustomerDownloadableProducts({
 }) {
   try {
     const res = await bagistoFetch<{
-      data: { customerDownloadableProducts: any };
-      variables: any;
+      data: { customerDownloadableProducts: CustomerDownloadableProductsConnection };
+      variables: { first: number; after: string | null };
     }>({
       query: GET_CUSTOMER_DOWNLOADABLE_PRODUCTS,
       variables: { first, after },
@@ -552,8 +667,8 @@ export async function getCustomerReviews({
 }) {
   try {
     const res = await bagistoFetch<{
-      data: { customerReviews: any };
-      variables: any;
+      data: { customerReviews: CustomerReviewsConnection };
+      variables: { first: number; after: string | null };
     }>({
       query: GET_CUSTOMER_REVIEWS,
       variables: { first, after },
@@ -576,8 +691,8 @@ export async function getCustomerAddresses({
 }) {
   try {
     const res = await bagistoFetch<{
-      data: { getCustomerAddresses: any };
-      variables: any;
+      data: { getCustomerAddresses: CustomerAddressesConnection };
+      variables: { first: number; after: string | null };
     }>({
       query: GET_CUSTOMER_ADDRESSES,
       variables: { first, after },
@@ -592,9 +707,14 @@ export async function getCustomerAddresses({
   }
 }
 
-export async function createCustomerAddress(input: any) {
+export async function createCustomerAddress(
+  input: CreateCustomerAddressInput,
+): Promise<MutationResult<CustomerAddress>> {
   try {
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: CreateAddUpdateCustomerAddressData;
+      variables: { input: CreateCustomerAddressInput };
+    }>({
       query: CREATE_CUSTOMER_ADDRESS,
       variables: { input },
       cache: "no-store",
@@ -603,21 +723,27 @@ export async function createCustomerAddress(input: any) {
 
     return {
       success: true,
-      data: res.body.data?.createAddUpdateCustomerAddress?.addUpdateCustomerAddress
+      data: res.body.data?.createAddUpdateCustomerAddress?.addUpdateCustomerAddress,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("createCustomerAddress error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
 
-export async function deleteCustomerAddress(addressId: string) {
+export async function deleteCustomerAddress(
+  addressId: string,
+): Promise<MutationResult> {
   try {
     const { DELETE_CUSTOMER_ADDRESS } = await import('@/graphql/customer/mutations');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: DeleteCustomerAddressData;
+      variables: { input: { addressId: number } };
+    }>({
       query: DELETE_CUSTOMER_ADDRESS,
       variables: { input: { addressId: parseInt(addressId) } },
       cache: "no-store",
@@ -626,23 +752,26 @@ export async function deleteCustomerAddress(addressId: string) {
 
     return {
       success: true,
-      data: res.body.data?.createDeleteCustomerAddress?.deleteCustomerAddress
+      data: res.body.data?.createDeleteCustomerAddress?.deleteCustomerAddress,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("deleteCustomerAddress error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
 
-export async function setDefaultAddress(address: any) {
+export async function setDefaultAddress(
+  address: AddressLike,
+): Promise<MutationResult<CustomerAddress>> {
   try {
     const { CREATE_CUSTOMER_ADDRESS } = await import('@/graphql/customer/mutations');
 
     const input = {
-      addressId: parseInt(address._id || address.id),
+      addressId: parseInt(address._id as string) || parseInt(address.id as string),
       firstName: address.firstName,
       lastName: address.lastName,
       email: address.email,
@@ -654,10 +783,13 @@ export async function setDefaultAddress(address: any) {
       postcode: address.postcode,
       phone: address.phone,
       defaultAddress: true,
-      useForShipping: true
+      useForShipping: true,
     };
 
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: CreateAddUpdateCustomerAddressData;
+      variables: { input: Record<string, unknown> };
+    }>({
       query: CREATE_CUSTOMER_ADDRESS,
       variables: { input },
       cache: "no-store",
@@ -666,13 +798,14 @@ export async function setDefaultAddress(address: any) {
 
     return {
       success: true,
-      data: res.body.data?.createAddUpdateCustomerAddress?.addUpdateCustomerAddress
+      data: res.body.data?.createAddUpdateCustomerAddress?.addUpdateCustomerAddress,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("setDefaultAddress error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
@@ -680,7 +813,10 @@ export async function setDefaultAddress(address: any) {
 export async function getCustomerAddress(id: string) {
   try {
     const { GET_CUSTOMER_ADDRESS } = await import('@/graphql/customer/queries/GetCustomerAddress');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: { customerAddress: CustomerAddress };
+      variables: { id: string };
+    }>({
       query: GET_CUSTOMER_ADDRESS,
       variables: { id },
       cache: "no-store",
@@ -694,10 +830,15 @@ export async function getCustomerAddress(id: string) {
   }
 }
 
-export async function toggleWishlist(productId: string | number) {
+export async function toggleWishlist(
+  productId: string | number,
+): Promise<MutationResult<ToggleWishlistPayload>> {
   try {
     const { TOGGLE_WISHLIST_MUTATION } = await import('@/graphql/catalog/mutations');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: ToggleWishlistData;
+      variables: { input: { productId: number } };
+    }>({
       query: TOGGLE_WISHLIST_MUTATION,
       variables: { input: { productId: typeof productId === 'string' ? parseInt(productId.split('/').pop() || '0') : productId } },
       cache: "no-store",
@@ -706,19 +847,20 @@ export async function toggleWishlist(productId: string | number) {
 
     return {
       success: true,
-      data: res.body.data?.toggleWishlist
+      data: res.body.data?.toggleWishlist,
     };
-  } catch (error: any) {
-    if (error?.message?.toLowerCase()?.includes("removed from wishlist")) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
+    if (err?.message?.toLowerCase()?.includes("removed from wishlist")) {
       return {
         success: true,
-        data: null
+        data: null,
       };
     }
     console.error("toggleWishlist error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
@@ -726,13 +868,19 @@ export async function toggleWishlist(productId: string | number) {
 export async function getCustomerWishlist() {
   try {
     const { GET_WISHLISTS } = await import('@/graphql/customer/queries/GetWishlists');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: { wishlists: WishlistConnection };
+    }>({
       query: GET_WISHLISTS,
       cache: "no-store",
       isCookies: true,
     });
 
-    return res.body.data?.wishlists?.edges?.map((edge: any) => edge.node) || [];
+    return (
+      res.body.data?.wishlists?.edges?.map(
+        (edge: CustomerEdge<WishlistItemNode>) => edge.node,
+      ) || []
+    );
   } catch (error) {
     console.error("getCustomerWishlist error:", error);
     return [];
@@ -742,7 +890,10 @@ export async function getCustomerWishlist() {
 export async function getWishlistItem(id: string) {
   try {
     const { GET_WISHLIST } = await import('@/graphql/customer/queries/GetWishlist');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: { wishlist: Record<string, unknown> };
+      variables: { id: string };
+    }>({
       query: GET_WISHLIST,
       variables: { id },
       cache: "no-store",
@@ -750,8 +901,8 @@ export async function getWishlistItem(id: string) {
     });
 
     return res.body.data?.wishlist;
-  } catch (error) {
-    if ((error as any)?.extensions?.status === 400) {
+  } catch (error: unknown) {
+    if ((error as { extensions?: { status?: number } })?.extensions?.status === 400) {
       return null;
     }
     console.error("getWishlistItem error:", error);
@@ -762,7 +913,10 @@ export async function getWishlistItem(id: string) {
 export async function getAllWishlists(variables?: { first?: number; after?: string }) {
   try {
     const { GET_ALL_WISHLISTS } = await import('@/graphql/customer/queries/GetAllWishlists');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: { wishlists: WishlistConnection };
+      variables: { first?: number; after?: string };
+    }>({
       query: GET_ALL_WISHLISTS,
       variables: variables || { first: 10 },
       cache: "no-store",
@@ -779,7 +933,10 @@ export async function getAllWishlists(variables?: { first?: number; after?: stri
 export async function getWishlistIds(variables?: { first?: number; after?: string }) {
   try {
     const { GET_WISHLIST_IDS } = await import('@/graphql/customer/queries/GetWishlistIds');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: { wishlists: WishlistIdsConnection };
+      variables: { first?: number; after?: string };
+    }>({
       query: GET_WISHLIST_IDS,
       variables: variables || { first: 500 },
       cache: "no-store",
@@ -793,10 +950,15 @@ export async function getWishlistIds(variables?: { first?: number; after?: strin
   }
 }
 
-export async function deleteWishlistItem(id: string) {
+export async function deleteWishlistItem(
+  id: string,
+): Promise<MutationResult> {
   try {
     const { DELETE_WISHLIST_ITEM } = await import('@/graphql/customer/mutations/DeleteWishlist');
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: DeleteWishlistData;
+      variables: { input: { id: string } };
+    }>({
       query: DELETE_WISHLIST_ITEM,
       variables: { input: { id } },
       cache: "no-store",
@@ -805,30 +967,37 @@ export async function deleteWishlistItem(id: string) {
 
     return {
       success: true,
-      data: res.body.data?.deleteWishlist?.wishlist
+      data: res.body.data?.deleteWishlist?.wishlist,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("deleteWishlistItem error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
 
-export async function moveWishlistToCart(wishlistItemId: string, quantity: number) {
+export async function moveWishlistToCart(
+  wishlistItemId: string,
+  quantity: number,
+): Promise<MutationResult> {
   try {
     const { MOVE_WISHLIST_TO_CART } = await import('@/graphql/customer/mutations/MoveWishlistToCart');
     const { extractNumericId } = await import('@/utils/helper');
     const numericId = extractNumericId(wishlistItemId);
 
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: MoveWishlistToCartData;
+      variables: { input: { wishlistItemId: number; quantity: number } };
+    }>({
       query: MOVE_WISHLIST_TO_CART,
-      variables: { 
-        input: { 
+      variables: {
+        input: {
           wishlistItemId: parseInt(numericId || '0'),
-          quantity 
-        } 
+          quantity,
+        },
       },
       cache: "no-store",
       isCookies: true,
@@ -836,28 +1005,34 @@ export async function moveWishlistToCart(wishlistItemId: string, quantity: numbe
 
     return {
       success: true,
-      data: res.body.data?.moveWishlistToCart?.wishlistToCart
+      data: res.body.data?.moveWishlistToCart?.wishlistToCart,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("moveWishlistToCart error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
 
-export async function createCompareItem(productId: string | number) {
+export async function createCompareItem(
+  productId: string | number,
+): Promise<MutationResult> {
   try {
 
     const numericId = extractNumericId(productId);
 
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: CreateCompareItemData;
+      variables: { input: { productId: number } };
+    }>({
       query: CREATE_COMPARE_ITEM,
-      variables: { 
-        input: { 
-          productId: parseInt(numericId || '0')
-        } 
+      variables: {
+        input: {
+          productId: parseInt(numericId || '0'),
+        },
       },
       cache: "no-store",
       isCookies: true,
@@ -865,13 +1040,14 @@ export async function createCompareItem(productId: string | number) {
 
     return {
       success: true,
-      data: res.body.data?.createCompareItem?.compareItem
+      data: res.body.data?.createCompareItem?.compareItem,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("createCompareItem error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
@@ -880,7 +1056,10 @@ export async function getCompareItems(variables?: { first?: number; after?: stri
   try {
     const { GET_COMPARE_ITEMS } = await import('@/graphql');
     
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: { compareItems: CompareItemsConnection };
+      variables: { first?: number; after?: string };
+    }>({
       query: GET_COMPARE_ITEMS,
       variables: variables || { first: 10 },
       cache: "no-store",
@@ -898,7 +1077,10 @@ export async function getCompareIds(variables?: { first?: number; after?: string
   try {
     const { GET_COMPARE_IDS } = await import('@/graphql/customer/queries/GetCompareIds');
 
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: { compareItems: CompareIdsConnection };
+      variables: { first?: number; after?: string };
+    }>({
       query: GET_COMPARE_IDS,
       variables: variables || { first: 500 },
       cache: "no-store",
@@ -912,11 +1094,16 @@ export async function getCompareIds(variables?: { first?: number; after?: string
   }
 }
 
-export async function deleteCompareItem(id: string) {
+export async function deleteCompareItem(
+  id: string,
+): Promise<MutationResult> {
   try {
     const { DELETE_COMPARE_ITEM } = await import('@/graphql');
     
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: DeleteCompareItemData;
+      variables: { input: { id: string } };
+    }>({
       query: DELETE_COMPARE_ITEM,
       variables: { input: { id } },
       cache: "no-store",
@@ -925,22 +1112,25 @@ export async function deleteCompareItem(id: string) {
 
     return {
       success: !!res.body.data?.deleteCompareItem?.compareItem,
-      message: res.body.data?.deleteCompareItem?.compareItem ? "Product removed from comparison" : "Failed to remove product"
+      message: res.body.data?.deleteCompareItem?.compareItem ? "Product removed from comparison" : "Failed to remove product",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("deleteCompareItem error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
 
-export async function deleteAllCompareItems() {
+export async function deleteAllCompareItems(): Promise<MutationResult> {
   try {
     const { DELETE_ALL_COMPARE_ITEMS } = await import('@/graphql');
     
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: DeleteAllCompareItemsData;
+    }>({
       query: DELETE_ALL_COMPARE_ITEMS,
       cache: "no-store",
       isCookies: true,
@@ -948,27 +1138,34 @@ export async function deleteAllCompareItems() {
 
     return {
       success: !!res.body.data?.createDeleteAllCompareItems?.deleteAllCompareItems,
-      message: res.body.data?.createDeleteAllCompareItems?.deleteAllCompareItems?.message || "All items removed from comparison"
+      message: res.body.data?.createDeleteAllCompareItems?.deleteAllCompareItems?.message || "All items removed from comparison",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("deleteAllCompareItems error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }
 
-export async function addProductToCart(productId: string | number, quantity: number) {
+export async function addProductToCart(
+  productId: string | number,
+  quantity: number,
+): Promise<MutationResult> {
   try {
     const { CREATE_ADD_PRODUCT_IN_CART } = await import('@/graphql/cart/mutations');
     const numericId = extractNumericId(productId);
 
-    const res = await bagistoFetch<any>({
+    const res = await bagistoFetch<{
+      data: AddToCartData;
+      variables: { productId: number; quantity: number };
+    }>({
       query: CREATE_ADD_PRODUCT_IN_CART,
-      variables: { 
+      variables: {
         productId: parseInt(numericId || '0'),
-        quantity 
+        quantity,
       },
       cache: "no-store",
       isCookies: true,
@@ -976,13 +1173,14 @@ export async function addProductToCart(productId: string | number, quantity: num
 
     return {
       success: res.body.data?.createAddProductInCart?.addProductInCart?.success || false,
-      message: res.body.data?.createAddProductInCart?.addProductInCart?.message || "Product added to cart"
+      message: res.body.data?.createAddProductInCart?.addProductInCart?.message || "Product added to cart",
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("addProductToCart error:", error);
     return {
       success: false,
-      message: error?.message || "Something went wrong"
+      message: err?.message || "Something went wrong",
     };
   }
 }

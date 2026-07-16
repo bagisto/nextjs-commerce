@@ -376,7 +376,7 @@ function CheckoutButton({
   isSelectShipping,
   isSelectPayment,
 }: {
-  cartDetails: Array<any>;
+  cartDetails: CartItemEdge[];
   isGuest: boolean;
   isEmail: string;
   isSelectAddress: boolean;

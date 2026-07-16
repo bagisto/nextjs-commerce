@@ -26,6 +26,9 @@ import CategoryHeaderClient from "@components/layout/navbar/CategoryHeaderClient
 import { extractNumericId, findCategoryBySlug, buildProductFilters } from "@utils/helper";
 
 
+export const dynamicParams = true;
+
+
 export async function generateMetadata({
   params,
 }: {

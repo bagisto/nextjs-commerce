@@ -1,6 +1,7 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { Metadata } from "next";
-import { CartItem, FilterDataTypes } from "@/types/types";
+import { FilterDataTypes } from "@/types/types";
+import { CartItemEdge, CartItemsConnection } from "@/types/cart/type";
 import { isArray } from "./type-guards";
 import { BASE_URL, baseUrl } from "./constants";
 import { ProductData } from "@components/catalog/type";
@@ -126,8 +127,27 @@ export function formatDate(dateStr: string): string {
   return dateObj.toLocaleDateString("en-US", options);
 }
 
+export const isShippingRequired = (
+  cartOrItems:
+    | CartItemEdge[]
+    | { items?: CartItemsConnection }
+    | null
+    | undefined,
+): boolean => {
+  const items = Array.isArray(cartOrItems)
+    ? cartOrItems
+    : cartOrItems?.items?.edges || [];
+
+  if (items.length === 0) return false;
+
+  return items.some((item) => {
+    const type = item?.node?.type;
+    return type !== "virtual" && type !== "downloadable" && type !== "booking";
+  });
+};
+
 export const isCheckout = (
-  items: Array<CartItem>,
+  items: Array<CartItemEdge>,
   isGuest: boolean,
   email: string,
   isSeclectAddress: boolean,
@@ -342,7 +362,7 @@ export const parseCsv = (value?: string) =>
     .filter(Boolean) ?? [];
 
 
-export default function safeArray<T = any>(value: T[] | null | undefined): T[] {
+export default function safeArray<T = unknown>(value: T[] | null | undefined): T[] {
   if (value == null) return [];
   return Array.isArray(value) ? value : [];
 }
@@ -383,7 +403,10 @@ export function safePriceValue(product: ProductData): number {
   return 0;
 }
 
-export function safeCurrencyCode(product: ProductData): string {
+export function safeCurrencyCode(product: {
+  priceHtml?: { currencyCode?: string } | null;
+  price?: string | number | { value?: number; currencyCode?: string } | null;
+}): string {
   if (product?.priceHtml?.currencyCode) return product.priceHtml.currencyCode;
 
   if (
@@ -398,12 +421,12 @@ export function safeCurrencyCode(product: ProductData): string {
   return "USD";
 }
 
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: never[]) => unknown>(
   func: T,
   limit: number,
 ): (...args: Parameters<T>) => void {
   let inThrottle: boolean = false;
-  return function (this: any, ...args: Parameters<T>) {
+  return function (this: unknown, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args);
       inThrottle = true;
@@ -441,10 +464,10 @@ export const getAuthToken = (req: Request): string | undefined => {
   return authHeader?.split(" ")[1];
 };
 
-export function safeParse<T = any>(value: string | null | undefined): T | null {
+export function safeParse<T = unknown>(value: string | null | undefined): T | null {
   if (!value || typeof value !== "string") return null;
   try {
-    return JSON.parse(value);
+    return JSON.parse(value) as T;
   } catch {
     return null;
   }
@@ -520,20 +543,6 @@ export function getAverageRating(reviews: ProductReview[]): number {
   const total = reviews.reduce((sum, review) => sum + review.rating, 0);
   return total / reviews.length;
 }
-
-export const isShippingRequired = (cartOrItems: any): boolean => {
-  const items = Array.isArray(cartOrItems)
-    ? cartOrItems
-    : cartOrItems?.items?.edges || [];
-
-  if (items.length === 0) return false;
-
-  return items.some((item: any) => {
-    const type = item?.node ? item.node.type : item.type;
-    return type !== "virtual" && type !== "downloadable" && type !== "booking";
-  });
-};
-
 
 export const resolveCardPrice = (product: {
   type?: string;

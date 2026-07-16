@@ -14,9 +14,16 @@ import { safeParse } from "@/utils/helper";
 import { JSX } from "react";
 const { COMPANY_NAME } = process.env;
 
-export default async function Footer() {
+async function getCopyrightDate() {
+
+ 
   const currentYear = new Date().getFullYear();
-  const copyrightDate = 2010 + (currentYear > 2010 ? `-${currentYear}` : "");
+  return 2010 + (currentYear > 2010 ? `-${currentYear}` : "");
+}
+
+export default async function Footer() {
+
+  const copyrightDate = await getCopyrightDate();
   const skeleton =
     "w-full h-6 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700";
   const menu = await getThemeCustomization();

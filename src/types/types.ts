@@ -25,7 +25,7 @@ export type Edge<T> = {
 };
 
 export type Cart = Omit<BagistoCart, "lines"> & {
-  lines: any;
+  lines: unknown[];
 };
 
 

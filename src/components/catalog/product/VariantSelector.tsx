@@ -1,28 +1,24 @@
 "use client";
 
 import { AttributeData, AttributeOptionNode } from "@/types/types";
-import { createUrl, getValidTitle } from "@/utils/helper";
+import { getValidTitle } from "@/utils/helper";
 import clsx from "clsx";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export function VariantSelector({
   variants,
-  setUserInteracted,
+  selectedOptions,
+  onSelectOption,
 }: {
   variants: AttributeData[];
-  setUserInteracted: React.Dispatch<React.SetStateAction<boolean>>;
-  possibleOptions: Record<string, number[]>;
+  selectedOptions: Record<string, string>;
+  onSelectOption: (attributeCode: string, optionId: string) => void;
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   if (!variants?.length) return null;
 
   return (
     <>
       {variants.map((option , index : number) => {
         const attributeCode = option.code;
-        const _isAlreadySelected = searchParams.has(attributeCode);
         return (
           <dl key={`${option.id} + ${index}` } className="mb-8">
             <dt className="mb-4 text-sm capitalize tracking-wide">
@@ -31,12 +27,8 @@ export function VariantSelector({
 
             <dd className="flex flex-wrap gap-3">
               {(option.options as AttributeOptionNode[]).map((node) => {
-                const isActive = searchParams.get(attributeCode) === String(node.id);
+                const isActive = selectedOptions[attributeCode] === String(node.id);
                 const isAvailable = node?.isValid;
-                const nextParams = new URLSearchParams(searchParams.toString());
-                nextParams.set(attributeCode, String(node.id));
-
-                const optionUrl = createUrl(pathname, nextParams);
 
                 return (
                   <button
@@ -44,14 +36,13 @@ export function VariantSelector({
                     disabled={!isAvailable}
                     onClick={() => {
                       if (!isAvailable) return;
-                      router.replace(optionUrl, { scroll: false });
-                      setUserInteracted(true);
+                      onSelectOption(attributeCode, String(node.id));
                     }}
                     className={clsx(
                       "flex min-w-12 cursor-pointer items-center justify-center rounded-lg bg-neutral-100 px-3.5 py-2.5 text-sm dark:border-neutral-800 dark:bg-neutral-800",
                       {
                         "cursor-default ring-2 ring-primary text-primary": isActive,
-                        "ring-[0] transition duration-300 ease-in-out hover:scale-110 hover:border-primary":
+                        "ring-[0] transition duration-300 ease-in-out hover:border-primary":
                           !isActive && isAvailable,
                         "relative z-10 cursor-not-allowed overflow-hidden bg-neutral-100 text-selected-black ring-1 ring-neutral-300 before:absolute before:inset-x-0 before:-z-10 before:h-px before:-rotate-45 before:bg-neutral-300 before:transition-transform dark:bg-neutral-900 dark:text-selected-white dark:ring-neutral-700 before:dark:bg-neutral-700":
                           !isAvailable,

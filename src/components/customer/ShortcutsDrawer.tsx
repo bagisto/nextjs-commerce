@@ -9,7 +9,7 @@ import { getThemeCustomizationAction, userSubscribe } from "@/utils/actions";
 import FaceBookIcon from "@components/common/icons/social-icon/FaceBookIcon";
 import InstaGramIcon from "@components/common/icons/social-icon/InstaGramIcon";
 import TwitterIcon from "@components/common/icons/social-icon/TwitterIcon";
-import { ThemeOptions } from "@/types/theme/theme-customization";
+import { ThemeOptions, FooterColumns, ThemeCustomizationResult } from "@/types/theme/theme-customization";
 import { safeParse } from "@/utils/helper";
 import { isArray } from "@/utils/type-guards";
 import { useForm } from "react-hook-form";
@@ -36,7 +36,7 @@ const getUrlparams = (url: string) => {
 export default function ShortcutsDrawer({ isOpen, onClose, onNavigate }: ShortcutsDrawerProps) {
   const { setTheme, resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const [footerData, setFooterData] = useState<any>(null);
+  const [footerData, setFooterData] = useState<ThemeCustomizationResult | null>(null);
 
   const [loading, setLoading] = useState<boolean>(false);
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<{email: string}>({ mode: "onSubmit" });
@@ -48,7 +48,7 @@ export default function ShortcutsDrawer({ isOpen, onClose, onNavigate }: Shortcu
     const formData = new FormData();
     formData.append("email", data.email);
     setLoading(true);
-    const result = await userSubscribe(undefined as any, formData);
+    const result = await userSubscribe({}, formData);
     setStatus(result?.errors || null);
     if (result?.errors?.apiRes?.status) {
       reset();
@@ -75,13 +75,13 @@ export default function ShortcutsDrawer({ isOpen, onClose, onNavigate }: Shortcu
 
   const footerLinksNode = footerData?.footer_links?.themeCustomizations?.edges?.[0]?.node;
   const footerTranslation = footerLinksNode?.translations?.edges?.[0]?.node;
-  const footerOptions = typeof footerTranslation?.options === "string"
-    ? safeParse(footerTranslation.options)
-    : footerTranslation?.options;
+  const footerOptions = (typeof footerTranslation?.options === "string"
+    ? safeParse<FooterColumns>(footerTranslation.options)
+    : footerTranslation?.options) as FooterColumns | null | undefined;
 
-  let column1 = footerOptions?.column_1 || [];
-  let column2 = footerOptions?.column_2 || [];
-  const socialLinks = footerOptions?.column_3 || [];
+  let column1: ThemeOptions[] = footerOptions?.column_1 || [];
+  let column2: ThemeOptions[] = footerOptions?.column_2 || [];
+  const socialLinks: ThemeOptions[] = footerOptions?.column_3 || [];
 
   const aboutUsIndexCol2 = column2.findIndex((i: ThemeOptions) => i.title.toLowerCase() === 'about us');
   const shippingIndexCol1 = column1.findIndex((i: ThemeOptions) => i.title.toLowerCase() === 'shipping');

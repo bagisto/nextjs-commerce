@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { clearSessionCache } from "@/lib/apollo-client";
 import { useCustomToast } from "@/utils/hooks/useToast";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearUser } from "@/store/slices/user-slice";
@@ -16,9 +17,10 @@ import LoadingDots from "@components/common/icons/LoadingDots";
 import AccountBreadcrumbs from "@/components/layout/AccountBreadcrumbs";
 import MobileNavHeader from "@/components/layout/navbar/MobileNavHeader";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
+import type { CustomerProfile } from "@/types/customer/type";
 
 interface ProfileDetailsProps {
-  user: any;
+  user: CustomerProfile;
 }
 
 export default function ProfileDetails({ user }: ProfileDetailsProps) {
@@ -50,6 +52,8 @@ export default function ProfileDetails({ user }: ProfileDetailsProps) {
         callbackUrl: "/customer/login",
         redirect: false,
       });
+
+      clearSessionCache();
 
       dispatch(clearUser());
       dispatch(clearCart());

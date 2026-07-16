@@ -1,4 +1,5 @@
 import CredentialModal from "./CredentialModal";
+import { CustomerProfile } from "@/types/customer/type";
 
 export default function UserAccount({
   children,
@@ -13,7 +14,7 @@ export default function UserAccount({
   onOpen?: () => void;
   onClose?: () => void;
   isOpen?: boolean;
-  profile?: any;
+  profile?: CustomerProfile;
 }) {
   return (
     <CredentialModal 

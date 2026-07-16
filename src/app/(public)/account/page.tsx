@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import AccountDrawer from "@/components/customer/AccountDrawer";
+import { BagistoUser } from "@/types/types";
 
 export default function AccountPage() {
   const { data: session, status } = useSession();
@@ -24,7 +25,7 @@ export default function AccountPage() {
       <AccountDrawer
         isOpen={true}
         onClose={() => {}}
-        user={session.user}
+        user={session.user as unknown as BagistoUser}
       />
     </div>
   );

@@ -1,12 +1,27 @@
 import { useCustomToast } from "./useToast";
 import { useAppDispatch } from "@/store/hooks";
-import { addItem, clearCart } from "@/store/slices/cart-slice";
+import { addItem, clearCart, type Cart } from "@/store/slices/cart-slice";
 import { isObject } from "@utils/type-guards";
-import { getCartToken, getGuestCartId, getCookie } from "@utils/getCartToken";
+import { getCartToken, getGuestCartId, getCookie } from "@/utils/getCartToken";
+import { bumpCartGeneration } from "@/utils/cart-sync";
 import { useGuestCartToken } from "./useGuestCartToken";
 import { IS_GUEST } from "@/utils/constants";
 import { useMutation } from "@apollo/client/react";
-import { CombinedGraphQLErrors, ServerError, ServerParseError } from "@apollo/client";
+import { CombinedGraphQLErrors, ServerError, ServerParseError, type ErrorLike } from "@apollo/client";
+import { AddToCartData, RemoveCartItemData, UpdateCartItemData } from "@/types/cart/type";
+
+interface BookingInput {
+  type?: string;
+  date?: string;
+  slot?: string;
+  renting_type?: string;
+  date_from?: string;
+  date_to?: string;
+  qty?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+const removeInFlight = new Set<string>();
 import {
   CREATE_ADD_PRODUCT_IN_CART,
   CREATE_ADD_GROUPED_PRODUCT_IN_CART,
@@ -16,13 +31,13 @@ import {
 
 
 
-const getBackendErrorMessage = (err: any): string => {
+const getBackendErrorMessage = (err: unknown): string => {
   if (CombinedGraphQLErrors.is(err)) {
     return err.errors?.[0]?.message || err.message;
   }
 
   if (ServerError.is(err) || ServerParseError.is(err)) {
-    const bodyText = (err as any).bodyText;
+    const bodyText = err.bodyText;
     if (bodyText) {
       try {
         const body = JSON.parse(bodyText);
@@ -37,7 +52,11 @@ const getBackendErrorMessage = (err: any): string => {
     }
   }
 
-  return err?.message ?? "Error";
+  if (err instanceof Error) {
+    return err.message;
+  }
+
+  return "Error";
 };
 
 const isStockWarning = (message: string): boolean => {
@@ -51,16 +70,15 @@ const isStockWarning = (message: string): boolean => {
 
 
 
-
 export const useAddProduct = () => {
   const dispatch = useAppDispatch();
   const { createGuestToken, resetGuestToken } = useGuestCartToken();
   const { showToast } = useCustomToast();
 
-  const [mutateAsync, { loading: isCartLoading }] = useMutation(
+  const [mutateAsync, { loading: isCartLoading }] = useMutation<AddToCartData>(
     CREATE_ADD_PRODUCT_IN_CART,
     {
-      onCompleted: (res: any) => {
+      onCompleted: (res) => {
         const responseData = res?.createAddProductInCart?.addProductInCart;
 
         if (!responseData?.success) {
@@ -70,20 +88,20 @@ export const useAddProduct = () => {
         }
         if (responseData) {
           if (responseData.success) {
-            dispatch(addItem(responseData as any));
+            dispatch(addItem(responseData as unknown as Cart));
             showToast("Product added to cart successfully", "success");
           }
         }
       },
 
-      onError: (err: any) => {
+      onError: (err: ErrorLike) => {
         const message = getBackendErrorMessage(err);
         showToast(message, isStockWarning(message) ? "warning" : "danger");
       },
     },
   );
 
-  const onAddToCartCompletedHandler = (res: any) => {
+  const onAddToCartCompletedHandler = (res: AddToCartData) => {
     const responseData = res?.createAddProductInCart?.addProductInCart;
     if (!responseData?.success) {
       const message = responseData?.message || "Error adding to cart";
@@ -91,17 +109,17 @@ export const useAddProduct = () => {
       return;
     }
     if (responseData?.success) {
-      dispatch(addItem(responseData as any));
+      dispatch(addItem(responseData as unknown as Cart));
       showToast("Product added to cart successfully", "success");
     }
   };
 
-  const onAddToCartErrorHandler = (err: any) => {
+  const onAddToCartErrorHandler = (err: ErrorLike) => {
     const message = getBackendErrorMessage(err);
     showToast(message, isStockWarning(message) ? "warning" : "danger");
   };
 
-  const [mutateGroupedAsync, { loading: isGroupedCartLoading }] = useMutation(
+  const [mutateGroupedAsync, { loading: isGroupedCartLoading }] = useMutation<AddToCartData>(
     CREATE_ADD_GROUPED_PRODUCT_IN_CART,
     {
       onCompleted: onAddToCartCompletedHandler,
@@ -126,8 +144,8 @@ export const useAddProduct = () => {
     groupedQty?: string;
     bundleOptions?: string;
     bundleOptionQty?: string;
-    links?: any[];
-    booking?: any;
+    links?: Array<string | number>;
+    booking?: BookingInput;
     bookingNote?: string;
     productType?: string;
     token?: string;
@@ -196,6 +214,7 @@ export const useAddProduct = () => {
     }
 
     if (productType === "grouped") {
+      bumpCartGeneration();
       await mutateGroupedAsync({
         variables: {
           productId: parseInt(productId),
@@ -205,6 +224,7 @@ export const useAddProduct = () => {
         },
       });
     } else {
+      bumpCartGeneration();
       await mutateAsync({
         variables: {
           productId: parseInt(productId),
@@ -221,14 +241,14 @@ export const useAddProduct = () => {
   };
 
 
-  const [removeFromCart, { loading: isRemoveLoading }] = useMutation(
+  const [removeFromCart, { loading: isRemoveLoading }] = useMutation<RemoveCartItemData>(
     REMOVE_CART_ITEM,
     {
-      onCompleted: async (response: any) => {
+      onCompleted: (response) => {
         const responseData = response?.createRemoveCartItem?.removeCartItem;
         if (isObject(responseData)) {
           const message = "Cart item removed successfully";
-          dispatch(addItem(responseData as any));
+          dispatch(addItem(responseData as unknown as Cart));
           showToast(message as string, "warning");
 
           if (!responseData?.itemsQty) {
@@ -243,34 +263,42 @@ export const useAddProduct = () => {
           showToast("Something went wrong", "warning");
         }
       },
-      onError: (error) => {
+      onError: (error: ErrorLike) => {
         showToast(getBackendErrorMessage(error), "danger");
       },
     },
   );
 
   const onAddToRemove = async (productId: string) => {
-    await removeFromCart({
-      variables: {
-        cartItemId: parseInt(productId),
-      },
-    });
+    const id = String(productId);
+    if (removeInFlight.has(id)) return;
+    removeInFlight.add(id);
+    bumpCartGeneration();
+    try {
+      await removeFromCart({
+        variables: {
+          cartItemId: parseInt(productId),
+        },
+      });
+    } finally {
+      removeInFlight.delete(id);
+    }
   };
 
-  const [updateCartItem, { loading: isUpdateLoading }] = useMutation(
+  const [updateCartItem, { loading: isUpdateLoading }] = useMutation<UpdateCartItemData>(
     UPDATE_CART_ITEM,
     {
-      onCompleted: (response: any) => {
+      onCompleted: (response) => {
         const responseData = response?.createUpdateCartItem?.updateCartItem;
 
         if (isObject(responseData)) {
-          dispatch(addItem(responseData as any));
+          dispatch(addItem(responseData as unknown as Cart));
         } else {
           showToast("Something went wrong!", "warning");
         }
       },
 
-      onError: (error) => {
+      onError: (error: ErrorLike) => {
         showToast(getBackendErrorMessage(error), "danger");
       },
     },
@@ -288,6 +316,7 @@ export const useAddProduct = () => {
       return;
     }
 
+    bumpCartGeneration();
     await updateCartItem({
       variables: {
         cartItemId: cartItemId,

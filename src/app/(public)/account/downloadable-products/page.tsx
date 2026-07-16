@@ -1,4 +1,5 @@
 import { getCustomerDownloadableProducts } from "@/utils/bagisto";
+import type { CustomerEdge, CustomerDownloadableProductNode } from "@/types/customer/type";
 import { STOREFRONT_KEY, IMAGES } from "@/utils/constants";
 import clsx from "clsx";
 import Image from "next/image";
@@ -79,7 +80,7 @@ export default async function DownloadableProductsPage({
     }
 
     if (searchQuery || filterOrderId || filterStatus || filterStartDate || filterEndDate) {
-        products = products.filter((edge: any) => {
+        products = products.filter((edge: CustomerEdge<CustomerDownloadableProductNode>) => {
             const item = edge.node;
 
             const matchesSearch = !searchQuery || (
@@ -188,7 +189,7 @@ export default async function DownloadableProductsPage({
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-neutral-50 dark:divide-neutral-800">
-                                {products.map((edge: any) => {
+                                {products.map((edge: CustomerEdge<CustomerDownloadableProductNode>) => {
                                     const item = edge.node;
                                     return (
                                         <tr key={item._id} className="h-18 border-b border-border-muted dark:border-neutral-700 hover:bg-neutral-50/50 dark:hover:bg-neutral-800/30 transition-colors">
@@ -244,7 +245,7 @@ export default async function DownloadableProductsPage({
                     </div>
 
                     <div className="block lg:hidden w-full pb-20 pt-6">
-                        {products.map((edge: any) => {
+                        {products.map((edge: CustomerEdge<CustomerDownloadableProductNode>) => {
                             const item = edge.node;
                             const dateStr = formatDateTime(item.createdAt);
 

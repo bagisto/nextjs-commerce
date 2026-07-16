@@ -104,7 +104,7 @@ export default function PaymentMethod({
         />
 
         <div className="my-6 justify-self-end">
-          <ProceedToCheckout buttonName="Pay Now" pending={isPaymentLoading} />
+          <ProceedToCheckout buttonName="Continue" pending={isPaymentLoading} />
         </div>
       </form>
     </div>

@@ -4,15 +4,15 @@ import React, { FC } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Prose from "@/components/theme/search/Prose";
 import ReviewSection from "../review/ReviewSection";
-import ReviewDetail from "../review/ReviewDetail";
-import { additionalDataTypes } from "../type";
+import ReviewDetail, { ProductReviewEdge } from "../review/ReviewDetail";
+import { AttributeValueNode } from "@/types/category/type";
 import clsx from "clsx";
 
 export const ProductMoreDetails: FC<{
   description: string;
-  additionalData: additionalDataTypes[];
+  additionalData: AttributeValueNode[];
   productId: string;
-  reviews: any[];
+  reviews: ProductReviewEdge[];
   totalReview: number;
   expandedKeys: Set<string>;
   setExpandedKeys: (keys: Set<string>) => void;

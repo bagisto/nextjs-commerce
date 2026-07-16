@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { GridTileImage } from "@/components/theme/ui/grid/Tile";
 import { Shimmer } from "@/components/common/Shimmer";
+import ImageZoom from "@/components/common/ImageZoom";
 import {
   HeroCarouselShimmer,
   HeroCarouselThumbnailShimmer,
@@ -181,10 +181,10 @@ export default function HeroCarousel({
                 rounded="lg"
               />
             )}
-            <Image
+            <ImageZoom
               fill
               alt={images[current]?.altText as string}
-              className={`h-full w-full object-cover transition duration-300 ease-in-out group-hover:scale-105 ${isLoading ? "opacity-0" : "opacity-100"
+              className={`h-full w-full object-cover transition duration-300 ease-in-out group-hover:scale-105 ${isLoading ? "opacity-0" : "opacity-100"}
                 }`}
               priority={true}
               sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 66vw, 1000px"

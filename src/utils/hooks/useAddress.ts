@@ -1,12 +1,12 @@
 "use client";
 
 import { GET_CHECKOUT_ADDRESSES } from "@/graphql";
-import { CheckoutAddressNode } from "@/types/checkout/type";
+import { GetCheckoutAddressesData } from "@/types/checkout/type";
 import { useLazyQuery } from "@apollo/client/react";
 import { useCallback } from "react";
 
 export const useAddress = () => {
-  const [fetchAddresses, { data, loading: isLoading, refetch }] = useLazyQuery(
+  const [fetchAddresses, { data, loading: isLoading, refetch }] = useLazyQuery<GetCheckoutAddressesData>(
     GET_CHECKOUT_ADDRESSES,
     {
       fetchPolicy: "cache-first",
@@ -24,8 +24,8 @@ export const useAddress = () => {
 
   return {
     addresses:
-      (data as any)?.collectionGetCheckoutAddresses?.edges?.map(
-        (edge: { node: CheckoutAddressNode }) => edge.node
+      data?.collectionGetCheckoutAddresses?.edges?.map(
+        (edge) => edge.node
       ) || [],
     isLoading,
     refetch,

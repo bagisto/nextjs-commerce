@@ -52,8 +52,7 @@ export default function ProductCardActions({
     <button
       onClick={handleAddToCart}
       disabled={isCartLoading}
-      className="flex items-center justify-center cursor-pointer transition-all duration-300 hover:opacity-70
-                 bg-[#FFFFFFB2] backdrop-blur-[12.28px] border-[1.02px] border-white
+      className="flex items-center justify-center cursor-pointer transition-all duration-300 bg-[#FFFFFFB2] backdrop-blur-[12.28px] border-[1.02px] border-white
                  rounded-[10233px] w-[80px] h-[40px] lg:w-[112px] lg:h-[56px]
                  shadow-lg lg:shadow-2xl"
       aria-label="Add to cart"

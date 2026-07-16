@@ -1,4 +1,5 @@
 import { getCustomerOrder } from "@/utils/bagisto";
+import type { CustomerEdge, CustomerOrderAddressNode, CustomerOrderItemNode } from "@/types/customer/type";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import clsx from "clsx";
@@ -26,8 +27,8 @@ export default async function OrderViewPage({
         notFound();
     }
 
-    const billingAddress = order.addresses?.edges?.find((edge: any) => edge.node.addressType === "order_billing")?.node;
-    const shippingAddress = order.addresses?.edges?.find((edge: any) => edge.node.addressType === "order_shipping")?.node || billingAddress;
+    const billingAddress = order.addresses?.edges?.find((edge: CustomerEdge<CustomerOrderAddressNode>) => edge.node.addressType === "order_billing")?.node;
+    const shippingAddress = order.addresses?.edges?.find((edge: CustomerEdge<CustomerOrderAddressNode>) => edge.node.addressType === "order_shipping")?.node || billingAddress;
     const formatDate = (dateStr: string) => {
         if (!dateStr) return "N/A";
         return new Date(dateStr).toLocaleDateString('en-GB', {
@@ -169,7 +170,7 @@ export default async function OrderViewPage({
                         </tr>
                     </thead>
                     <tbody>
-                        {order.items?.edges?.map((edge: any) => {
+                        {order.items?.edges?.map((edge: CustomerEdge<CustomerOrderItemNode>) => {
                             const item = edge.node;
                             return (
                                 <tr key={item.id}>
@@ -269,7 +270,7 @@ export default async function OrderViewPage({
                     </Link>
                 </div>
 
-                <div 
+                <div
                     className="max-w-[1030px] w-full flex items-center border-b border-border dark:border-neutral-800 mb-4 py-4"
                 >
                     <p className="font-outfit font-medium text-xs lg:text-sm  leading-[22px] text-black dark:text-white">
@@ -291,42 +292,42 @@ export default async function OrderViewPage({
                                     <th className="px-6 py-4 text-left font-outfit font-medium text-sm lg:text-base leading-[22px] text-black dark:text-white">Subtotal</th>
                                 </tr>
                             </thead>
-                                <tbody className="divide-y divide-border-muted dark:divide-neutral-800">
-                                    {order.items?.edges?.map((edge: any, index: number) => {
-                                        const item = edge.node;
-                                        const isLast = index === (order.items?.edges?.length - 1);
-                                        return (
-                                            <tr key={item.id} className={clsx(
-                                                "h-[87px] bg-white dark:bg-neutral-900 transition-colors hover:bg-overlay-subtle",
-                                                !isLast && "border-b border-border-muted dark:border-neutral-700"
-                                            )}>
-                                                <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle">{item.sku}</td>
-                                                <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle max-w-[300px] truncate">
-                                                    {item.name}
-                                                </td>
-                                                <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle whitespace-nowrap">
-                                                    {order.orderCurrencyCode} {parseFloat(item.price).toFixed(2)}
-                                                </td>
-                                                <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle whitespace-nowrap text-left">
-                                                    {activeTab === "invoice" ? (
-                                                        <span className="font-outfit font-medium text-base leading-[22px] text-black dark:text-white">{item.qtyOrdered}</span>
-                                                    ) : (
-                                                        <>Ordered ({item.qtyOrdered}) Invoiced ({item.qtyInvoiced})</>
-                                                    )}
-                                                </td>
-                                                <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle whitespace-nowrap text-left">
-                                                    {order.orderCurrencyCode} {parseFloat(item.total).toFixed(2)}
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
+                            <tbody className="divide-y divide-border-muted dark:divide-neutral-800">
+                                {order.items?.edges?.map((edge: CustomerEdge<CustomerOrderItemNode>, index: number) => {
+                                    const item = edge.node;
+                                    const isLast = index === (order.items?.edges?.length - 1);
+                                    return (
+                                        <tr key={item.id} className={clsx(
+                                            "h-[87px] bg-white dark:bg-neutral-900 transition-colors hover:bg-overlay-subtle",
+                                            !isLast && "border-b border-border-muted dark:border-neutral-700"
+                                        )}>
+                                            <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle">{item.sku}</td>
+                                            <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle max-w-[300px] truncate">
+                                                {item.name}
+                                            </td>
+                                            <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle whitespace-nowrap">
+                                                {order.orderCurrencyCode} {parseFloat(item.price).toFixed(2)}
+                                            </td>
+                                            <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle whitespace-nowrap text-left">
+                                                {activeTab === "invoice" ? (
+                                                    <span className="font-outfit font-medium text-base leading-[22px] text-black dark:text-white">{item.qtyOrdered}</span>
+                                                ) : (
+                                                    <>Ordered ({item.qtyOrdered}) Invoiced ({item.qtyInvoiced})</>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 font-outfit font-medium text-base leading-[22px] text-black dark:text-white align-middle whitespace-nowrap text-left">
+                                                {order.orderCurrencyCode} {parseFloat(item.total).toFixed(2)}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
                         </table>
                     </div>
                 </div>
 
                 <div className="block lg:hidden w-full pb-8">
-                    {order.items?.edges?.map((edge: any) => {
+                    {order.items?.edges?.map((edge: CustomerEdge<CustomerOrderItemNode>) => {
                         const item = edge.node;
                         return (
                             <div

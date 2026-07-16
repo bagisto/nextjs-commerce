@@ -2,10 +2,12 @@
 
 import { useMutation } from "@apollo/client/react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { addItem } from "@/store/slices/cart-slice";
+import { addItem, type Cart } from "@/store/slices/cart-slice";
 import { useCallback, useEffect, useState, useRef } from "react";
 import { GET_CART_ITEM } from "@/graphql";
 import { getCartToken } from "@/utils/getCartToken";
+import { getCartGeneration } from "@/utils/cart-sync";
+import { GetCartItemData } from "@/types/cart/type";
 
 
 
@@ -14,13 +16,16 @@ export function useCartDetail() {
   const cart = useAppSelector((state) => state.cartDetail.cart);
   const [isInFlight, setIsInFlight] = useState(false);
   const isInFlightRef = useRef(false);
+  const requestedGenRef = useRef(0);
 
   const [getCartDetailMutation, { data, loading: isLoading, error }] =
-    useMutation(GET_CART_ITEM, {
-      onCompleted: (response: any) => {
+    useMutation<GetCartItemData>(GET_CART_ITEM, {
+      onCompleted: (response) => {
         const cartData = response?.createReadCart?.readCart;
         if (cartData) {
-          dispatch(addItem(cartData));
+          if (getCartGeneration() === requestedGenRef.current) {
+            dispatch(addItem(cartData as unknown as Cart));
+          }
         }
       },
       onError: (error) => {
@@ -38,6 +43,7 @@ export function useCartDetail() {
 
     isInFlightRef.current = true;
     setIsInFlight(true);
+    requestedGenRef.current = getCartGeneration();
     try {
       await getCartDetailMutation();
     } catch (e) {
@@ -55,7 +61,7 @@ export function useCartDetail() {
   }, [cart, getCartDetail]);
 
   return {
-    cartData: cart || (data as any)?.createReadCart?.readCart,
+    cartData: cart || data?.createReadCart?.readCart,
     getCartDetail,
     isLoading: isLoading || (isInFlight && !cart),
     error,

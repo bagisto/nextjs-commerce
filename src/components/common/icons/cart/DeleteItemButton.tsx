@@ -20,9 +20,11 @@ function SubmitButton({
         "ease flex h-[17px] w-[17px] cursor-pointer items-center justify-center rounded-full  transition-all duration-200",
         {
           "cursor-wait px-0": loading,
+          "cursor-not-allowed opacity-50": loading,
         }
       )}
       type="button"
+      disabled={loading}
       onClick={handleRemoveCart}
     >
       {loading ? (

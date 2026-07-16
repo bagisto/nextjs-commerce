@@ -7,9 +7,9 @@ import { useForm, useWatch, SubmitHandler } from "react-hook-form";
 import { ConfigurableProductIndexData } from "@/types/types";
 import { useAddProduct } from "@utils/hooks/useAddToCart";
 import LoadingDots from "@components/common/icons/LoadingDots";
-import { getVariantInfo } from "@utils/hooks/useVariantInfo";
+import { getVariantInfo, VariantSuperAttribute } from "@utils/hooks/useVariantInfo";
 import { safeParse } from "@utils/helper";
-import { ProductSwatchReview } from "@/types/category/type";
+import { ProductSwatchReview, BookingProduct, BookingSelectionData, SuperAttributeOption, GroupedProductNode, BundleOptionNode } from "@/types/category/type";
 import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
 
@@ -49,7 +49,7 @@ interface AddToCartFormData {
   bundleOptions?: Record<string, string[]>;
   bundleOptionQty?: Record<string, number>;
   links?: number[];
-  booking?: any;
+  booking?: BookingSelectionData | null;
   bookingNote?: string;
 };
 
@@ -143,12 +143,14 @@ export function AddToCart({
   productId,
   userInteracted,
   bookingProduct,
+  selectedOptions,
 }: {
-  productSwatchReview: ProductSwatchReview;
+  productSwatchReview: ProductSwatchReview | null;
   productId: string;
   index: ConfigurableProductIndexData[];
   userInteracted: boolean;
-  bookingProduct?: any;
+  bookingProduct?: BookingProduct;
+  selectedOptions?: Record<string, string>;
 }) {
   const isSaleable = productSwatchReview?.isSaleable || (bookingProduct ? "1" : "");
   const { onAddToCart, isCartLoading } = useAddProduct();
@@ -156,8 +158,8 @@ export function AddToCart({
 
   const initialGroupedProducts: Record<string, number> = {};
   if (productSwatchReview?.type === "grouped" && productSwatchReview?.groupedProducts?.edges) {
-    productSwatchReview.groupedProducts.edges.forEach(({ node }: any) => {
-      const id = node.associatedProduct.id.split("/").pop();
+    productSwatchReview.groupedProducts.edges.forEach(({ node }: { node: GroupedProductNode }) => {
+      const id = node.associatedProduct.id.split("/").pop() as string;
       initialGroupedProducts[id] = node.qty || 1;
     });
   }
@@ -201,7 +203,7 @@ export function AddToCart({
     setValue(`groupedProducts.${id}`, qty);
   };
 
-  const handleBundleSelectionChange = useCallback((bundleOptions: any, bundleOptionQty: any) => {
+  const handleBundleSelectionChange = useCallback((bundleOptions: Record<string, string[]>, bundleOptionQty: Record<string, number>) => {
     setValue("bundleOptions", bundleOptions);
     setValue("bundleOptionQty", bundleOptionQty);
   }, [setValue]);
@@ -210,25 +212,29 @@ export function AddToCart({
     setValue("links", links.map(id => parseInt(id)));
   }, [setValue]);
 
-  const handleBookingSelectionChange = useCallback((bookingData: any) => {
+  const handleBookingSelectionChange = useCallback((bookingData: BookingSelectionData | null) => {
     setValue("booking", bookingData);
   }, [setValue]);
 
   const searchParams = useSearchParams();
   const type = productSwatchReview?.type || (bookingProduct ? "booking" : "");
 
-  const superAttributes = productSwatchReview?.superAttributeOptions
-    ? safeParse(productSwatchReview.superAttributeOptions)
+  const superAttributes: SuperAttributeOption[] = productSwatchReview?.superAttributeOptions
+    ? safeParse<SuperAttributeOption[]>(productSwatchReview.superAttributeOptions) ?? []
     : productSwatchReview?.superAttributes?.edges?.map(
       (e) => e.node,
-    ) || [];
+    ) ?? [];
 
   const isConfigurable = superAttributes.length > 0;
 
+  const searchParamsString = selectedOptions
+    ? Object.entries(selectedOptions).map(([key, val]) => `${key}=${val}`).join("&")
+    : searchParams.toString();
+
   const { productid: selectedVariantId, Instock: checkStock } = getVariantInfo(
     isConfigurable,
-    searchParams.toString(),
-    superAttributes,
+    searchParamsString,
+    superAttributes as VariantSuperAttribute[],
     JSON.stringify(index),
   );
   const buttonStatus = !!selectedVariantId;
@@ -243,9 +249,9 @@ export function AddToCart({
   });
 
   const isBundleValid = type === "bundle"
-    ? productSwatchReview.bundleOptions?.edges.every(({ node: option }: any) => {
+    ? productSwatchReview?.bundleOptions?.edges?.every(({ node: option }: { node: BundleOptionNode }) => {
       if (!option.isRequired) return true;
-      const optionId = option.id.split("/").pop();
+      const optionId = option.id.split("/").pop() as string;
       const selected = bundleOptionsValues?.[optionId];
       return selected && selected.length > 0;
     })
@@ -265,17 +271,26 @@ export function AddToCart({
     name: "booking",
   });
 
-  const bookingNode = bookingProduct || (productSwatchReview as any)?.bookingProducts?.edges?.[0]?.node;
+  const bookingNode = bookingProduct || productSwatchReview?.bookingProducts?.edges?.[0]?.node;
   const bookingSubType = bookingNode?.type;
+
+  const bookingValueData = bookingValue as {
+    date?: string;
+    slot?: string;
+    renting_type?: string;
+    date_from?: string;
+    date_to?: string;
+    qty?: Record<string, number>;
+  } | null | undefined;
 
   const isBookingValid = type === "booking"
     ? (bookingSubType === "appointment" || bookingSubType === "table" || bookingSubType === "default")
-      ? !!(bookingValue && (bookingValue as any)?.date && (bookingValue as any)?.slot)
+      ? !!(bookingValueData && bookingValueData.date && bookingValueData.slot)
       : bookingSubType === "rental"
-        ? (bookingValue as any)?.renting_type === "daily"
-          ? !!((bookingValue as any)?.date_from && (bookingValue as any)?.date_to)
-          : !!((bookingValue as any)?.date && (bookingValue as any)?.slot)
-        : !!(bookingValue && Object.values((bookingValue as any)?.qty || {}).some((qty: any) => Number(qty) > 0))
+        ? bookingValueData?.renting_type === "daily"
+          ? !!(bookingValueData?.date_from && bookingValueData?.date_to)
+          : !!(bookingValueData?.date && bookingValueData?.slot)
+        : !!(bookingValueData && Object.values(bookingValueData?.qty || {}).some((qty: number) => Number(qty) > 0))
     : true;
 
   const actionWithVariant: SubmitHandler<AddToCartFormData> = async (data) => {
@@ -321,7 +336,7 @@ export function AddToCart({
       bundleOptions: formattedBundleOptions,
       bundleOptionQty: formattedBundleOptionQty,
       links: data.links,
-      booking: data.booking,
+      booking: data.booking ?? undefined,
       bookingNote: data.bookingNote,
       productType: type || "",
     });
@@ -337,7 +352,7 @@ export function AddToCart({
 
       {type === "grouped" && (
         <GroupedProductSelector
-          groupedProducts={productSwatchReview.groupedProducts}
+          groupedProducts={productSwatchReview?.groupedProducts}
           quantities={groupedProductsValues || {}}
           onQuantityChange={handleGroupedQuantityChange}
         />
@@ -346,9 +361,9 @@ export function AddToCart({
       {type === "bundle" && (
         <BundleProductSelector
           key={productId}
-          bundleOptions={productSwatchReview.bundleOptions}
-          basePrice={parseFloat(String(productSwatchReview.price)) || 0}
-          currencyCode={productSwatchReview.priceHtml?.currencyCode || "USD"}
+          bundleOptions={productSwatchReview?.bundleOptions}
+          basePrice={parseFloat(String(productSwatchReview?.price)) || 0}
+          currencyCode={productSwatchReview?.priceHtml?.currencyCode || "USD"}
           onSelectionChange={handleBundleSelectionChange}
         />
       )}
@@ -356,8 +371,8 @@ export function AddToCart({
       {type === "downloadable" && (
         <div className="flex flex-col gap-1">
           <DownloadableProductSelector
-            downloadableLinks={productSwatchReview.downloadableLinks}
-            downloadableSamples={productSwatchReview.downloadableSamples}
+            downloadableLinks={productSwatchReview?.downloadableLinks}
+            downloadableSamples={productSwatchReview?.downloadableSamples}
             onSelectionChange={handleDownloadableLinksChange}
           />
           {submitted && !isLinksValid && (
@@ -371,9 +386,9 @@ export function AddToCart({
       {type === "booking" && (
         <div className="flex flex-col gap-1">
           <BookingProductSelector
-            bookingProduct={bookingNode}
+            bookingProduct={bookingNode as BookingProduct}
             onSelectionChange={handleBookingSelectionChange}
-            currencyCode={productSwatchReview.priceHtml?.currencyCode}
+            currencyCode={productSwatchReview?.priceHtml?.currencyCode}
           />
 
           {bookingSubType === 'table' && (
@@ -433,7 +448,7 @@ export function AddToCart({
               <button
                 type="button"
                 aria-label="Decrease quantity"
-                className="flex items-center justify-center text-black dark:text-white hover:opacity-70 dark:hover:text-primary-soft dark:hover:opacity-100 transition-all shrink-0"
+                className="flex items-center justify-center text-black dark:text-white cursor-pointer hover:opacity-70 dark:hover:text-primary-soft dark:hover:opacity-100 transition-all shrink-0"
                 onClick={decrement}
               >
                 <MinusIcon className="h-4 w-4 stroke-[2.5]" />
@@ -459,7 +474,7 @@ export function AddToCart({
               <button
                 type="button"
                 aria-label="Increase quantity"
-                className="flex items-center justify-center text-black dark:text-white hover:opacity-70 dark:hover:text-primary-soft dark:hover:opacity-100 transition-all shrink-0"
+                className="flex items-center justify-center text-black dark:text-white cursor-pointer hover:opacity-70 dark:hover:text-primary-soft dark:hover:opacity-100 transition-all shrink-0"
                 onClick={increment}
               >
                 <PlusIcon className="h-4 w-4 stroke-[2.5]" />

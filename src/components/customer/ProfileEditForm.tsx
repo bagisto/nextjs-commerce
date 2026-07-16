@@ -15,9 +15,10 @@ import MobileNavHeader from "@/components/layout/navbar/MobileNavHeader";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setUser } from "@/store/slices/user-slice";
+import { CustomerProfile } from "@/types/customer/type";
 
 interface ProfileEditFormProps {
-  user: any;
+  user: CustomerProfile | null | undefined;
 }
 
 export default function ProfileEditForm({ user }: ProfileEditFormProps) {
@@ -64,7 +65,7 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
     e.preventDefault();
 
     try {
-      const input: any = {
+      const input: Record<string, unknown> = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -95,8 +96,8 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
         router.push("/account/profile");
         router.refresh();
       }
-    } catch (error: any) {
-      showToast(error?.message || "An unexpected error occurred", "danger");
+    } catch (error: unknown) {
+      showToast(error instanceof Error ? error.message : "An unexpected error occurred", "danger");
     }
   };
 

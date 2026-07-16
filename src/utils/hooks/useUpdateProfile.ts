@@ -16,10 +16,10 @@ export function useUpdateProfile() {
         });
     };
 
-    const updateProfile = async (input: any, file?: File) => {
+    const updateProfile = async (input: Record<string, unknown>, file?: File) => {
         setIsLoading(true);
         try {
-            const finalInput = { ...input };
+            const finalInput: Record<string, unknown> = { ...input };
 
             if (file) {
                 const base64Image = await fileToBase64(file);
@@ -43,8 +43,8 @@ export function useUpdateProfile() {
 
             showToast("Profile updated successfully", "success");
             return { success: true, data: result.data };
-        } catch (error: any) {
-            let message = error?.message || "An unexpected error occurred";
+        } catch (error: unknown) {
+            let message = error instanceof Error ? error.message : "An unexpected error occurred";
 
             if (message.includes('not defined by type') || message.includes('Variable "$input" got invalid value')) {
                 message = "Something went wrong while updating your profile. Please try again later.";

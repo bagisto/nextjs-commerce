@@ -32,6 +32,7 @@ function SubmitButton({
         }
       )}
       type="button"
+      disabled={pending || disabled}
       onClick={() => !disabled && handleUpdateCart(type)}
     >
       {pending ? (

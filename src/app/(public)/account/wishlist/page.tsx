@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getAllWishlists } from "@/utils/bagisto";
+import type { CustomerEdge, WishlistItemNode } from "@/types/customer/type";
 import ReviewPagination from "@components/customer-detail/review/ReviewPagination";
 import WishlistCard from "@components/customer-detail/wishlist/WishlistCard";
 import AccountBreadcrumbs from "@/components/layout/AccountBreadcrumbs";
@@ -69,7 +70,7 @@ export default async function WishlistPage({
             ) : (
                 <div className="flex flex-col">
                     <div className="flex flex-col">
-                        {wishlistItems.map((edge: any) => (
+                        {wishlistItems.map((edge: CustomerEdge<WishlistItemNode>) => (
                             <WishlistCard key={edge.node.id} item={edge.node} />
                         ))}
                     </div>

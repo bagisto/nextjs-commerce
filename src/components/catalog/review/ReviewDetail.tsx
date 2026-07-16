@@ -11,9 +11,10 @@ import ReviewSection from "./ReviewSection";
 import { ProductReviewNode } from "@/components/catalog/type";
 
 interface ProductReviewEdge {
-  __typename: "ProductReviewEdge";
+  __typename?: "ProductReviewEdge";
   node: ProductReviewNode;
 }
+export type { ProductReviewEdge };
 
 interface ReviewDetailProps {
   reviewDetails: ProductReviewEdge[];

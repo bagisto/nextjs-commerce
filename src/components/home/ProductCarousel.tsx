@@ -3,13 +3,12 @@ import { cachedGraphQLRequest } from "@/lib/cached-graphql";
 import { ThreeItemGrid } from "./ThreeItemGrid";
 import Theme from "./ProductCarouselTheme";
 import { GET_PRODUCTS } from "@/graphql";
-import { ProductsResponse } from "@/components/catalog/type";
+import { ProductsResponse, ProductSectionNode } from "@/components/catalog/type";
+
+import { ProductCarouselOptions } from "@/types/theme/theme-customization";
 
 interface ProductCarouselProps {
-  options: {
-    title?: string;
-    filters: Record<string, any>;
-  };
+  options: ProductCarouselOptions;
   itemCount?: number;
   sortOrder?: number;
 }
@@ -20,7 +19,7 @@ const ProductCarousel: FC<ProductCarouselProps> = async ({
   sortOrder,
 }) => {
   const { filters, title } = options;
-  let products: any[] = [];
+  let products: ProductSectionNode[] = [];
 
   try {
     const { sort, limit, ...rest } = filters || {};
@@ -52,13 +51,21 @@ const ProductCarousel: FC<ProductCarouselProps> = async ({
       {
         sortKey,
         filter: filterInput,
-        first: limit ? parseInt(limit, 10) : itemCount,
+        first: limit ? parseInt(String(limit), 10) : itemCount,
         reverse,
       }
     );
 
     products =
-      data?.products?.edges?.slice(0, 8).map((edge) => edge.node) || [];
+      data?.products?.edges?.slice(0, 8).map((edge) => {
+        const node = edge.node;
+        const resolvedPrice = node.price && typeof node.price === "object" ? node.price.value : node.price;
+        return {
+          ...node,
+          price: resolvedPrice ?? undefined,
+          minimumPrice: node.minimumPrice ?? undefined,
+        } as ProductSectionNode;
+      }) || [];
   } catch (error) {
     console.error("Error fetching products for carousel:", {
       title,
@@ -77,7 +84,15 @@ const ProductCarousel: FC<ProductCarouselProps> = async ({
       <ThreeItemGrid
         title={title || "Products"}
         description="Discover the latest trends! Fresh products just added—shop new styles, tech, and essentials before they're gone."
-        products={products.slice(0, 3)}
+        products={products.slice(0, 3).map((item) => ({
+          id: item.id,
+          name: item.name || "",
+          urlKey: item.urlKey || "",
+          baseImageUrl: item.baseImageUrl || "",
+          price: item.price ?? 0,
+          minimumPrice: item.minimumPrice ?? undefined,
+          type: item.type,
+        }))}
       />
     );
   }

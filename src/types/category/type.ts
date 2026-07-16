@@ -91,6 +91,89 @@ export interface BookingProduct {
   defaultSlot?: DefaultSlot;
 }
 
+export interface BookingSlotItem {
+  from: string;
+  to: string;
+}
+
+export interface BookingSlotGroup {
+  slots?: Array<BookingSlotItem | string>;
+}
+
+export interface BookingSlotsQueryData {
+  bookingSlots?: BookingSlotItem[];
+}
+
+export interface RentalBookingSlotsQueryData {
+  bookingSlots?: BookingSlotGroup[];
+}
+
+export type BookingSelectionData =
+  | { type: "appointment" | "table" | "default"; date: string; slot: string }
+  | { type: "rental"; renting_type: "daily"; date_from: string; date_to: string }
+  | { type: "rental"; renting_type: "hourly"; date: string; slot: string }
+  | { qty: Record<string, number> };
+
+export interface BundleOptionProductProduct {
+  id: string;
+  name: string;
+  sku: string;
+  price: string | number;
+  images?: {
+    edges: Array<{ node: { id: string; publicPath: string } }>;
+  };
+}
+
+export interface BundleOptionProductNode {
+  id: string;
+  qty: number;
+  isDefault: boolean;
+  isUserDefined: boolean;
+  sortOrder: number;
+  product: BundleOptionProductProduct;
+}
+
+export interface BundleOptionNode {
+  id: string;
+  type: string;
+  isRequired: boolean;
+  sortOrder: number;
+  translation: {
+    label: string;
+  };
+  bundleOptionProducts: {
+    edges: Array<{ node: BundleOptionProductNode }>;
+  };
+}
+
+export interface BundleOptionsConnection {
+  edges: Array<{ node: BundleOptionNode }>;
+}
+
+export interface GroupedAssociatedProduct {
+  id: string;
+  name: string;
+  sku: string;
+  price: string;
+  formattedPrice: string;
+  specialPrice: string;
+  formattedSpecialPrice: string;
+  images?: {
+    edges: Array<{ node: { id: string; publicPath: string } }>;
+  };
+}
+
+export interface GroupedProductNode {
+  id: string;
+  qty: number;
+  sortOrder: number;
+  associatedProduct: GroupedAssociatedProduct;
+}
+
+export interface GroupedProductsConnection {
+  edges: Array<{ node: GroupedProductNode }>;
+}
+
 
 
 export interface ProductAttribute {
@@ -170,11 +253,14 @@ export interface AttributeValueNode {
   code: string;
   label?: string;
   value?: string | null;
+  admin_name?: string;
+  type?: string;
   attribute?: {
     id: string;
     code: string;
     adminName?: string;
     type?: string;
+    isVisibleOnFront?: string;
   };
 }
 
@@ -200,70 +286,8 @@ export interface ProductSwatchReview {
       node: AttributeValueNode;
     }>;
   };
-  groupedProducts?: {
-    edges: Array<{
-      node: {
-        id: string;
-        qty: number;
-        sortOrder: number;
-        associatedProduct: {
-          id: string;
-          name: string;
-          sku: string;
-          price: string;
-          formattedPrice: string;
-          specialPrice: string;
-          formattedSpecialPrice: string;
-          images?: {
-            edges: Array<{
-              node: {
-                id: string;
-                publicPath: string;
-              };
-            }>;
-          };
-        };
-      };
-    }>;
-  };
-  bundleOptions?: {
-    edges: Array<{
-      node: {
-        id: string;
-        type: string;
-        isRequired: boolean;
-        sortOrder: number;
-        translation: {
-          label: string;
-        };
-        bundleOptionProducts: {
-          edges: Array<{
-            node: {
-              id: string;
-              qty: number;
-              isDefault: boolean;
-              isUserDefined: boolean;
-              sortOrder: number;
-              product: {
-                id: string;
-                name: string;
-                sku: string;
-                price: string | number;
-                images?: {
-                  edges: Array<{
-                    node: {
-                      id: string;
-                      publicPath: string;
-                    };
-                  }>;
-                };
-              };
-            };
-          }>;
-        };
-      };
-    }>;
-  };
+  groupedProducts?: GroupedProductsConnection;
+  bundleOptions?: BundleOptionsConnection;
   downloadableLinks?: {
     edges: Array<ProductDownloadableLinkEdge>;
   };

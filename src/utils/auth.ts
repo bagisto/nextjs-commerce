@@ -1,7 +1,22 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { bagistoFetch } from "@/utils/bagisto";
 import { CUSTOMER_LOGIN } from "@/graphql/customer/mutations";
+
+interface CustomerLoginResponse {
+  data?: {
+    createCustomerLogin?: {
+      customerLogin?: {
+        id?: string;
+        success?: boolean;
+        token?: string;
+        apiToken?: string;
+        message?: string;
+      };
+    };
+  };
+  variables: Record<string, unknown>;
+}
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -18,7 +33,7 @@ export const authOptions: NextAuthOptions = {
       },
 
 
-      authorize: async (credentials): Promise<any> => {
+      authorize: async (credentials): Promise<User | null> => {
         if (!credentials?.username || !credentials?.password) {
           throw new Error("Email and password are required.");
         }
@@ -29,7 +44,7 @@ export const authOptions: NextAuthOptions = {
         };
 
 
-        const res = await bagistoFetch<any>({
+        const res = await bagistoFetch<CustomerLoginResponse>({
           query: CUSTOMER_LOGIN,
           variables: { input },
           cache: "no-store",
@@ -42,11 +57,11 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: data.id,
+          id: data.id ?? "",
           email: credentials.username,
           name: credentials.username,
-          apiToken: data.apiToken,
-          accessToken: data.token,
+          apiToken: data.apiToken ?? "",
+          accessToken: data.token ?? "",
           role: "customer",
         };
       },

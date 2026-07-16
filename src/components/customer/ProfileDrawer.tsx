@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { clearSessionCache } from "@/lib/apollo-client";
 import { useRouter } from "next/navigation";
 import { useCustomToast } from "@/utils/hooks/useToast";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -27,16 +28,17 @@ import { EMAIL, removeFromLocalStorage } from "@/store/local-storage";
 import { deleteCookie } from "@utils/getCartToken";
 import { GUEST_CART_TOKEN, GUEST_CART_ID } from "@/utils/constants";
 import LoadingDots from "@components/common/icons/LoadingDots";
+import type { CustomerProfile } from "@/types/customer/type";
 
 interface ProfileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  user: any;
-  profile?: any;
+  user: CustomerProfile | null;
+  profile?: CustomerProfile;
 }
 
 export default function ProfileDrawer({ isOpen, onClose, user: initialUser, profile }: ProfileDrawerProps) {
-  const [customer, setCustomer] = useState(profile || initialUser);
+  const [customer, setCustomer] = useState<CustomerProfile | null>(profile || initialUser);
   const [loading, setLoading] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
@@ -82,7 +84,7 @@ export default function ProfileDrawer({ isOpen, onClose, user: initialUser, prof
     if (profile) {
       setCustomer(profile);
     } else {
-      setCustomer((prev: any) => {
+      setCustomer((prev: CustomerProfile | null) => {
         if (prev?.firstName || prev?.lastName) {
           return prev;
         }
@@ -111,6 +113,8 @@ export default function ProfileDrawer({ isOpen, onClose, user: initialUser, prof
         callbackUrl: "/customer/login",
         redirect: false,
       });
+
+      clearSessionCache();
 
       dispatch(clearUser());
       dispatch(clearCart());

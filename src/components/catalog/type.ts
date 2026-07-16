@@ -1,7 +1,8 @@
+import { AppointmentSlot, RentalSlot, DefaultSlot, TableSlot } from "@/types/category/type";
+
 export interface SingleProductResponse {
   product: ProductNode;
 }
-
 export interface ProductSectionNode {
   isSaleable?: string;
   id: string;
@@ -99,10 +100,10 @@ export interface BookingProductNode {
   eventTickets?: {
     edges: Array<{ node: ProductBookingEventTicketNode }>;
   };
-  appointmentSlot?: any;
-  rentalSlot?: any;
-  defaultSlot?: any;
-  tableSlot?: any;
+  appointmentSlot?: AppointmentSlot;
+  rentalSlot?: RentalSlot;
+  defaultSlot?: DefaultSlot;
+  tableSlot?: TableSlot;
 }
 
 export interface ProductNode {

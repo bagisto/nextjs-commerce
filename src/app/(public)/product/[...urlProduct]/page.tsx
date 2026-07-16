@@ -37,6 +37,7 @@ import {
 import { WishlistToggle } from "@/components/catalog/product/WishlistToggle";
 import { CompareToggle } from "@/components/catalog/product/CompareToggle";
 import { getProductMetadata } from "@/utils/helper";
+import { ProductReview } from "@/types/category/type";
 
 export const dynamic = "force-dynamic";
 
@@ -64,7 +65,7 @@ async function getSingleProduct(urlKey: string) {
     let product = dataById?.product || null;
 
     if (product?.type === "booking") {
-      const bookingType = (product as any)?.bookingProducts?.edges?.[0]?.node
+      const bookingType = product?.bookingProducts?.edges?.[0]?.node
         ?.type as keyof typeof BOOKING_SUBTYPE_QUERY_MAP | undefined;
       const bookingQuery = bookingType
         ? BOOKING_SUBTYPE_QUERY_MAP[bookingType]
@@ -212,7 +213,7 @@ export default async function ProductPage({
             <ProductInfo
               product={product as ProductData}
               slug={fullPath}
-              reviews={reviews as any}
+              reviews={reviews as unknown as ProductReview[]}
             />
           </Suspense>
         </div>

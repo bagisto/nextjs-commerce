@@ -1,11 +1,11 @@
-import { SingleProductResponse } from "@/components/catalog/type";
 import { GET_PRODUCT_SWATCH_REVIEW } from "@/graphql";
 import { cachedProductRequest } from "@/lib/cached-graphql";
+import { ProductSwatchReview } from "@/types/category/type";
 
 
 export async function getProductWithSwatchAndReview(urlKey: string) {
   try {
-    const dataById = await cachedProductRequest<SingleProductResponse>(
+    const dataById = await cachedProductRequest<{ product: ProductSwatchReview }>(
       urlKey,
       GET_PRODUCT_SWATCH_REVIEW,
       { urlKey: urlKey }

@@ -14,6 +14,7 @@ export function GlobalProviders({ children }: { children: ReactNode }) {
           <SessionSync />
           <ToastProvider>
             <ApolloWrapper>
+
               {children}
             </ApolloWrapper>
           </ToastProvider>
@@ -21,4 +22,4 @@ export function GlobalProviders({ children }: { children: ReactNode }) {
       </ThemeProvider>
     </NextAuthProvider>
   );
-}
+} 

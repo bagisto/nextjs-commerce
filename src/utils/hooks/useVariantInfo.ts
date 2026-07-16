@@ -1,9 +1,26 @@
 import { safeParse } from "../helper";
 
+interface VariantOption {
+  id?: string | number;
+  [key: string]: unknown;
+}
+
+export interface VariantSuperAttribute {
+  id?: string;
+  code: string;
+  label?: string;
+  adminName?: string;
+  type?: string;
+  swatchType?: string;
+  swatchValue?: string;
+  options?: VariantOption[] | { edges?: Array<{ node: VariantOption }> };
+  [key: string]: unknown;
+}
+
 export const getVariantInfo = (
   isConfigurable: boolean,
   params: string,
-  superAttributes: any[],
+  superAttributes: VariantSuperAttribute[],
   index: string
 ) => {
   if (!isConfigurable) {
@@ -49,13 +66,13 @@ export const getVariantInfo = (
   }
 
   const variantAttributes = superAttributes.map((attr) => {
-    const rawOptions = Array.isArray(attr.options)
-      ? attr.options
-      : attr.options?.edges?.map((edge: any) => edge.node) || [];
+      const rawOptions = Array.isArray(attr.options)
+        ? attr.options
+        : attr.options?.edges?.map((edge) => edge.node) || [];
 
-    return {
-      ...attr,
-      options: rawOptions.map((option: any) => ({
+      return {
+        ...attr,
+        options: rawOptions.map((option) => ({
         ...option,
         isValid: (() => {
           const otherSelectedAttributes = { ...selectedAttributes };

@@ -1,4 +1,5 @@
 import { AddressDataTypes } from "@/types/types";
+import { CartItemsConnection } from "@/types/cart/type";
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 export interface Cart {
@@ -7,7 +8,7 @@ export interface Cart {
   taxAmount: number;
   shippingAmount: number;
   grandTotal: number;
-  items: any;
+  items: CartItemsConnection;
   paymentMethod: string;
   paymentMethodTitle: string;
   shippingMethod: string;

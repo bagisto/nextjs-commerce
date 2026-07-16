@@ -1,7 +1,12 @@
 import clsx from "clsx";
 import { forwardRef } from "react";
 
-const CheckBox = forwardRef<HTMLInputElement, any>(
+type CheckBoxProps = Omit<React.ComponentPropsWithoutRef<"input">, "defaultValue"> & {
+  label?: string;
+  defaultValue?: boolean;
+};
+
+const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
   ({ id, label, name, className, defaultValue, ...rest }, ref) => {
     return (
       <div className={clsx("inline-flex items-center", className)}>

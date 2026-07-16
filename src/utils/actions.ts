@@ -15,6 +15,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
 import { extractNumericId } from "@/utils/helper";
 import { createCompareItem } from "@/utils/bagisto";
+import { WishlistIdsConnection, CompareIdsConnection, CustomerAddress, CreateCustomerAddressInput } from "@/types/customer/type";
 
 export type RegisterFormState = {
   errors?: {
@@ -27,6 +28,20 @@ export type RegisterFormState = {
     agreement?: string[];
   };
 };
+
+interface RecoverLoginResult {
+  error?: { message?: string };
+  body?: {
+    data?: {
+      createForgotPassword?: {
+        forgotPassword?: {
+          success?: boolean;
+          message?: string;
+        };
+      };
+    };
+  };
+}
 
 export async function redirectToCheckout(formData: FormData) {
   const url = formData.get("url") as string;
@@ -52,9 +67,10 @@ export async function createUser(formData: RegisterInputs) {
       success: true,
       customer: user,
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
-      error: { message: err?.message || "An error occurred" },
+      error: { message },
       success: false,
       customer: {},
     };
@@ -66,7 +82,7 @@ export async function recoverPassword(formData: {
   email: string;
 }): Promise<RecoverPasswordFormState> {
 
-  const result = await recoverUserLogin({ email: formData.email }) as any;
+  const result = (await recoverUserLogin({ email: formData.email })) as RecoverLoginResult;
 
   if (isObject(result?.error)) {
     const error = result.error as Record<string, unknown>;
@@ -156,19 +172,20 @@ export async function getThemeCustomizationAction() {
   try {
     const { getThemeCustomization } = await import('@/utils/bagisto');
     return await getThemeCustomization();
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("getThemeCustomizationAction error:", err);
     return null;
   }
 }
-export async function createCustomerAddressAction(input: any) {
+export async function createCustomerAddressAction(input: CreateCustomerAddressInput) {
   try {
     const { createCustomerAddress } = await import('@/utils/bagisto');
     return await createCustomerAddress(input);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -177,22 +194,24 @@ export async function deleteCustomerAddressAction(addressId: string) {
   try {
     const { deleteCustomerAddress } = await import('@/utils/bagisto');
     return await deleteCustomerAddress(addressId);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
 
-export async function setDefaultAddressAction(address: any) {
+export async function setDefaultAddressAction(address: CustomerAddress) {
   try {
     const { setDefaultAddress } = await import('@/utils/bagisto');
     return await setDefaultAddress(address);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -201,10 +220,11 @@ export async function toggleWishlistAction(productId: string | number) {
   try {
     const { toggleWishlist } = await import('@/utils/bagisto');
     return await toggleWishlist(productId);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -213,7 +233,7 @@ export async function getCustomerWishlistAction() {
   try {
     const { getCustomerWishlist } = await import('@/utils/bagisto');
     return await getCustomerWishlist();
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("getCustomerWishlistAction error:", err);
     return [];
   }
@@ -223,7 +243,7 @@ export async function getWishlistItemAction(id: string) {
   try {
     const { getWishlistItem } = await import('@/utils/bagisto');
     return await getWishlistItem(id);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("getWishlistItemAction error:", err);
     return null;
   }
@@ -237,13 +257,13 @@ export async function isProductInWishlist(productId: string) {
       return false;
     }
 
-    const wishlistData = await getWishlistIds({ first: 500 });
-    const wishlist = wishlistData?.edges?.map((edge: any) => edge.node) || [];
+    const wishlistData = (await getWishlistIds({ first: 500 })) as WishlistIdsConnection | null;
+    const wishlist = wishlistData?.edges?.map((edge) => edge.node) || [];
     const targetId = extractNumericId(productId);
 
     if (!targetId) return false;
 
-    return wishlist.some((item: any) => {
+    return wishlist.some((item) => {
       const wishProductId = extractNumericId(item?.product?.id);
       return wishProductId === targetId;
     });
@@ -263,8 +283,8 @@ export async function getWishlistProductIdsAction(): Promise<string[]> {
       return [];
     }
 
-    const wishlistData = await getWishlistIds({ first: 500 });
-    const wishlist = wishlistData?.edges?.map((edge: any) => edge.node) || [];
+    const wishlistData = (await getWishlistIds({ first: 500 })) as WishlistIdsConnection | null;
+    const wishlist = wishlistData?.edges?.map((edge) => edge.node) || [];
 
     const ids: string[] = [];
     for (const item of wishlist) {
@@ -284,10 +304,11 @@ export async function deleteWishlistItemAction(id: string) {
   try {
     const { deleteWishlistItem } = await import('@/utils/bagisto');
     return await deleteWishlistItem(id);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -296,10 +317,11 @@ export async function moveWishlistToCartAction(wishlistItemId: string, quantity:
   try {
     const { moveWishlistToCart } = await import('@/utils/bagisto');
     return await moveWishlistToCart(wishlistItemId, quantity);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -308,10 +330,11 @@ export async function createCompareAction(productId: string | number) {
   try {
 
     return await createCompareItem(productId);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -334,10 +357,10 @@ export async function toggleCompareAction(
     const { deleteCompareItem } = await import('@/utils/bagisto');
     const targetId = extractNumericId(String(productId));
 
-    const compareData = await getCompareIds({ first: 500 });
-    const items = compareData?.edges?.map((edge: any) => edge.node) || [];
+    const compareData = (await getCompareIds({ first: 500 })) as CompareIdsConnection | null;
+    const items = compareData?.edges?.map((edge) => edge.node) || [];
     const existing = items.find(
-      (item: any) => extractNumericId(item?.product?.id) === targetId
+      (item) => extractNumericId(item?.product?.id) === targetId
     );
 
     if (existing) {
@@ -347,10 +370,11 @@ export async function toggleCompareAction(
 
     const result = await createCompareItem(productId);
     return { ...result, removed: false };
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred",
+      message,
     };
   }
 }
@@ -359,7 +383,7 @@ export async function getCompareItemsAction(variables?: { first?: number; after?
   try {
     const { getCompareItems } = await import('@/utils/bagisto');
     return await getCompareItems(variables);
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("getCompareItemsAction error:", err);
     return null;
   }
@@ -373,8 +397,8 @@ export async function getCompareProductIdsAction(): Promise<string[]> {
       return [];
     }
 
-    const compareData = await getCompareIds({ first: 500 });
-    const items = compareData?.edges?.map((edge: any) => edge.node) || [];
+    const compareData = (await getCompareIds({ first: 500 })) as CompareIdsConnection | null;
+    const items = compareData?.edges?.map((edge) => edge.node) || [];
 
     const ids: string[] = [];
     for (const item of items) {
@@ -394,10 +418,11 @@ export async function deleteCompareAction(id: string) {
   try {
     const { deleteCompareItem } = await import('@/utils/bagisto');
     return await deleteCompareItem(id);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -406,10 +431,11 @@ export async function deleteAllCompareAction() {
   try {
     const { deleteAllCompareItems } = await import('@/utils/bagisto');
     return await deleteAllCompareItems();
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }
@@ -418,10 +444,11 @@ export async function addProductToCartAction(productId: string | number, quantit
   try {
     const { addProductToCart } = await import('@/utils/bagisto');
     return await addProductToCart(productId, quantity);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "An error occurred";
     return {
       success: false,
-      message: err?.message || "An error occurred"
+      message,
     };
   }
 }

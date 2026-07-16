@@ -120,22 +120,32 @@ export async function cachedCategoryRequest<
  * than in `helper.ts` because that module is reachable from client bundles and
  * cannot import the server-only `'use cache'` APIs.
  */
+type FilterAttributeData = {
+  id: string;
+  code: string;
+  options: {
+    edges: Array<{ node: { id: string; adminName: string } }>;
+  };
+};
+
 export async function getFilterAttributes(): Promise<FilterAttribute[]> {
   const filterData = await cachedGraphQLRequest<{
-    color: any;
-    size: any;
-    brand: any;
+    color: FilterAttributeData | null;
+    size: FilterAttributeData | null;
+    brand: FilterAttributeData | null;
   }>("static", GET_FILTER_ATTRIBUTES, { locale: "en" });
 
   const attributes = [filterData?.color, filterData?.size, filterData?.brand];
 
-  return attributes.filter(Boolean).map((attr) => ({
-    id: attr.id,
-    code: attr.code,
-    adminName: attr.code.toUpperCase(),
-    options: attr.options.edges.map((o: any) => ({
-      id: o.node.id,
-      adminName: o.node.adminName,
-    })),
-  }));
+  return attributes
+    .filter((attr): attr is FilterAttributeData => Boolean(attr))
+    .map((attr) => ({
+      id: attr.id,
+      code: attr.code,
+      adminName: attr.code.toUpperCase(),
+      options: attr.options.edges.map((o) => ({
+        id: o.node.id,
+        adminName: o.node.adminName,
+      })),
+    }));
 }

@@ -7,6 +7,7 @@ import { ThemeSkeleton } from "@components/common/skeleton/ThemeSkeleton";
 
 export const revalidate = 3600;
 
+
 async function HomeContent() {
   const data = await cachedGraphQLRequest<ThemeCustomizationResponse>(
     "home",

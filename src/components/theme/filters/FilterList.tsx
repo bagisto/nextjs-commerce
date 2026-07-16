@@ -4,7 +4,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 export type ListItem = SortFilterItemTypes | PathFilterItem;
 export type PathFilterItem = { title: string; path: string };
 import { useMemo, useTransition } from "react";
-import { getFilterAttributeTypes, SortFilterItemTypes } from "@/types/types";
+import { SortFilterItemTypes } from "@/types/types";
+import { FilterAttribute, FilterAttributeOption } from "@/components/catalog/type";
 import { isArray } from "@/utils/type-guards";
 import { PAGE, QUERY, SORT } from "@/utils/constants";
 import { createUrl } from "@/utils/helper";
@@ -15,7 +16,7 @@ function FilterItemList({
   list,
   title,
 }: {
-  list: getFilterAttributeTypes;
+  list: FilterAttribute;
   title: string;
 }) {
   const currentParams = useSearchParams();
@@ -96,7 +97,7 @@ function FilterItemList({
         onSelectionChange={(keys) => handleFilterChange(keys as Set<string>)}
         isLoading={isPending}
       >
-        {(item) => (
+        {(item: FilterAttributeOption) => (
             <SelectItem
               key={item.id}
               textValue={item.id}
@@ -116,7 +117,7 @@ export default function FilterList({
   filterAttributes,
 }: {
    
-  filterAttributes: any;
+  filterAttributes: FilterAttribute[];
 }) {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -148,7 +149,7 @@ export default function FilterList({
 
   return (
     <div className="grid grid-cols-1 gap-x-3 gap-y-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6">
-      {filterAttributes?.map((item: getFilterAttributeTypes) => {
+      {filterAttributes?.map((item: FilterAttribute) => {
         const hasOptions = isArray(item.options);
 
         return hasOptions ? (

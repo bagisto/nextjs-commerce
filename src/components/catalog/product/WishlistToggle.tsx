@@ -142,7 +142,6 @@ export function WishlistToggle({ productId, initialIsWishlisted = false }: Wishl
 
   return (
     <motion.button
-      whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={handleToggle}
       disabled={isPending || isChecking}

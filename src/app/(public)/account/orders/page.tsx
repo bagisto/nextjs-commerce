@@ -1,4 +1,5 @@
 import { getCustomerOrders } from "@/utils/bagisto";
+import type { CustomerEdge, CustomerOrderListNode } from "@/types/customer/type";
 import Link from "next/link";
 import { Eye } from "lucide-react";
 import clsx from "clsx";
@@ -82,7 +83,7 @@ export default async function OrdersPage({
     }
 
     if (searchQuery || filterOrderId || filterTotal || filterStatus || startDate || endDate) {
-        orders = orders.filter((edge: any) => {
+        orders = orders.filter((edge: CustomerEdge<CustomerOrderListNode>) => {
             const order = edge.node;
 
             const qMatch = searchQuery ? (
@@ -201,7 +202,7 @@ export default async function OrdersPage({
                             </thead>
                             <tbody className="divide-y divide-neutral-50 dark:divide-neutral-800">
                                 {orders.length > 0 ? (
-                                    orders.map((edge: any) => {
+                                    orders.map((edge: CustomerEdge<CustomerOrderListNode>) => {
                                         const order = edge.node;
                                         const { date, time } = formatOrderDate(order.createdAt);
 
@@ -259,7 +260,7 @@ export default async function OrdersPage({
 
                     <div className="block lg:hidden w-full pb-20 pt-4">
                         {orders.length > 0 ? (
-                            orders.map((edge: any) => {
+                            orders.map((edge: CustomerEdge<CustomerOrderListNode>) => {
                                 const order = edge.node;
                                 const { date, time } = formatOrderDate(order.createdAt);
 

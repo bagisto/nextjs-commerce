@@ -3,9 +3,10 @@
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Price } from "@/components/theme/ui/Price";
 import { safeCurrencyCode } from "@/utils/helper";
+import { GroupedProductsConnection, GroupedProductNode } from "@/types/category/type";
 
 interface GroupedProductSelectorProps {
-    groupedProducts: any;
+    groupedProducts: GroupedProductsConnection | null | undefined;
     quantities: Record<string, number>;
     onQuantityChange: (productId: string, quantity: number) => void;
 }
@@ -19,9 +20,9 @@ export function GroupedProductSelector({
 
     return (
         <div className="flex flex-col gap-y-4 my-6">
-            {groupedProducts.edges.map(({ node }: any) => {
+            {groupedProducts.edges.map(({ node }: { node: GroupedProductNode }) => {
                 const product = node.associatedProduct;
-                const productId = product.id.split("/").pop();
+                const productId = product.id.split("/").pop() as string;
                 const currentQty = quantities[productId] ?? node.qty ?? 0;
 
                 return (

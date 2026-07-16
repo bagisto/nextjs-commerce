@@ -8,7 +8,11 @@ import { useState } from "react";
 import { getVariantInfo } from "@utils/hooks/useVariantInfo";
 import { useSearchParams } from "next/navigation";
 import Prose from "@components/theme/search/Prose";
-import { ProductData, ProductReviewNode } from "../type";
+import { ProductData } from "../type";
+import { ProductReviewEdge } from "@components/catalog/review/ReviewDetail";
+import { AttributeData } from "@/types/types";
+import { ProductSwatchReview, SuperAttributeOption, AttributeValueNode, BookingProduct } from "@/types/category/type";
+import { VariantSuperAttribute } from "@utils/hooks/useVariantInfo";
 import { safeCurrencyCode, safePriceValue, safeParse } from "@utils/helper";
 import Breadcrumb from "@components/common/Breadcrumb";
 import { CalendarIcon, MapPinIcon } from "@heroicons/react/24/outline";
@@ -22,10 +26,10 @@ export function ProductDescription({
 }: {
   product: ProductData;
   slug: string;
-  reviews: ProductReviewNode[];
+  reviews: ProductReviewEdge[];
   avgRating: number;
   totalReview: number;
-  productSwatchReview: any;
+  productSwatchReview: ProductSwatchReview | null;
 }) {
   const priceValue = safePriceValue(product);
   const currencyCode = safeCurrencyCode(product);
@@ -36,26 +40,57 @@ export function ProductDescription({
   const searchParams = useSearchParams();
   const [userInteracted, setUserInteracted] = useState(false);
 
-  const superAttributes = productSwatchReview?.superAttributeOptions
-    ? safeParse(productSwatchReview.superAttributeOptions)
+  const superAttributes: SuperAttributeOption[] = productSwatchReview?.superAttributeOptions
+    ? safeParse<SuperAttributeOption[]>(productSwatchReview.superAttributeOptions) ?? []
     : productSwatchReview?.superAttributes?.edges?.map(
-      (e: { node: any }) => e.node
-    ) || [];
+      (e: { node: SuperAttributeOption }) => e.node
+    ) ?? [];
+
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>(() => {
+    const options: Record<string, string> = {};
+    if (product?.type === "configurable" && Array.isArray(superAttributes)) {
+      superAttributes.forEach((attr: SuperAttributeOption) => {
+        const val = searchParams.get(attr.code);
+        if (val) options[attr.code] = val;
+      });
+    }
+    return options;
+  });
+
+  const handleSelectOption = (attributeCode: string, optionId: string) => {
+    setSelectedOptions((prev) => {
+      const next = { ...prev, [attributeCode]: optionId };
+      
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        params.set(attributeCode, optionId);
+        const newUrl = `${window.location.pathname}?${params.toString()}`;
+        window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, "", newUrl);
+      }
+      
+      return next;
+    });
+    setUserInteracted(true);
+  };
+
+  const searchParamsString = Object.entries(selectedOptions)
+    .map(([key, val]) => `${key}=${val}`)
+    .join("&");
 
   const variantInfo = getVariantInfo(
     product?.type === "configurable",
-    searchParams.toString(),
-    superAttributes,
-    productSwatchReview?.combinations
+    searchParamsString,
+    superAttributes as VariantSuperAttribute[],
+    productSwatchReview?.combinations ?? ""
   );
 
   const additionalData =
     productSwatchReview?.attributeValues?.edges?.map(
-      (e: { node: any }) => e.node
+      (e: { node: AttributeValueNode }) => e.node
     ) || [];
   const [expandedKeys, setExpandedKeys] = useState<Set<string>>(new Set());
   const handleReviewClick = () => {
-    const filterAdditionalData = additionalData.filter((item: any) => item?.attribute?.isVisibleOnFront == "1");
+    const filterAdditionalData = additionalData.filter((item: AttributeValueNode) => item?.attribute?.isVisibleOnFront == "1");
     const key = filterAdditionalData.length > 0 ? "3" : "2";
     setExpandedKeys(new Set([key]));
 
@@ -73,6 +108,8 @@ export function ProductDescription({
       }
     }, 200);
   };
+
+  const bookingProductNode = product.bookingProducts?.edges?.[0]?.node;
 
   return (
     <>
@@ -150,22 +187,22 @@ export function ProductDescription({
         <Prose className="mb-6 text-base text-selected-black dark:text-white font-normal" html={product.shortDescription} />
       ) : null}
 
-      {product.type === 'booking' && (product as any).bookingProducts?.edges?.[0]?.node?.type === 'event' && (
+      {product.type === 'booking' && product.bookingProducts?.edges?.[0]?.node?.type === 'event' && (
         <div className="flex flex-col gap-4 mt-2 mb-8">
           <h3 className="font-outfit font-normal text-15 leading-[20px] text-black dark:text-white">
             Event Information
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
-            {(product as any).bookingProducts.edges[0].node.location && (
+            {product.bookingProducts?.edges[0].node.location && (
               <div className="flex items-start gap-2.5">
                 <div className="mt-1">
                   <MapPinIcon className="h-5 w-5 text-black dark:text-white" />
                 </div>
                 <div className="flex flex-col text-left">
                   <span className="font-outfit font-normal text-base leading-none text-black/60 dark:text-selected-white" style={{ fontWeight: "normal", fontSize: '16px' }}>Location</span>
-                  <span className="font-outfit font-normal text-base leading-none text-black dark:text-white mt-2">{(product as any).bookingProducts.edges[0].node.location}</span>
+                  <span className="font-outfit font-normal text-base leading-none text-black dark:text-white mt-2">{product.bookingProducts?.edges[0].node.location}</span>
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((product as any).bookingProducts.edges[0].node.location)}`}
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(product.bookingProducts?.edges[0].node.location ?? '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="font-outfit font-normal text-sm leading-none text-primary dark:text-primary-soft hover:underline mt-2.5"
@@ -184,17 +221,17 @@ export function ProductDescription({
               <div className="flex flex-col text-left">
                 <span className="font-outfit font-normal text-base leading-none text-black/60 dark:text-selected-white" style={{ fontWeight: "normal", fontSize: '16px' }}>Event on</span>
                 <div className="font-outfit font-normal text-base leading-tight text-black dark:text-white mt-2">
-                  {(product as any).bookingProducts.edges[0].node.availableEveryWeek ? (
+                  {product.bookingProducts?.edges[0].node.availableEveryWeek ? (
                     <span>Available every week</span>
                   ) : (
                     <span>
-                      {new Date((product as any).bookingProducts.edges[0].node.availableFrom).toLocaleString('en-US', {
+                      {new Date(product.bookingProducts?.edges[0].node.availableFrom ?? '').toLocaleString('en-US', {
                         day: '2-digit',
                         month: 'long',
                         year: 'numeric',
                         hour: '2-digit',
                         minute: '2-digit'
-                      })} - {new Date((product as any).bookingProducts.edges[0].node.availableTo).toLocaleString('en-US', {
+                      })} - {new Date(product.bookingProducts?.edges[0].node.availableTo ?? '').toLocaleString('en-US', {
                         day: '2-digit',
                         month: 'long',
                         year: 'numeric',
@@ -210,10 +247,11 @@ export function ProductDescription({
         </div>
       )}
 
-      {product.type === 'booking' && ['appointment', 'rental', 'table'].includes((product as any).bookingProducts?.edges?.[0]?.node?.type) && (() => {
-        const node = (product as any).bookingProducts.edges[0].node;
-        const apptSlot = node?.appointmentSlot;
-        const tableSlot = node?.tableSlot;
+      {product.type === 'booking' && ['appointment', 'rental', 'table'].includes(product.bookingProducts?.edges?.[0]?.node?.type ?? '') && (() => {
+        const node = bookingProductNode;
+        if (!node) return null;
+        const apptSlot = node.appointmentSlot;
+        const tableSlot = node.tableSlot;
 
         if (node.type === 'rental' && !node.location) return null;
 
@@ -263,9 +301,9 @@ export function ProductDescription({
       })()}
 
       <VariantSelector
-        variants={variantInfo?.variantAttributes}
-        setUserInteracted={setUserInteracted}
-        possibleOptions={variantInfo.possibleOptions}
+        variants={variantInfo?.variantAttributes as unknown as AttributeData[]}
+        selectedOptions={selectedOptions}
+        onSelectOption={handleSelectOption}
       />
 
       <AddToCart
@@ -273,7 +311,8 @@ export function ProductDescription({
         productId={product?.id || ""}
         productSwatchReview={productSwatchReview}
         userInteracted={userInteracted}
-        bookingProduct={(product as any).bookingProducts?.edges?.[0]?.node}
+        bookingProduct={bookingProductNode as unknown as BookingProduct}
+        selectedOptions={selectedOptions}
       />
 
 

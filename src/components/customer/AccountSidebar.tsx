@@ -11,9 +11,10 @@ import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setUser } from "@/store/slices/user-slice";
 import { IMAGES } from "@/utils/constants";
+import type { CustomerProfile } from "@/types/customer/type";
 
 interface AccountSidebarProps {
-  user: any;
+  user: CustomerProfile | null;
 }
 
 const Icon = ({ path, isActive }: { path: string, isActive: boolean }) => (

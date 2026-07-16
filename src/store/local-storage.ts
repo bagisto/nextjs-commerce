@@ -29,13 +29,14 @@ export const CACHED_KEYS = {
   ROOT_CATEGORIES: "ROOT_CATEGORIES",
 };
  
-export const setLocalStorage = (key: string, data: any) => {
+export const setLocalStorage = (key: string, data: unknown) => {
   if (typeof window !== "undefined") {
+    let value = data;
     if (isArray(data) || isObject(data)) {
-      data = JSON.stringify(data);
+      value = JSON.stringify(data);
     }
-    if (typeof data === "string") {
-      localStorage.setItem(key, data);
+    if (typeof value === "string") {
+      localStorage.setItem(key, value);
     }
   }
 };

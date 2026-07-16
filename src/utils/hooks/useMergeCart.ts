@@ -2,19 +2,22 @@
 
 import { useMutation } from "@apollo/client/react";
 import { useAppDispatch } from "@/store/hooks";
-import { addItem } from "@/store/slices/cart-slice";
+import { addItem, type Cart } from "@/store/slices/cart-slice";
 import { CREATE_MERGE_CART } from "@/graphql";
+import { CreateMergeCartData } from "@/types/cart/type";
 
 
 export function useMergeCart() {
   const dispatch = useAppDispatch();
 
-  const [mergeCart, { loading: isLoading }] = useMutation(CREATE_MERGE_CART, {
-    onCompleted: (response: any) => {
-      const responseData = response?.createMergeCart?.mergeCart;
-      if (!responseData) {
-        return;
-      }
+  const [mergeCart, { loading: isLoading }] = useMutation<CreateMergeCartData>(
+    CREATE_MERGE_CART,
+    {
+      onCompleted: (response) => {
+        const responseData = response?.createMergeCart?.mergeCart;
+        if (!responseData) {
+          return;
+        }
        const cartId = responseData?.id ?? null;
 
       const setCookie = (name: string, value: string | number, days = 30) => {
@@ -29,7 +32,7 @@ export function useMergeCart() {
         setCookie("guest_cart_id", String(cartId));
       }
 
-      dispatch(addItem(responseData));
+      dispatch(addItem(responseData as unknown as Cart));
     },
     onError: (_error) => {
     },

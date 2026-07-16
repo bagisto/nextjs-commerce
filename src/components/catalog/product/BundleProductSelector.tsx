@@ -3,10 +3,19 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Price } from "@/components/theme/ui/Price";
+import {
+    BundleOptionsConnection,
+    BundleOptionNode,
+    BundleOptionProductNode,
+} from "@/types/category/type";
 
 interface BundleProductSelectorProps {
-    bundleOptions: any;
-    onSelectionChange: (bundleOptions: any, bundleOptionQty: any, totalPrice: number) => void;
+    bundleOptions: BundleOptionsConnection | null | undefined;
+    onSelectionChange: (
+        bundleOptions: Record<string, string[]>,
+        bundleOptionQty: Record<string, number>,
+        totalPrice: number
+    ) => void;
     basePrice: number;
     currencyCode: string;
 }
@@ -21,24 +30,24 @@ export function BundleProductSelector({
         const initialSelections: Record<string, string[]> = {};
         const initialQuantities: Record<string, number> = {};
 
-        bundleOptions?.edges?.forEach(({ node: option }: any) => {
-            const optionId = option.id.split("/").pop();
+        bundleOptions?.edges?.forEach(({ node: option }: { node: BundleOptionNode }) => {
+            const optionId = option.id.split("/").pop() as string;
             const defaultProducts = option.bundleOptionProducts.edges
-                .filter(({ node }: any) => node.isDefault)
-                .map(({ node }: any) => node.id.split("/").pop());
+                .filter(({ node }: { node: BundleOptionProductNode }) => node.isDefault)
+                .map(({ node }: { node: BundleOptionProductNode }) => node.id.split("/").pop() as string);
 
             if (defaultProducts.length > 0) {
                 initialSelections[optionId] = defaultProducts;
             } else if (option.isRequired && option.bundleOptionProducts.edges.length > 0) {
                 if (option.type === "radio" || option.type === "select") {
                     initialSelections[optionId] = [
-                        option.bundleOptionProducts.edges[0].node.id.split("/").pop(),
+                        option.bundleOptionProducts.edges[0].node.id.split("/").pop() as string,
                     ];
                 }
             }
 
-            option.bundleOptionProducts.edges.forEach(({ node }: any) => {
-                const bundleProductId = node.id.split("/").pop();
+            option.bundleOptionProducts.edges.forEach(({ node }: { node: BundleOptionProductNode }) => {
+                const bundleProductId = node.id.split("/").pop() as string;
                 initialQuantities[bundleProductId] = node.qty || 1;
             });
         });
@@ -54,8 +63,8 @@ export function BundleProductSelector({
         const fSelections: Record<string, string[]> = {};
         const fQuantities: Record<string, number> = {};
 
-        bundleOptions?.edges?.forEach(({ node: option }: any) => {
-            const optionId = option.id.split("/").pop();
+        bundleOptions?.edges?.forEach(({ node: option }: { node: BundleOptionNode }) => {
+            const optionId = option.id.split("/").pop() as string;
             const selectedIds = selections[optionId] || [];
 
             if (selectedIds.length > 0) {
@@ -63,7 +72,7 @@ export function BundleProductSelector({
 
                 selectedIds.forEach((bundleProductId: string) => {
                     const bundleOptionProduct = option.bundleOptionProducts.edges.find(
-                        ({ node }: any) => node.id.split("/").pop() === bundleProductId
+                        ({ node }: { node: BundleOptionProductNode }) => node.id.split("/").pop() === bundleProductId
                     )?.node;
 
                     if (bundleOptionProduct) {
@@ -123,8 +132,8 @@ export function BundleProductSelector({
     return (
         <div className="flex flex-col gap-8 my-2">
             <div className="flex flex-col gap-1">
-                {bundleOptions.edges.map(({ node: option }: any) => {
-                    const optionId = option.id.split("/").pop();
+                {bundleOptions.edges.map(({ node: option }: { node: BundleOptionNode }) => {
+                    const optionId = option.id.split("/").pop() as string;
                     const optionType = option.type;
                     const isRequired = option.isRequired;
 
@@ -136,8 +145,8 @@ export function BundleProductSelector({
                             </h3>
 
                             <div className="flex flex-col gap-2">
-                                {option.bundleOptionProducts.edges.map(({ node: bundleOptionProduct }: any) => {
-                                    const bundleProductId = bundleOptionProduct.id.split("/").pop();
+                                {option.bundleOptionProducts.edges.map(({ node: bundleOptionProduct }: { node: BundleOptionProductNode }) => {
+                                    const bundleProductId = bundleOptionProduct.id.split("/").pop() as string;
                                     const product = bundleOptionProduct.product;
                                     const isSelected = selections[optionId]?.includes(bundleProductId);
                                     const isRadio = optionType === "radio" || optionType === "select";
@@ -184,9 +193,9 @@ export function BundleProductSelector({
                                 })}
 
                                 {(() => {
-                                    const selectedId = selections[optionId]?.[0];
+                                    const selectedId = selections[optionId]?.[0] ?? "";
                                     const selectedProduct = option.bundleOptionProducts.edges.find(
-                                        ({ node }: any) => node.id.split("/").pop() === selectedId
+                                        ({ node }: { node: BundleOptionProductNode }) => node.id.split("/").pop() === selectedId
                                     )?.node;
 
                                     if (selectedProduct?.isUserDefined) {
@@ -258,8 +267,8 @@ export function BundleProductSelector({
                 </div>
 
                 <div className="flex flex-col gap-5">
-                    {bundleOptions.edges.map(({ node: option }: any) => {
-                        const optionId = option.id.split("/").pop();
+                    {bundleOptions.edges.map(({ node: option }: { node: BundleOptionNode }) => {
+                        const optionId = option.id.split("/").pop() as string;
                         const selectedIds = selections[optionId] || [];
 
                         if (selectedIds.length === 0) return null;
@@ -272,7 +281,7 @@ export function BundleProductSelector({
                                 <div className="flex flex-col gap-1">
                                     {selectedIds.map((bundleProductId: string) => {
                                         const bundleOptionProduct = option.bundleOptionProducts.edges.find(
-                                            ({ node }: any) => node.id.split("/").pop() === bundleProductId
+                                            ({ node }: { node: BundleOptionProductNode }) => node.id.split("/").pop() === bundleProductId
                                         )?.node;
 
                                         if (!bundleOptionProduct) return null;

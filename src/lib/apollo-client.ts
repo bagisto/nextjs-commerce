@@ -8,13 +8,35 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getSession } from "next-auth/react";
-import { getCartToken } from "@/utils/getCartToken";
+import { getCartToken, getNativeCookie } from "@/utils/getCartToken";
 import { BagistoSession } from "@/types/types";
+import { NEXTAUTH_TOKEN, NEXTAUTH_SECURE_TOKEN } from "@/utils/constants";
 
 
+let sessionCache: { session: BagistoSession | null; timestamp: number } | null =
+  null;
+let inFlightSession: Promise<BagistoSession | null> | null = null;
+const SESSION_CACHE_TTL = 5 * 60 * 1000;
 
-let sessionCache: { session: BagistoSession | null; timestamp: number } | null = null;
-const SESSION_CACHE_TTL = 5000;
+
+function hasNextAuthSessionCookie(): boolean {
+  if (typeof document === "undefined") return false;
+  return Boolean(
+    getNativeCookie(NEXTAUTH_TOKEN) ||
+      getNativeCookie(NEXTAUTH_SECURE_TOKEN),
+  );
+}
+
+async function resolveSession(): Promise<BagistoSession | null> {
+  if (typeof window === "undefined") return null;
+  if (!hasNextAuthSessionCookie()) return null;
+  return (await getSession()) as BagistoSession | null;
+}
+
+export function clearSessionCache(): void {
+  sessionCache = null;
+  inFlightSession = null;
+}
 
 async function getCachedSession(): Promise<BagistoSession | null> {
   if (typeof window === "undefined") {
@@ -23,22 +45,24 @@ async function getCachedSession(): Promise<BagistoSession | null> {
 
   const now = Date.now();
 
-  
+
   if (sessionCache && now - sessionCache.timestamp < SESSION_CACHE_TTL) {
     return sessionCache.session;
   }
 
 
-  const session = (await getSession()) as BagistoSession | null;
-
- 
-  if (!session) {
-    sessionCache = null;
-    return null;
+  if (!inFlightSession) {
+    inFlightSession = resolveSession()
+      .then((session) => {
+        sessionCache = { session, timestamp: Date.now() };
+        return session;
+      })
+      .finally(() => {
+        inFlightSession = null;
+      });
   }
 
-  sessionCache = { session, timestamp: now };
-  return session;
+  return inFlightSession;
 }
 
 function createApolloClient() {

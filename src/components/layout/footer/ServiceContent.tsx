@@ -36,11 +36,13 @@ const ServiceContent: FC<ServiceContentDataTypes> = ({ serviceData }) => {
     <div className="mx-auto mt-0 w-full lg:mt-12 md:mt-20 md:max-w-4xl px-4 pt-8  lg:pb-12 pb-24">
       {serviceData?.slice(0, 1)?.map((service, index: number) => {
         const options =
-          typeof service.options === "string"
-            ? safeParse(service.options)
-            : service.options;
+          (typeof service.options === "string"
+            ? safeParse<OptionDataTypes>(service.options)
+            : service.options) as OptionDataTypes | undefined;
 
-        return <ServiceCarouselRender key={index} serviceList={{ options }} />;
+        return options ? (
+          <ServiceCarouselRender key={index} serviceList={{ options }} />
+        ) : null;
       })}
     </div>
   );
@@ -61,12 +63,12 @@ const ServiceCarouselRender: FC<ServiceContenRenderTypes> = ({
 
   const socialKeywords = ["facebook", "instagram", "twitter", "x"];
   const filteredServices = services?.filter(
-    (service: any) => !socialKeywords.includes(service.title?.toLowerCase())
+    (service) => !socialKeywords.includes(service.title?.toLowerCase())
   );
 
   return (
     <div className="flex items-center justify-center gap-6 max-lg:flex-wrap max-md:grid max-md:grid-cols-2 max-md:gap-x-4 max-md:gap-y-8 max-md:text-center md:gap-10 lg:gap-20">
-      {filteredServices?.map((list: any, index: number) => {
+      {filteredServices?.map((list, index: number) => {
         const iconKey = list?.service_icon;
 
         return (

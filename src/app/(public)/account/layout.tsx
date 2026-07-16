@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 import { getCustomerProfile } from "@/utils/bagisto";
 import AccountSidebar from "@/components/customer/AccountSidebar";
 import AccountLayoutWrapper from "./AccountLayoutWrapper";
+import type { CustomerProfile } from "@/types/customer/type";
 
 export const dynamic = "force-dynamic";
+
 
 export default async function AccountLayout({
   children,
@@ -24,7 +26,7 @@ export default async function AccountLayout({
   return (
     <div className="mx-auto max-w-[1920px] w-full pt-12 lg:py-12 min-h-screen">
       <div className="px-4 xl:px-[185px] pt-7_5">
-        <AccountLayoutWrapper sidebar={<AccountSidebar user={user} />}>
+        <AccountLayoutWrapper sidebar={<AccountSidebar user={user as CustomerProfile} />}>
           {children}
         </AccountLayoutWrapper>
       </div>

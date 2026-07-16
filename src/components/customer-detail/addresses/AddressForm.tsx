@@ -6,8 +6,22 @@ import { useRouter } from "next/navigation";
 import { Input, Button, Checkbox } from "@heroui/react";
 import { createCustomerAddressAction } from "@/utils/actions";
 import { useToast } from "@/providers/ToastProvider";
+import { CustomerAddress } from "@/types/customer/type";
 
-export default function AddressForm({ initialData }: { initialData?: any }) {
+interface AddressFormValues {
+    addressId?: string | number;
+    firstName: string;
+    lastName: string;
+    address1: string;
+    country: string;
+    state: string;
+    city: string;
+    postcode: string;
+    phone: string;
+    defaultAddress: boolean;
+}
+
+export default function AddressForm({ initialData }: { initialData?: CustomerAddress }) {
     const router = useRouter();
     const { addToast } = useToast();
     const [loading, setLoading] = useState(false);
@@ -31,12 +45,12 @@ export default function AddressForm({ initialData }: { initialData?: any }) {
         },
     });
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: AddressFormValues) => {
         setLoading(true);
 
         const input = {
             ...data,
-            addressId: data.addressId ? parseInt(data.addressId) : undefined,
+            addressId: data.addressId ? parseInt(String(data.addressId)) : undefined,
             useForShipping: true,
         };
 

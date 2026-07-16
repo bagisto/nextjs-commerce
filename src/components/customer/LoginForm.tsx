@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import { getSession, signIn } from "next-auth/react";
+import { clearSessionCache } from "@/lib/apollo-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ import { setCookie } from "@utils/helper";
 import { setLocalStorage } from "@/store/local-storage";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/slices/user-slice";
+import { BagistoUser } from "@/types/types";
 import { useCartDetail } from "@utils/hooks/useCartDetail";
 import { GUEST_CART_ID, GUEST_CART_TOKEN, IS_GUEST } from "@/utils/constants";
 import { useState } from "react";
@@ -71,12 +73,15 @@ export default function LoginForm() {
       const session = await getSession();
       const userToken: string | undefined = session?.user?.accessToken;
 
+
+      clearSessionCache();
+
       if (!userToken) {
         console.warn("No API token available in session after login");
       }
 
       if (session?.user) {
-        dispatch(setUser(session.user as any));
+        dispatch(setUser(session.user as unknown as BagistoUser));
       }
 
       if (userToken && guestCartId && guestCartToken) {

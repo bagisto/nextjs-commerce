@@ -136,7 +136,6 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
 
   return (
     <motion.button
-      whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={handleCompare}
       disabled={isPending || isChecking}

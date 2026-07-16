@@ -1,4 +1,5 @@
 import { useMutation } from "@apollo/client/react";
+import type { ErrorLike } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { useCustomToast } from "./useToast";
 import { useDispatch } from "react-redux";
@@ -18,6 +19,24 @@ import {
   GET_CHECKOUT_ADDRESSES,
 } from "@/graphql";
 import { useAppSelector } from "@/store/hooks";
+import {
+  CreateCheckoutShippingMethodData,
+  CreateCheckoutPaymentMethodResponse,
+  CreateCheckoutAddressData,
+} from "@/types/checkout/type";
+
+interface PlaceOrderCheckoutOrder {
+  id?: string;
+  orderId?: string;
+  message?: string;
+  success?: boolean;
+}
+
+interface PlaceOrderData {
+  createCheckoutOrder: {
+    checkoutOrder: PlaceOrderCheckoutOrder;
+  };
+}
 
 export const useCheckout = () => {
   const router = useRouter();
@@ -27,11 +46,11 @@ export const useCheckout = () => {
   const { getCartDetail } = useCartDetail();
   const cart = useAppSelector((state) => state.cartDetail.cart);
 
-  const handleMutationError = (error: any) => {
-    showToast(error?.message || "An error occurred", "danger");
+  const handleMutationError = (error: ErrorLike) => {
+    showToast(error.message || "An error occurred", "danger");
   };
 
-  const [saveAddressToCheckout, { loading: isLoadingToSave }] = useMutation(
+  const [saveAddressToCheckout, { loading: isLoadingToSave }] = useMutation<CreateCheckoutAddressData>(
     CREATE_CHECKOUT_ADDRESS,
     {
       refetchQueries: [{ query: GET_CHECKOUT_ADDRESSES }],
@@ -48,7 +67,7 @@ export const useCheckout = () => {
     },
   );
 
-  const saveCheckoutAddress = async (input: any) => {
+  const saveCheckoutAddress = async (input: Record<string, unknown>) => {
     const token = getCartToken();
     await saveAddressToCheckout({
       variables: {
@@ -58,10 +77,10 @@ export const useCheckout = () => {
     });
   };
 
-  const [saveShipping, { loading: isSaving }] = useMutation(
+  const [saveShipping, { loading: isSaving }] = useMutation<CreateCheckoutShippingMethodData>(
     CREATE_CHECKOUT_SHIPPING_METHODS,
     {
-      onCompleted: (response: any) => {
+      onCompleted: (response) => {
         const responseData =
           response?.createCheckoutShippingMethod?.checkoutShippingMethod;
         if (responseData?.success) {
@@ -89,10 +108,10 @@ export const useCheckout = () => {
     });
   };
 
-  const [savePayment, { loading: isPaymentLoading }] = useMutation(
+  const [savePayment, { loading: isPaymentLoading }] = useMutation<CreateCheckoutPaymentMethodResponse>(
     CREATE_CHECKOUT_PAYMENT_METHODS,
     {
-      onCompleted: (response: any) => {
+      onCompleted: (response) => {
         const responseData =
           response?.createCheckoutPaymentMethod?.checkoutPaymentMethod;
         if (responseData?.success) {
@@ -119,21 +138,18 @@ export const useCheckout = () => {
     });
   };
 
-  const [placeOrder, { loading: isPlaceOrder }] = useMutation(
+  const [placeOrder, { loading: isPlaceOrder }] = useMutation<PlaceOrderData>(
     CREATE_CHECKOUT_ORDER,
     {
-      onCompleted: (response: any) => {
+      onCompleted: (response) => {
         const responseData = response?.createCheckoutOrder?.checkoutOrder;
-        if (responseData) {
+        if (responseData && responseData.orderId) {
           showToast("Order placed successfully!", "success");
-          setCookie(ORDER_ID, responseData?.orderId);
+          setCookie(ORDER_ID, responseData.orderId);
           dispatch(clearCart());
           router.replace("/success");
         } else {
-          showToast(
-            responseData?.message || "Failed to place order",
-            "warning",
-          );
+          showToast("Failed to place order", "warning");
         }
       },
       onError: handleMutationError,

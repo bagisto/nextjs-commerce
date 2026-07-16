@@ -1,4 +1,5 @@
 import { getCustomerReviews } from "@/utils/bagisto";
+import type { CustomerEdge, CustomerReviewNode } from "@/types/customer/type";
 import Link from "next/link";
 import Image from "next/image";
 import AccountBreadcrumbs from "@/components/layout/AccountBreadcrumbs";
@@ -72,7 +73,7 @@ export default async function ReviewsPage({
             ) : (
                 <div className="flex flex-col w-full">
                     <div className="flex flex-col w-full">
-                        {reviews.map((edge: any) => {
+                        {reviews.map((edge: CustomerEdge<CustomerReviewNode>) => {
                             const review = edge.node;
                             const product = review.product;
                             const productName = product?.name || "Product Name";

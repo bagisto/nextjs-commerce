@@ -14,6 +14,15 @@ export interface CartItem {
 
 export interface CartItemEdge {
   node: CartItem;
+  product?: {
+    id?: string;
+    type?: string;
+    name?: string;
+    urlKey?: string;
+    guestCheckout?: boolean | null;
+    sku?: string;
+    [key: string]: unknown;
+  } | null;
 }
 
 export interface CartItemEdgeForModal {

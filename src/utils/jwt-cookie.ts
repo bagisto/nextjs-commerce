@@ -17,7 +17,7 @@ export const encodeJWT = (payload: object): string => {
 };
 
 
-export const decodeJWT = <T = any>(token: string, isGuest: boolean = true): T | null => {
+export const decodeJWT = <T = unknown>(token: string, isGuest: boolean = true): T | null => {
   try {
     if (!isGuest) {
       return { sessionToken: token } as unknown as T;

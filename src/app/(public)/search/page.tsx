@@ -22,7 +22,7 @@ const ProductGridItems = dynamicImport(
   () => import("@/components/catalog/product/ProductGridItems"),
 );
 
-export const dynamicParams = true;
+
 
 export async function generateStaticParams() {
   try {

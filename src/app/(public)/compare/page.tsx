@@ -14,15 +14,26 @@ export default async function ComparePage({
 }) {
     const params = await searchParams;
     const limit = Number(params?.limit) || 10;
+    const currentPage = Number(params?.page) || 1;
     const after = params?.cursor as string | undefined;
+
+    let currentAfterCursor = after;
+    if (currentPage > 1 && !after) {
+        const precedingData = await getCompareItemsAction({
+            first: (currentPage - 1) * limit,
+        });
+        currentAfterCursor = precedingData?.pageInfo?.endCursor;
+    }
 
     const data = await getCompareItemsAction({
         first: limit,
-        after: after,
+        after: currentAfterCursor,
     });
 
     const compareItems = data?.edges || [];
     const totalCount = data?.totalCount || 0;
+    const pageInfo = data?.pageInfo;
+    const totalPages = Math.ceil(totalCount / limit);
 
     return (
         <div className="container mx-auto max-w-7xl px-4 py-8 min-h-[70vh]">
@@ -37,7 +48,7 @@ export default async function ComparePage({
                 </Link>
                 <span className="text-neutral-400">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </span>
                 <span className="text-muted">Product Compare</span>
@@ -69,7 +80,14 @@ export default async function ComparePage({
                     </p>
                 </div>
             ) : (
-                <CompareTable items={compareItems} />
+                <CompareTable
+                    items={compareItems}
+                    totalPages={totalPages}
+                    currentPage={currentPage}
+                    nextCursor={pageInfo?.endCursor}
+                    limit={limit}
+                    totalCount={totalCount}
+                />
             )}
         </div>
     );

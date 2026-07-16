@@ -8,14 +8,19 @@ interface FetchHandlerOptions<TBody = unknown> {
   contentType?: boolean;
 }
 
-export async function fetchHandler({
+interface FetchHandlerResponse<T = unknown> {
+  data: T | null;
+  error?: { status?: number; message: string };
+}
+
+export async function fetchHandler<T = unknown>({
   url,
   method = "GET",
   body,
   headers = {},
   contentType = true,
- 
-}: FetchHandlerOptions): Promise<any> {
+  
+}: FetchHandlerOptions): Promise<FetchHandlerResponse<T>> {
   try {
     const defaultHeaders: Record<string, string> = {
       ...(contentType ? { "Content-Type": "application/json" } : {}),
@@ -27,8 +32,8 @@ export async function fetchHandler({
       headers: defaultHeaders,
       body: body ? JSON.stringify(body) : undefined,
     });
-   
-     
+    
+      
     const result = await response.json();
     if (!response.ok) {
       return {

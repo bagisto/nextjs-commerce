@@ -33,7 +33,15 @@ export const useGuestCartToken = () => {
       tokenCreatedRef.current = true;
 
       try {
-        const res = await fetchHandler({
+        const res = await fetchHandler<{
+          createCartToken?: {
+            cartToken?: {
+              sessionToken: string;
+              id: string | number;
+              isGuest: boolean;
+            };
+          };
+        }>({
           url: "graphql",
           method: "POST",
           body: { operationName: "CreateCart" },

@@ -1,7 +1,7 @@
 "use client";
 import { FC, useState, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { MappedCheckoutAddress } from "@/types/checkout/type";
+import { MappedCheckoutAddress, CreateCheckoutAddressVariables } from "@/types/checkout/type";
 import { EMAIL, getLocalStorage } from "@/store/local-storage";
 import { IS_VALID_ADDRESS, IS_VALID_INPUT } from "@/utils/constants";
 import { isObject } from "@/utils/type-guards";
@@ -11,7 +11,37 @@ import { ProceedToCheckout } from "./ProceedToCheckout";
 import CheckBox from "@components/theme/ui/element/Checkbox";
 import { useDispatch } from "react-redux";
 import { setCheckoutAddresses } from "@/store/slices/cart-slice";
+import { createCustomerAddressAction } from "@/utils/actions";
+import { useAppSelector } from "@/store/hooks";
+import { AddressDataTypes } from "@/types/types";
 
+interface GuestAddressFormValues {
+  billing: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    companyName: string;
+    address: string;
+    country: string;
+    state: string;
+    city: string;
+    postcode: string;
+    phone: string;
+  };
+  shipping: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    companyName: string;
+    address: string;
+    country: string;
+    state: string;
+    city: string;
+    postcode: string;
+    phone: string;
+  };
+  useForShipping: boolean;
+}
 
 export const GuestAddAdressForm: FC<{
   billingAddress?: MappedCheckoutAddress | null;
@@ -24,6 +54,7 @@ export const GuestAddAdressForm: FC<{
 }) => {
     const email = getLocalStorage(EMAIL);
     const dispatch = useDispatch();
+    const isAuthenticated = useAppSelector((state) => state.user.isAuthenticated);
     const [isOpen, setIsOpen] = useState(currentStep !== "address");
 
     const [billingAddress, setBillingAddress] = useState<MappedCheckoutAddress | null>(
@@ -45,7 +76,7 @@ export const GuestAddAdressForm: FC<{
       handleSubmit,
       reset,
       formState: { errors },
-    } = useForm({
+    } = useForm<GuestAddressFormValues>({
       mode: "onSubmit",
       defaultValues: {
         billing: {
@@ -54,8 +85,8 @@ export const GuestAddAdressForm: FC<{
           lastName: billingAddress?.lastName || "",
           companyName: billingAddress?.companyName || "",
           address: billingAddress?.address || "",
-          country: billingAddress?.country || "IN",
-          state: billingAddress?.state || "UP",
+          country: billingAddress?.country || "",
+          state: billingAddress?.state || "",
           city: billingAddress?.city || "",
           postcode: billingAddress?.postcode || "",
           phone: billingAddress?.phone || "",
@@ -66,8 +97,8 @@ export const GuestAddAdressForm: FC<{
           lastName: shippingAddress?.lastName || "",
           companyName: shippingAddress?.companyName || "",
           address: shippingAddress?.address || "",
-          country: shippingAddress?.country || "IN",
-          state: shippingAddress?.state || "UP",
+          country: shippingAddress?.country || "",
+          state: shippingAddress?.state || "",
           city: shippingAddress?.city || "",
           postcode: shippingAddress?.postcode || "",
           phone: shippingAddress?.phone || "",
@@ -93,8 +124,8 @@ export const GuestAddAdressForm: FC<{
             lastName: initialBilling?.lastName || "",
             companyName: initialBilling?.companyName || "",
             address: initialBilling?.address || "",
-            country: initialBilling?.country || "IN",
-            state: initialBilling?.state || "UP",
+            country: initialBilling?.country || "",
+            state: initialBilling?.state || "",
             city: initialBilling?.city || "",
             postcode: initialBilling?.postcode || "",
             phone: initialBilling?.phone || "",
@@ -105,8 +136,8 @@ export const GuestAddAdressForm: FC<{
             lastName: initialShipping?.lastName || "",
             companyName: initialShipping?.companyName || "",
             address: initialShipping?.address || "",
-            country: initialShipping?.country || "IN",
-            state: initialShipping?.state || "UP",
+            country: initialShipping?.country || "",
+            state: initialShipping?.state || "",
             city: initialShipping?.city || "",
             postcode: initialShipping?.postcode || "",
             phone: initialShipping?.phone || "",
@@ -124,7 +155,7 @@ export const GuestAddAdressForm: FC<{
       defaultValue: true,
     });
 
-    const addGuestAddress = async (data: any) => {
+    const addGuestAddress = async (data: GuestAddressFormValues) => {
       const billing = data?.billing;
       const shipping = data?.shipping;
 
@@ -140,7 +171,7 @@ export const GuestAddAdressForm: FC<{
       const cleanBillingPhone = cleanPhone(billing.phone || "");
       const cleanShippingPhone = cleanPhone(shippingSource.phone || "");
 
-      const payload: any = {
+      const payload: CreateCheckoutAddressVariables = {
         billingFirstName: billing.firstName,
         billingLastName: billing.lastName,
         billingEmail: billing.email ?? email ?? "",
@@ -150,7 +181,7 @@ export const GuestAddAdressForm: FC<{
         billingState: billing.state || "UP",
         billingPostcode: billing.postcode,
         billingPhoneNumber: cleanBillingPhone,
-        billingCompanyName: billing.companyName,
+        billingCompanyName: billing.companyName || "",
         useForShipping,
       };
 
@@ -164,23 +195,53 @@ export const GuestAddAdressForm: FC<{
         payload.shippingState = shipping.state;
         payload.shippingPostcode = shipping.postcode;
         payload.shippingPhoneNumber = cleanPhone(shipping.phone || "");
-        payload.shippingCompanyName = shipping.companyName;
+        payload.shippingCompanyName = shipping.companyName || "";
       }
 
       try {
-        await saveCheckoutAddress(payload as any);
+        await saveCheckoutAddress(payload as unknown as Record<string, unknown>);
+
+        if (isAuthenticated) {
+            const addressInput = {
+                firstName: billing.firstName,
+                lastName: billing.lastName,
+                address1: billing.address,
+                country: billing.country,
+                state: billing.state,
+                city: billing.city,
+                postcode: billing.postcode,
+                phone: cleanBillingPhone,
+                defaultAddress: false
+            };
+            await createCustomerAddressAction(addressInput);
+            
+            if (!useForShipping) {
+                const shippingAddressInput = {
+                    firstName: shipping.firstName,
+                    lastName: shipping.lastName,
+                    address1: shipping.address,
+                    country: shipping.country,
+                    state: shipping.state,
+                    city: shipping.city,
+                    postcode: shipping.postcode,
+                    phone: cleanShippingPhone,
+                    defaultAddress: false
+                };
+                await createCustomerAddressAction(shippingAddressInput);
+            }
+        }
         dispatch(
           setCheckoutAddresses({
             billing: {
               ...billing,
               phone: cleanBillingPhone,
               email: billing.email ?? email ?? "",
-            },
+            } as AddressDataTypes,
             shipping: {
               ...shippingSource,
               phone: cleanShippingPhone,
               email: shippingSource.email ?? email ?? "",
-            },
+            } as AddressDataTypes,
           })
         );
         setBillingAddress({
@@ -321,6 +382,28 @@ export const GuestAddAdressForm: FC<{
             size="md"
           />
           <InputText
+            {...register("billing.country", {
+              required: "Country field is required",
+            })}
+            className="col-span-6 xxs:col-span-3 mb-4"
+            errorMsg={errors?.billing?.country?.message}
+            label="Country"
+            labelPlacement="outside"
+            placeholder="Enter country"
+            size="md"
+          />
+          <InputText
+            {...register("billing.state", {
+              required: "State field is required",
+            })}
+            className="col-span-6 xxs:col-span-3 mb-4"
+            errorMsg={errors?.billing?.state?.message}
+            label="State"
+            labelPlacement="outside"
+            placeholder="Enter state"
+            size="md"
+          />
+          <InputText
             {...register("billing.city", {
               required: "City field is required",
               pattern: {
@@ -343,7 +426,7 @@ export const GuestAddAdressForm: FC<{
                 message: "Invalid Postcode",
               },
             })}
-            className="col-span-6 xxs:col-span-3"
+            className="col-span-6 xxs:col-span-3 mb-4"
             errorMsg={errors?.billing?.postcode?.message}
             label="Zip Code"
             labelPlacement="outside"
@@ -447,6 +530,28 @@ export const GuestAddAdressForm: FC<{
               size="md"
             />
             <InputText
+              {...register("shipping.country", {
+                required: "Country field is required",
+              })}
+              className="col-span-3 mb-4"
+              errorMsg={errors?.shipping?.country?.message}
+              label="Country"
+              labelPlacement="outside"
+              placeholder="Enter country"
+              size="md"
+            />
+            <InputText
+              {...register("shipping.state", {
+                required: "State field is required",
+              })}
+              className="col-span-3 mb-4"
+              errorMsg={errors?.shipping?.state?.message}
+              label="State"
+              labelPlacement="outside"
+              placeholder="Enter state"
+              size="md"
+            />
+            <InputText
               {...register("shipping.city", {
                 required: "City field is required",
                 pattern: {
@@ -469,7 +574,7 @@ export const GuestAddAdressForm: FC<{
                   message: "Invalid Postcode",
                 },
               })}
-              className="col-span-3"
+              className="col-span-3 mb-4"
               errorMsg={errors?.shipping?.postcode?.message}
               label="Zip Code"
               labelPlacement="outside"

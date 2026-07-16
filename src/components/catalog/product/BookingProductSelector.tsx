@@ -5,14 +5,14 @@ import { useLazyQuery } from "@apollo/client/react";
 import { GET_BOOKING_SLOTS, GET_RENTAL_BOOKING_SLOTS } from "@/graphql/catalog/queries/BookingSpecificQueries";
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Price } from "@components/theme/ui/Price";
-import { BookingProduct } from "@/types/category/type";
+import { BookingProduct, BookingSelectionData, BookingSlotItem, BookingSlotGroup, BookingSlotsQueryData, RentalBookingSlotsQueryData } from "@/types/category/type";
 import { CustomDatePicker } from "@components/ui/CustomDatePicker";
 import { CustomSlotSelect } from "@components/ui/CustomSlotSelect";
 
 
 interface BookingProductSelectorProps {
     bookingProduct: BookingProduct;
-    onSelectionChange: (bookingData: any) => void;
+    onSelectionChange: (bookingData: BookingSelectionData | null) => void;
     currencyCode?: string;
 }
 
@@ -34,7 +34,7 @@ const AppointmentBookingSelector: React.FC<BookingProductSelectorProps> = ({
     const [selectedSlot, setSelectedSlot] = useState<string>("");
     const [getSlots, { data, loading }] = useLazyQuery(GET_BOOKING_SLOTS);
 
-    const slotsFromApi = (data as any)?.bookingSlots || [];
+    const slotsFromApi = (data as BookingSlotsQueryData | undefined)?.bookingSlots || [];
 
     const notifyParent = useCallback(() => {
         if (selectedDate && selectedSlot) {
@@ -65,7 +65,7 @@ const AppointmentBookingSelector: React.FC<BookingProductSelectorProps> = ({
         }
     };
 
-    const slotOptions = slotsFromApi.map((s: any) => ({
+    const slotOptions = slotsFromApi.map((s: BookingSlotItem) => ({
         label: `${s.from} - ${s.to}`,
         value: `${s.from} - ${s.to}`,
     }));
@@ -293,8 +293,8 @@ const TableBookingSelector: React.FC<BookingProductSelectorProps> = ({
         }
     };
 
-    const slotsFromApi = (data as any)?.bookingSlots || [];
-    const slotOptions = slotsFromApi.map((s: any) => ({
+    const slotsFromApi = (data as BookingSlotsQueryData | undefined)?.bookingSlots || [];
+    const slotOptions = slotsFromApi.map((s: BookingSlotItem) => ({
         label: `${s.from} - ${s.to}`,
         value: `${s.from} - ${s.to}`,
     }));
@@ -353,7 +353,7 @@ const RentalBookingSelector: React.FC<BookingProductSelectorProps> = ({
     const [dateTo, setDateTo] = useState<string>("");
     const [getSlots, { data, loading }] = useLazyQuery(GET_RENTAL_BOOKING_SLOTS);
 
-    const slotsFromApi = (data as any)?.bookingSlots || [];
+    const slotsFromApi = (data as RentalBookingSlotsQueryData | undefined)?.bookingSlots || [];
 
     const notifyParent = useCallback(() => {
         if (rentingType === 'daily') {
@@ -399,9 +399,9 @@ const RentalBookingSelector: React.FC<BookingProductSelectorProps> = ({
     };
 
     const allHourlyRentTimes = useMemo(() => {
-        return slotsFromApi.flatMap((group: any) => {
+        return slotsFromApi.flatMap((group: BookingSlotGroup) => {
             if (!group.slots) return [];
-            return group.slots.map((s: any) => {
+            return group.slots.map((s: BookingSlotItem | string) => {
                 if (typeof s === 'string') return s;
                 return `${s.from} - ${s.to}`;
             });
@@ -568,8 +568,8 @@ const DefaultBookingSelector: React.FC<BookingProductSelectorProps> = ({
         }
     };
 
-    const slotsFromApi = (data as any)?.bookingSlots || [];
-    const slotOptions = slotsFromApi.map((s: any) => ({
+    const slotsFromApi = (data as BookingSlotsQueryData | undefined)?.bookingSlots || [];
+    const slotOptions = slotsFromApi.map((s: BookingSlotItem) => ({
         label: `${s.from} - ${s.to}`,
         value: `${s.from} - ${s.to}`,
     }));

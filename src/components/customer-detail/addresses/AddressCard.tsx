@@ -13,8 +13,9 @@ import {
     Button, 
     useDisclosure 
 } from "@heroui/react";
+import { CustomerAddress } from "@/types/customer/type";
 
-export default function AddressCard({ address }: { address: any }) {
+export default function AddressCard({ address }: { address: CustomerAddress }) {
     const router = useRouter();
     const { addToast } = useToast();
     const [showMenu, setShowMenu] = useState(false);

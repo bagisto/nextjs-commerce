@@ -16,8 +16,8 @@ export const isObject = (
 };
 
  
-export const isArray = (arr: any) => {
-  return arr && Array.isArray(arr) && arr.length > 0;
+export const isArray = <T>(arr: unknown): arr is T[] => {
+  return Array.isArray(arr) && arr.length > 0;
 };
 
 export const isBagistoError = (error: unknown): error is BagistoErrorLike => {

@@ -19,9 +19,10 @@ import {
     useDisclosure
 } from "@heroui/react";
 import { IMAGES } from "@/utils/constants";
+import { WishlistItemNode } from "@/types/customer/type";
 
 interface WishlistCardProps {
-    item: any;
+    item: WishlistItemNode;
 }
 
 export default function WishlistCard({ item }: WishlistCardProps) {
@@ -57,7 +58,7 @@ export default function WishlistCard({ item }: WishlistCardProps) {
     const handleMoveToCart = async () => {
         const complexTypes = ["configurable", "downloadable", "booking", "bundle", "grouped"];
 
-        if (complexTypes.includes(product.type)) {
+        if (complexTypes.includes(product.type ?? "")) {
             addToast({
                 message: "Please select product options before adding to cart",
                 type: "warning",
@@ -100,7 +101,7 @@ export default function WishlistCard({ item }: WishlistCardProps) {
                     <div className="flex flex-col gap-3 md:gap-4 2xl:gap-6 flex-1">
                         <div className="flex items-start justify-between w-full">
                             <Link href={`/product/${product.urlKey}`} className="flex-1">
-                                <h3 className="font-outfit font-normal md:font-medium text-base md:text-xl 2xl:text-xl leading-[100%] md:leading-[100%] text-black dark:text-white hover:text-accent dark:hover:text-primary-soft transition-colors line-clamp-2 cursor-pointer">
+                                <h3 className="font-outfit font-normal md:font-medium text-base md:text-xl 2xl:text-xl leading-[120%] md:leading-[120%] text-black dark:text-white hover:text-accent dark:hover:text-primary-soft transition-colors line-clamp-2 cursor-pointer">
                                     {product.name}
                                 </h3>
                             </Link>
@@ -115,7 +116,7 @@ export default function WishlistCard({ item }: WishlistCardProps) {
                         </div>
 
                         <p className="font-outfit font-semibold text-lg md:hidden leading-[100%] text-black dark:text-white">
-                            ${parseFloat(product.minimumPrice).toLocaleString()}
+                            ${parseFloat(product.minimumPrice ?? "0").toLocaleString()}
                         </p>
 
                         <div className="flex items-center gap-[16px] md:gap-4 mt-0 md:mt-0">
@@ -150,7 +151,7 @@ export default function WishlistCard({ item }: WishlistCardProps) {
 
                 <div className="hidden md:flex flex-col items-end justify-center gap-3 w-[83px] 2xl:h-[62px]">
                     <p className="font-outfit font-semibold text-xl 2xl:text-2xl 2xl:leading-[100%] leading-none text-black dark:text-white whitespace-nowrap">
-                        ${parseFloat(product.minimumPrice).toLocaleString()}
+                        ${parseFloat(product.minimumPrice ?? "0").toLocaleString()}
                     </p>
                     <button
                         onClick={onOpen}
@@ -169,32 +170,33 @@ export default function WishlistCard({ item }: WishlistCardProps) {
                 backdrop="blur"
                 scrollBehavior="inside"
                 classNames={{
-                    base: "bg-white dark:bg-neutral-900 rounded-3xl p-6 max-w-[400px] m-auto",
-                    header: "font-outfit text-2xl font-bold text-black dark:text-white border-b-0",
-                    body: "font-outfit text-lg text-selected-black dark:text-selected-white py-4",
-                    footer: "border-t-0 pt-0",
+                    base: "bg-white dark:bg-neutral-900 rounded-3xl p-8 max-w-[400px] m-auto",
+                    header: "font-outfit text-2xl font-bold text-black dark:text-white border-b-0 p-0 pb-2",
+                    body: "font-outfit text-lg text-selected-black dark:text-selected-white py-4 p-0 pb-6",
+                    footer: "border-t-0 pt-6 p-0",
+                    closeButton: "hover:bg-neutral-100 dark:hover:bg-neutral-800 active:bg-neutral-200 dark:active:bg-neutral-700 right-4 top-4",
                 }}
             >
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader>Remove from Wishlist</ModalHeader>
+                            <ModalHeader className="pr-10">Remove from Wishlist</ModalHeader>
                             <ModalBody>
                                 Are you sure you want to remove this item from your wishlist?
                             </ModalBody>
                             <ModalFooter className="gap-4">
                                 <Button
-                                    variant="light"
+                                    variant="bordered"
                                     onPress={onClose}
-                                    className="font-outfit font-bold text-base px-8 py-3 rounded-full h-auto text-selected-black dark:text-selected-white"
+                                    className="font-outfit font-bold text-base px-8 py-3 rounded-full h-auto text-selected-black dark:text-selected-white border-2 border-neutral-200 dark:border-neutral-700"
                                 >
                                     Cancel
                                 </Button>
                                 <Button
-                                    color="danger"
+                                    color="primary"
                                     onPress={() => handleRemove(onClose)}
                                     isLoading={isPending}
-                                    className="font-outfit font-bold text-base px-10 py-3 rounded-full bg-red-500 text-white h-auto shadow-lg shadow-red-200 dark:shadow-none"
+                                    className="font-outfit font-bold text-base px-10 py-3 rounded-full bg-primary text-white h-auto shadow-lg shadow-primary/20 dark:shadow-none"
                                 >
                                     Remove
                                 </Button>

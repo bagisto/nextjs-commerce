@@ -5,6 +5,7 @@ import { useDisclosure } from "@heroui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
 import { signOut } from "next-auth/react";
+import { clearSessionCache } from "@/lib/apollo-client";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar } from "@heroui/avatar";
@@ -28,6 +29,7 @@ import { useState } from "react";
 import MobileNavHeader from "@components/layout/navbar/MobileNavHeader";
 import { IMAGES } from "@/utils/constants";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
+import type { CustomerProfile } from "@/types/customer/type";
 
 const ShortcutIcon = () => (
   <Image src={IMAGES.settings} alt="Shortcuts" width={24} height={24} className="w-6 h-6 invert dark:invert-0" />
@@ -47,7 +49,7 @@ export default function CredentialModal({
   onOpen?: () => void;
   onClose?: () => void;
   isOpen?: boolean;
-  profile?: any;
+  profile?: CustomerProfile;
 }) {
   const {
     isOpen: internalIsOpen,
@@ -108,6 +110,8 @@ export default function CredentialModal({
         callbackUrl: "/customer/login",
         redirect: false,
       });
+
+      clearSessionCache();
 
       await resetGuestToken();
       dispatch(clearUser());

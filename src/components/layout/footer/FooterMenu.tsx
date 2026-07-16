@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { ThemeOptions } from "@/types/types";
-import { FooterMenuProps } from "@/types/theme/theme-customization";
+import { FooterMenuProps, FooterColumns, ThemeOptions } from "@/types/theme/theme-customization";
 import { isArray } from "@/utils/type-guards";
 import { safeParse } from "@/utils/helper";
 
@@ -38,13 +37,13 @@ export default function FooterMenu({ menu }: FooterMenuProps) {
 
   const firstMenu = menu[0]?.node;
   const firstTranslation = firstMenu?.translations?.edges?.[0]?.node;
-  const channels = typeof firstTranslation?.options === 'string'
-    ? safeParse(firstTranslation.options)
-    : firstTranslation?.options;
+  const channels = (typeof firstTranslation?.options === 'string'
+    ? safeParse<FooterColumns>(firstTranslation.options)
+    : firstTranslation?.options) as FooterColumns | null | undefined;
 
   return (
     <div className="flex justify-between gap-x-8 lg:gap-x-[50px]">
-      {isArray(channels?.column_1) ? (
+      {channels && isArray(channels.column_1) ? (
         <nav className="w-full lg:min-w-[160px] xl:min-w-[200px]">
           <ul>
             {channels.column_1.map((item: ThemeOptions, index: number) => {
@@ -54,7 +53,7 @@ export default function FooterMenu({ menu }: FooterMenuProps) {
         </nav>
       ) : null}
 
-      {isArray(channels?.column_2) ? (
+      {channels && isArray(channels.column_2) ? (
         <nav className="w-full lg:min-w-[160px] xl:min-w-[200px]">
           <ul>
             {channels.column_2.map((item: ThemeOptions, index: number) => {

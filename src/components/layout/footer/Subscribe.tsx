@@ -33,7 +33,7 @@ const Subscribe = () => {
 
     formData.append("email", data.email);
     setLoading(true);
-    const result = await userSubscribe(undefined as any, formData);
+    const result = await userSubscribe({}, formData);
 
     setStatus(result?.errors || null);
     if (result?.errors?.apiRes?.status) {
@@ -71,24 +71,31 @@ const Subscribe = () => {
       </p>
 
       <div className="mt-4 flex gap-x-3 w-full max-w-[400px]">
-        <input
-          type="email"
-          aria-label="Email Address"
-          {...register("email", {
-            required: "Email is required",
-            pattern: {
-              value: EMAIL_REGEX,
-              message: "Enter a valid email",
-            },
-          })}
-          className={clsx(
-            "block w-[283px] h-[40px] px-[14px] py-[10px] rounded-2xl text-sm outline-none border-1.5 bg-overlay-subtle border-white dark:bg-neutral-800 dark:border-neutral-700 text-black dark:text-white placeholder:text-selected-black dark:placeholder:text-neutral-400",
-            errors.email || status?.email
-              ? "border-red-500 dark:border-red-500"
-              : ""
+        <div className="relative w-[283px]">
+          <input
+            type="email"
+            aria-label="Email Address"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: EMAIL_REGEX,
+                message: "Enter a valid email",
+              },
+            })}
+            className={clsx(
+              "block w-full h-[40px] px-[14px] py-[10px] rounded-2xl text-sm outline-none border-1.5 bg-overlay-subtle border-white dark:bg-neutral-800 dark:border-neutral-700 text-black dark:text-white placeholder:text-selected-black dark:placeholder:text-neutral-400",
+              errors.email || status?.email
+                ? "border-red-500 dark:border-red-500"
+                : ""
+            )}
+            placeholder="Email Address"
+          />
+          {errors.email && (
+            <p className="mt-1 absolute left-0 text-xs text-red-600 dark:text-red-400">
+              {errors.email.message}
+            </p>
           )}
-          placeholder="Email Address"
-        />
+        </div>
         <Button
           className={clsx(
             "relative flex !font-medium !w-[105px] h-[40px] items-center justify-center !rounded-2xl border-1.5 border-solid border-border-cool  px-[20px] py-[10px] font-outfit !text-15 leading-[20px] tracking-wide !text-black dark:!text-black !bg-white dark:border-neutral-700 dark:!bg-primary dark:!text-white dark:border-primary",
@@ -103,12 +110,6 @@ const Subscribe = () => {
           type="submit"
         />
       </div>
-
-      {errors.email && (
-        <p className="mt-1 absolute left-0 -bottom-2.5 text-sm text-red-600 dark:text-red-400">
-          {errors.email.message}
-        </p>
-      )}
     </form>
   );
 };
