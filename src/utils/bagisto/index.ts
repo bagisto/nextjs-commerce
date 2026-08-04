@@ -150,6 +150,10 @@ type ExtractVariables<T> = T extends { variables: object }
   ? T["variables"]
   : never;
 
+const getCachedServerSession = cache(
+  () => getServerSession(authOptions) as Promise<BagistoSession | null>,
+);
+
 interface PageByUrlKeyResponse {
   pageByUrlKeypages?: PageData[];
 }
@@ -183,9 +187,7 @@ export async function bagistoFetch<T>({
     if (isCookies) {
       const cookieStore = await cookies();
       bagistoCartId = cookieStore.get(BAGISTO_SESSION)?.value ?? "";
-      const sessions = (await getServerSession(
-        authOptions,
-      )) as BagistoSession | null;
+      const sessions = await getCachedServerSession();
       accessToken = sessions?.user?.accessToken;
     }
 
@@ -371,7 +373,7 @@ export async function createUserToLogin(
 
 export async function logoutUser() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await getCachedServerSession();
     const token = session?.user?.accessToken;
 
     if (!token) {

@@ -2,8 +2,12 @@
 
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import AccountDrawer from "@/components/customer/AccountDrawer";
+import dynamic from "next/dynamic";
 import { BagistoUser } from "@/types/types";
+
+const AccountDrawer = dynamic(() => import("@/components/customer/AccountDrawer"), {
+  ssr: false,
+});
 
 export default function AccountPage() {
   const { data: session, status } = useSession();

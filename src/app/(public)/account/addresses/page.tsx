@@ -20,20 +20,14 @@ export default async function AddressesPage({
     const currentPage = Number(params?.page) || 1;
     const after = params?.cursor as string | undefined;
 
-    let currentAfterCursor = after;
-    if (currentPage > 1 && !after) {
-        const precedingData = await getCustomerAddresses({
-            first: (currentPage - 1) * limit,
-        });
-        currentAfterCursor = precedingData?.pageInfo?.endCursor;
+    const data = after
+        ? await getCustomerAddresses({ first: limit, after })
+        : await getCustomerAddresses({ first: currentPage * limit });
+
+    let addresses = data?.edges || [];
+    if (!after && currentPage > 1) {
+        addresses = addresses.slice((currentPage - 1) * limit);
     }
-
-    const data = await getCustomerAddresses({
-        first: limit,
-        after: currentAfterCursor,
-    });
-
-    const addresses = data?.edges || [];
     const totalCount = data?.totalCount || 0;
     const pageInfo = data?.pageInfo;
     const totalPages = Math.ceil(totalCount / limit);

@@ -21,20 +21,15 @@ export default async function ReviewsPage({
     const currentPage = Number(params?.page) || 1;
     const after = params?.cursor as string | undefined;
 
-    let currentAfterCursor = after;
-    if (currentPage > 1 && !after) {
-        const precedingData = await getCustomerReviews({
-            first: (currentPage - 1) * limit,
-        });
-        currentAfterCursor = precedingData?.pageInfo?.endCursor;
+
+    const data = after
+        ? await getCustomerReviews({ first: limit, after })
+        : await getCustomerReviews({ first: currentPage * limit });
+
+    let reviews = data?.edges || [];
+    if (!after && currentPage > 1) {
+        reviews = reviews.slice((currentPage - 1) * limit);
     }
-
-    const data = await getCustomerReviews({
-        first: limit,
-        after: currentAfterCursor,
-    });
-
-    const reviews = data?.edges || [];
     const totalCount = data?.totalCount || 0;
     const pageInfo = data?.pageInfo;
     const totalPages = Math.ceil(totalCount / limit);

@@ -15,8 +15,10 @@ export default async function ProductInfo({
   slug: string;
   reviews: ProductReview[];
 }) {
-  const productSwatchReview = await getProductWithSwatchAndReview(slug);
-  const getAllreviews = await getProductReviews(product?.id?.split("/").pop() || '')
+  const [productSwatchReview, getAllreviews] = await Promise.all([
+    getProductWithSwatchAndReview(slug),
+    getProductReviews(product?.id?.split("/").pop() || ''),
+  ]);
 
   return (
     <ProductDescription

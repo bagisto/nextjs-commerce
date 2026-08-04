@@ -29,20 +29,14 @@ export default async function OrdersPage({
     const startDate = params?.startDate as string || "";
     const endDate = params?.endDate as string || "";
 
-    let currentAfterCursor = after;
-    if (currentPage > 1 && !after) {
-        const precedingData = await getCustomerOrders({
-            first: (currentPage - 1) * limit,
-        });
-        currentAfterCursor = precedingData?.pageInfo?.endCursor;
-    }
-
-    const ordersData = await getCustomerOrders({
-        first: limit,
-        after: currentAfterCursor,
-    });
+    const ordersData = after
+        ? await getCustomerOrders({ first: limit, after })
+        : await getCustomerOrders({ first: currentPage * limit });
 
     let orders = ordersData?.edges || [];
+    if (!after && currentPage > 1) {
+        orders = orders.slice((currentPage - 1) * limit);
+    }
     let totalCount = ordersData?.totalCount || 0;
     const pageInfo = ordersData?.pageInfo;
 

@@ -18,20 +18,14 @@ export default async function WishlistPage({
     const currentPage = Number(params?.page) || 1;
     const after = params?.cursor as string | undefined;
 
-    let currentAfterCursor = after;
-    if (currentPage > 1 && !after) {
-        const precedingData = await getAllWishlists({
-            first: (currentPage - 1) * limit,
-        });
-        currentAfterCursor = precedingData?.pageInfo?.endCursor;
+    const data = after
+        ? await getAllWishlists({ first: limit, after })
+        : await getAllWishlists({ first: currentPage * limit });
+
+    let wishlistItems = data?.edges || [];
+    if (!after && currentPage > 1) {
+        wishlistItems = wishlistItems.slice((currentPage - 1) * limit);
     }
-
-    const data = await getAllWishlists({
-        first: limit,
-        after: currentAfterCursor,
-    });
-
-    const wishlistItems = data?.edges || [];
     const totalCount = data?.totalCount || 0;
     const pageInfo = data?.pageInfo;
     const totalPages = Math.ceil(totalCount / limit);

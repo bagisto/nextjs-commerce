@@ -1,34 +1,37 @@
 "use client";
 
-import * as React from "react";
+// import * as React from "react";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { GridTileImage } from "@/components/theme/ui/grid/Tile";
 import { Shimmer } from "@/components/common/Shimmer";
-import ImageZoom from "@/components/common/ImageZoom";
+import Image from "next/image";
+import Lightbox from "@/components/common/Lightbox";
 import {
   HeroCarouselShimmer,
   HeroCarouselThumbnailShimmer,
 } from "./HeroCarouselShimmer";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function HeroCarousel({
   images,
 }: {
   images: { src: string; altText: string }[];
 }) {
-  const [current, setCurrent] = React.useState(0);
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [current, setCurrent] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
 
-  const [canScrollLeft, setCanScrollLeft] = React.useState(false);
-  const [canScrollRight, setCanScrollRight] = React.useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
-  const scrollRef = React.useRef<HTMLUListElement>(null);
+  const scrollRef = useRef<HTMLUListElement>(null);
 
 
-  const isDragging = React.useRef(false);
-  const startX = React.useRef(0);
-  const scrollLeft = React.useRef(0);
-  const dragDistance = React.useRef(0);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+  const dragDistance = useRef(0);
 
   const prevSlide = () => {
     setIsLoading(true);
@@ -40,7 +43,7 @@ export default function HeroCarousel({
     setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const checkScrollLimits = React.useCallback(() => {
+  const checkScrollLimits = useCallback(() => {
     const container = scrollRef.current;
     if (container) {
       const { scrollLeft: sLeft, scrollWidth, clientWidth } = container;
@@ -50,7 +53,7 @@ export default function HeroCarousel({
   }, []);
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
@@ -84,7 +87,7 @@ export default function HeroCarousel({
   }, [checkScrollLimits, images.length]);
 
 
-  React.useEffect(() => {
+  useEffect(() => {
     const container = scrollRef.current;
     if (container) {
       const activeChild = container.children[current] as HTMLElement;
@@ -174,14 +177,26 @@ export default function HeroCarousel({
             aspectRatio: "380/316",
           }}
         >
-          <div className="relative h-full w-full">
+          <div
+            className="relative h-full w-full cursor-zoom-in"
+            role="button"
+            tabIndex={0}
+            aria-label="Open image in fullscreen viewer"
+            onClick={() => setLightboxOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setLightboxOpen(true);
+              }
+            }}
+          >
             {isLoading && (
               <Shimmer
                 className="absolute inset-0 z-10 h-full w-full"
                 rounded="lg"
               />
             )}
-            <ImageZoom
+            <Image
               fill
               alt={images[current]?.altText as string}
               className={`h-full w-full object-cover transition duration-300 ease-in-out group-hover:scale-105 ${isLoading ? "opacity-0" : "opacity-100"}
@@ -189,7 +204,7 @@ export default function HeroCarousel({
               priority={true}
               sizes="(max-width: 1024px) 100vw, (max-width: 1536px) 66vw, 1000px"
               src={images[current]?.src as string}
-              onLoadingComplete={() => setIsLoading(false)}
+              onLoad={() => setIsLoading(false)}
               onError={() => setIsLoading(false)}
             />
           </div>
@@ -282,6 +297,14 @@ export default function HeroCarousel({
           </ul>
         </div>
       ) : null}
+
+      <Lightbox
+        images={images}
+        index={current}
+        open={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        onIndexChange={setCurrent}
+      />
     </>
   );
 }

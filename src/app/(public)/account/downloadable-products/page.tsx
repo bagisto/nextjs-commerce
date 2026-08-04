@@ -27,20 +27,14 @@ export default async function DownloadableProductsPage({
     const filterStartDate = params?.startDate as string | undefined;
     const filterEndDate = params?.endDate as string | undefined;
 
-    let currentAfterCursor = after;
-    if (currentPage > 1 && !after) {
-        const precedingData = await getCustomerDownloadableProducts({
-            first: (currentPage - 1) * limit,
-        });
-        currentAfterCursor = precedingData?.pageInfo?.endCursor;
-    }
-
-    const data = await getCustomerDownloadableProducts({
-        first: limit,
-        after: currentAfterCursor,
-    });
+    const data = after
+        ? await getCustomerDownloadableProducts({ first: limit, after })
+        : await getCustomerDownloadableProducts({ first: currentPage * limit });
 
     let products = data?.edges || [];
+    if (!after && currentPage > 1) {
+        products = products.slice((currentPage - 1) * limit);
+    }
     let totalCount = data?.totalCount || 0;
     const pageInfo = data?.pageInfo;
 

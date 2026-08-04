@@ -39,6 +39,13 @@ const nextConfig: NextConfig = {
   compress: true,
   experimental: {
     useCache: true,
+    optimizePackageImports: [
+      "@heroui/react",
+      "framer-motion",
+      "@apollo/client",
+      "@reduxjs/toolkit",
+      "lucide-react",
+    ],
     serverActions: {
       bodySizeLimit: "2mb",
     },
