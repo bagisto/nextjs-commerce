@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { cacheLife, cacheTag } from "next/cache";
 import type { Metadata } from "next";
 import {
   ProductDetailSkeleton,
@@ -38,8 +39,6 @@ import { WishlistToggle } from "@/components/catalog/product/WishlistToggle";
 import { CompareToggle } from "@/components/catalog/product/CompareToggle";
 import { getProductMetadata } from "@/utils/helper";
 import { ProductReview } from "@/types/category/type";
-
-export const dynamic = "force-dynamic";
 
 
 export interface SingleProductResponse {
@@ -133,8 +132,16 @@ export default async function ProductPage({
   const product = await getSingleProduct(fullPath);
   if (!product) return notFound();
 
+  return <ProductContent fullPath={fullPath} />;
+}
 
+async function ProductContent({ fullPath }: { fullPath: string }) {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("products", `product-${fullPath}`);
 
+  const product = await getSingleProduct(fullPath);
+  if (!product) return notFound();
 
 
 
