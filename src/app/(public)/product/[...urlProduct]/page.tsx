@@ -32,6 +32,7 @@ import {
 import { RelatedProductsSection } from "@components/catalog/product/RelatedProductsSection";
 import ProductInfo from "@components/catalog/product/ProductInfo";
 import ProductHeaderClient from "@components/catalog/product/ProductHeaderClient";
+import { ScrollToTop } from "@/components/common/ScrollToTop";
 import {
   HeroCarouselShimmer,
 } from "@components/common/slider";
@@ -121,6 +122,24 @@ export async function generateMetadata({
   return getProductMetadata(product, image);
 }
 
+function ProductBodyFallback() {
+  return (
+    <>
+      <div className="flex flex-col gap-y-4 rounded-lg pb-0 pt-4 sm:gap-y-6 md:py-7.5 lg:flex-row w-full max-w-screen-2xl mx-auto px-4 xss:px-7.5 lg:gap-8">
+        <div className="relative h-full w-full max-w-[885px] max-1366:max-w-[650px] max-lg:max-w-full overflow-hidden rounded-2xl">
+          <HeroCarouselShimmer />
+        </div>
+        <div className="basis-full lg:basis-4/6">
+          <ProductDetailSkeleton />
+        </div>
+      </div>
+      <div className="w-full max-w-[1550px] mx-auto px-4 mt-20">
+        <RelatedProductSkeleton />
+      </div>
+    </>
+  );
+}
+
 export default async function ProductPage({
   params,
 }: {
@@ -129,10 +148,15 @@ export default async function ProductPage({
 }) {
   const { urlProduct } = await params;
   const fullPath = urlProduct.join("/");
-  const product = await getSingleProduct(fullPath);
-  if (!product) return notFound();
-
-  return <ProductContent fullPath={fullPath} />;
+  return (
+    <>
+      <ScrollToTop />
+      <ProductHeaderClient />
+      <Suspense fallback={<ProductBodyFallback />}>
+        <ProductContent fullPath={fullPath} />
+      </Suspense>
+    </>
+  );
 }
 
 async function ProductContent({ fullPath }: { fullPath: string }) {
@@ -194,7 +218,6 @@ async function ProductContent({ fullPath }: { fullPath: string }) {
 
   return (
     <>
-      <ProductHeaderClient />
       <script
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(productJsonLd),

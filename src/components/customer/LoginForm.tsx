@@ -96,6 +96,11 @@ export default function LoginForm() {
       } else if (userToken) {
         setCookie(GUEST_CART_TOKEN, userToken);
         setCookie(IS_GUEST, "false");
+        try {
+          await getCartDetail();
+        } catch (err) {
+          console.error("getCartDetail failed:", err);
+        }
       }
       setTimeout(() => {
         router.push("/");

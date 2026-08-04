@@ -74,7 +74,7 @@ const SortOrder: FC<{
           items={sortOrders}
           placeholder="Select a Sort Order"
           classNames={{
-            value: "text-neutral-800 dark:text-neutral-200",
+            value: "text-neutral-800 dark:text-neutral-200 cursor-pointer",
           }}
           renderValue={(items) => (
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 pt-1">

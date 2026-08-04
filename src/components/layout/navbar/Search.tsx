@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createUrl } from "@/utils/helper";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
@@ -15,7 +15,9 @@ export default function Search({
   onClose?: () => void;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const onSearchPage = pathname?.includes("/search") ?? false;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -25,15 +27,20 @@ export default function Search({
 
   useEffect(() => {
     const handler = setTimeout(() => {
+      const trimmed = searchValue.trim();
+      const currentQuery = searchParams.get("q") || "";
+
+      if (trimmed === currentQuery) return;
+
       const newParams = new URLSearchParams(searchParams.toString());
-      if (searchValue.trim() === "") {
+      if (trimmed === "") {
+        if (!onSearchPage) return;
         newParams.delete("q");
       } else {
         newParams.set("q", searchValue);
       }
-      if (searchValue) {
-        router.push(createUrl("/search", newParams));
-      }
+
+      router.push(createUrl("/search", newParams));
     }, 400);
 
     return () => clearTimeout(handler);
@@ -49,16 +56,16 @@ export default function Search({
   }, [search]);
 
   const handleSubmit = () => {
+    const trimmed = searchValue.trim();
     const newParams = new URLSearchParams(searchParams.toString());
-    if (searchValue.trim() === "") {
+    if (trimmed === "") {
+      if (!onSearchPage) return;
       newParams.delete("q");
     } else {
       newParams.set("q", searchValue);
     }
-    if (searchValue) {
-      router.push(createUrl("/search", newParams));
-      onClose?.();
-    }
+    router.push(createUrl("/search", newParams));
+    onClose?.();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

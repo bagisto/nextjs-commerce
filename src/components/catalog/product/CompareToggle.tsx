@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useEffect, useRef } from "react";
-import { ArrowRightLeft, Loader2 } from "lucide-react";
+import { ArrowRightLeft, Check, Loader2 } from "lucide-react";
 import { toggleCompareAction, getCompareProductIdsAction } from "@/utils/actions";
 import {
   isIdInCache,
@@ -169,10 +169,17 @@ export function CompareToggle({ productId, initialIsCompared = false }: CompareT
             transition={{ duration: 0.2 }}
             className="flex items-center justify-center w-full h-full"
           >
-            <ArrowRightLeft
-              className="transition-colors duration-300 size-5 lg:size-6"
-              strokeWidth={isCompared ? 2.5 : 2}
-            />
+            {isCompared ? (
+              <Check
+                className="transition-colors duration-300 size-5 lg:size-6"
+                strokeWidth={2.5}
+              />
+            ) : (
+              <ArrowRightLeft
+                className="transition-colors duration-300 size-5 lg:size-6"
+                strokeWidth={2}
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

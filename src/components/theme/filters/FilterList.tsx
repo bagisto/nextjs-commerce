@@ -67,7 +67,7 @@ function FilterItemList({
         labelPlacement="inside"
         placeholder={placeHolder}
         classNames={{
-          value: "text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium",
+          value: "text-neutral-800 dark:text-neutral-200 font-outfit text-sm font-medium cursor-pointer",
           trigger: "bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 min-h-10 h-10 rounded-xl",
           popoverContent: "bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl",
         }}

@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import Label from "../Label";
 import { NOT_IMAGE } from "@/utils/constants";
@@ -15,6 +15,8 @@ export function GridTileImage({
   alt,
   className,
   rounded = "rounded-lg",
+  onLoad,
+  onError,
   ...props
 }: {
   isInteractive?: boolean;
@@ -32,19 +34,26 @@ export function GridTileImage({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const loadDone = () => {
-    setTimeout(() => {
-      if (!src) {
-        setImgSrc(NOT_IMAGE);
-      }
-    }, 500);
+  const loadDone: React.ReactEventHandler<HTMLImageElement> = (e) => {
+    if (!src) {
+      setImgSrc(NOT_IMAGE);
+    }
     setIsLoaded(true);
+    onLoad?.(e);
   };
 
-  const handleError = () => {
+  const handleError: React.ReactEventHandler<HTMLImageElement> = (e) => {
     setHasError(true);
     setImgSrc(NOT_IMAGE);
+    setIsLoaded(true);
+    onError?.(e);
   };
+
+  const imgRef = useCallback((node: HTMLImageElement | null) => {
+    if (node?.complete) {
+      setIsLoaded(true);
+    }
+  }, []);
 
   return (
     <div
@@ -68,13 +77,14 @@ export function GridTileImage({
 
       {imgSrc ? (
         <Image
+          ref={imgRef}
           src={imgSrc}
           alt={alt ?? ""}
           placeholder="blur"
           blurDataURL={NOT_IMAGE}
+          {...props}
           onError={handleError}
           onLoad={loadDone}
-          {...props}
           className={clsx(
             "duration-700 truncate h-full transition group-hover:scale-105 w-full object-cover ease-in-out",
             hasError ? "bg-contain!" : "",

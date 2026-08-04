@@ -113,7 +113,7 @@ export function ProductDescription({
 
   return (
     <>
-      <div className="mb-2 flex flex-col pb-6">
+      <div className="mb-2 flex flex-col">
         <div className="hidden lg:flex flex-col gap-3 shrink-0 mb-4">
           <Breadcrumb
             items={[
