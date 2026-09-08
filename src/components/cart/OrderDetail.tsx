@@ -2,6 +2,7 @@
 
 import { ORDER_ID } from "@/utils/constants";
 import { deleteCookie, getCookie } from "@utils/getCartToken";
+import { extractNumericId } from "@utils/helper";
 import { useEffect, useState } from "react";
 
 export default function OrderDetail({ orderId: initialOrderId }: { orderId?: string }) {
@@ -13,14 +14,13 @@ export default function OrderDetail({ orderId: initialOrderId }: { orderId?: str
     deleteCookie(ORDER_ID);
   }, []);
 
-
-
+  const displayOrderId = orderId ? (extractNumericId(orderId) || orderId) : null;
   return (
     <div className="mb-8 font-outfit">
       <h1 className="my-2 text-center text-3xl font-semibold sm:text-4xl">
         Your order{" "}
         <span className="text-primary">
-          #{orderId ? orderId : <span className="animate-pulse">...</span>}
+          #{displayOrderId ? displayOrderId : <span className="animate-pulse">...</span>}
         </span>{" "}
         has been placed successfully{" "}
       </h1>

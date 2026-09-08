@@ -144,17 +144,28 @@ export const useCheckout = () => {
     {
       onCompleted: (response) => {
         const responseData = response?.createCheckoutOrder?.checkoutOrder;
+        const targetOrderId = responseData?.orderId || responseData?.id;
+        const isSuccess = responseData?.success ?? Boolean(targetOrderId);
 
-        if (responseData?.orderId) {
+        if (isSuccess || targetOrderId) {
           showToast("Order placed successfully!", "success");
-          setCookie(ORDER_ID, responseData.orderId);
+          if (targetOrderId) {
+            setCookie(ORDER_ID, targetOrderId);
+          }
           dispatch(clearCart());
           router.replace("/success");
           return;
         }
 
-        if (responseData?.redirectUrl) {
-          window.location.href = responseData.redirectUrl;
+        const redirectUrl = responseData?.redirectUrl;
+        const isInternalBagistoUrl =
+          redirectUrl &&
+          (redirectUrl.includes("/checkout/cart") ||
+            redirectUrl.includes("/checkout/onepage") ||
+            redirectUrl.includes("bagisto.com"));
+
+        if (redirectUrl && !isInternalBagistoUrl) {
+          window.location.href = redirectUrl;
           return;
         }
 
@@ -173,7 +184,7 @@ export const useCheckout = () => {
     });
 
     const checkoutOrder = data?.createCheckoutOrder?.checkoutOrder;
-    if (checkoutOrder?.orderId) {
+    if (checkoutOrder?.orderId || checkoutOrder?.id || checkoutOrder?.success) {
       const isGuest = getCookie(IS_GUEST);
       if (isGuest === "true") {
         await resetGuestToken();
