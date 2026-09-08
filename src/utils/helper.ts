@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { FilterDataTypes } from "@/types/types";
 import { CartItemEdge, CartItemsConnection } from "@/types/cart/type";
 import { isArray } from "./type-guards";
-import { BASE_URL, baseUrl } from "./constants";
+import { BASE_URL, baseUrl, getImageUrl } from "./constants";
 import { ProductData } from "@components/catalog/type";
 import { CategoryNode } from "@/types/theme/category-tree";
 import { ProductReview } from "@/types/category/type";
@@ -471,6 +471,51 @@ export function safeParse<T = unknown>(value: string | null | undefined): T | nu
   } catch {
     return null;
   }
+}
+
+export function getCartItemImageUrl(baseImageRaw: unknown): string {
+  if (!baseImageRaw) return "";
+
+  let parsed: Record<string, unknown> | null = null;
+  if (typeof baseImageRaw === "object") {
+    parsed = baseImageRaw as Record<string, unknown>;
+  } else if (typeof baseImageRaw === "string") {
+    const trimmed = baseImageRaw.trim();
+    if (!trimmed) return "";
+
+    if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+      try {
+        parsed = JSON.parse(trimmed);
+      } catch {
+        parsed = null;
+      }
+    }
+
+    if (!parsed) {
+      return getImageUrl(trimmed, baseUrl, "") || trimmed;
+    }
+  }
+
+  if (parsed && typeof parsed === "object") {
+    const candidate =
+      (parsed.small_image_url as string) ||
+      (parsed.medium_image_url as string) ||
+      (parsed.large_image_url as string) ||
+      (parsed.original_image_url as string) ||
+      (parsed.url as string) ||
+      (parsed.smallImageUrl as string) ||
+      (parsed.mediumImageUrl as string) ||
+      (parsed.originalImageUrl as string) ||
+      (parsed.path as string) ||
+      "";
+    if (typeof candidate === "string" && candidate) {
+      return getImageUrl(candidate, baseUrl, "") || candidate;
+    }
+  }
+
+  return typeof baseImageRaw === "string"
+    ? getImageUrl(baseImageRaw, baseUrl, "") || baseImageRaw
+    : "";
 }
 
 export function buildProductFilters(params: {

@@ -70,6 +70,12 @@ export default async function OrderViewPage({
                         overflow: visible !important;
                     }
 
+                    main,
+                    body [class*="min-h-"] {
+                        min-height: 0 !important;
+                        height: auto !important;
+                    }
+
                     body {
                         visibility: hidden;
                         -webkit-print-color-adjust: exact !important;
@@ -88,6 +94,7 @@ export default async function OrderViewPage({
                         left: 0;
                         top: 0;
                         width: 100%;
+                        box-sizing: border-box;
                         margin: 0;
                         padding: 40px !important;
                         background: white !important;

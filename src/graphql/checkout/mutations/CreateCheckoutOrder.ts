@@ -8,6 +8,9 @@ export const CREATE_CHECKOUT_ORDER = gql`
       checkoutOrder {
         id
         orderId
+        success
+        message
+        redirectUrl
       }
     }
   }

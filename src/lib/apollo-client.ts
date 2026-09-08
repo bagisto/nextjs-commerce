@@ -67,7 +67,13 @@ async function getCachedSession(): Promise<BagistoSession | null> {
 
 function createApolloClient() {
   const ssrMode = typeof window === "undefined";
-  const cache = new InMemoryCache();
+  const cache = new InMemoryCache({
+    typePolicies: {
+      PaymentMethods: {
+        keyFields: ["method"],
+      },
+    },
+  });
 
   const httpLink = new HttpLink({
     uri: ssrMode ? GRAPHQL_URL : "/api/graphql",

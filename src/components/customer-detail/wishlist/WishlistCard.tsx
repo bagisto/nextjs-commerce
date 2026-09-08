@@ -18,7 +18,7 @@ import {
     Button,
     useDisclosure
 } from "@heroui/react";
-import { IMAGES } from "@/utils/constants";
+import { IMAGES, baseUrl, getImageUrl } from "@/utils/constants";
 import { WishlistItemNode } from "@/types/customer/type";
 
 interface WishlistCardProps {
@@ -91,7 +91,7 @@ export default function WishlistCard({ item }: WishlistCardProps) {
                 <div className="flex flex-row items-start md:items-center gap-3 md:gap-5 2xl:gap-6 w-full 2xl:max-w-[759px]">
                     <Link href={`/product/${product.urlKey}`} className="relative w-18 md:w-[100px] 2xl:w-[130px] h-18 md:h-[100px] 2xl:h-[130px] rounded-md overflow-hidden bg-neutral-50 dark:bg-neutral-800 shrink-0 group cursor-pointer block">
                         <Image
-                            src={product.baseImageUrl || IMAGES.placeholder}
+                            src={getImageUrl(product.baseImageUrl ?? undefined, baseUrl, IMAGES.placeholder) || IMAGES.placeholder}
                             alt={product.name}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-500"

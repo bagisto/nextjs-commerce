@@ -10,7 +10,7 @@ import { useCustomToast } from "@/utils/hooks/useToast";
 import { useRouter } from "next/navigation";
 import { useCartDetail } from "@/utils/hooks/useCartDetail";
 import clsx from "clsx";
-import { IMAGES, CURRENCY_CODE } from "@/utils/constants";
+import { IMAGES, CURRENCY_CODE, baseUrl, getImageUrl } from "@/utils/constants";
 import ScrollableContainer from "@/components/common/ScrollableContainer";
 import { formatPrice } from "@utils/helper";
 import OrderPagination from "../orders/OrderPagination";
@@ -297,7 +297,7 @@ export default function CompareTable({
                                                 style={{ width: 152, height: 140, borderRadius: 8 }}
                                             >
                                                 <Image
-                                                    src={product.baseImageUrl || IMAGES.placeholder}
+                                                    src={getImageUrl(product.baseImageUrl ?? undefined, baseUrl, IMAGES.placeholder) || IMAGES.placeholder}
                                                     alt={product.name || "Product"}
                                                     fill
                                                     className="object-cover"
@@ -470,7 +470,7 @@ export default function CompareTable({
                                                         className="relative h-[220px] w-full rounded-3xl overflow-hidden bg-surface-cool dark:bg-neutral-800 shadow-sm group-hover:shadow-md transition-shadow block"
                                                     >
                                                         <Image
-                                                            src={product.baseImageUrl || IMAGES.placeholder}
+                                                            src={getImageUrl(product.baseImageUrl ?? undefined, baseUrl, IMAGES.placeholder) || IMAGES.placeholder}
                                                             alt={product.name || "Product Image"}
                                                             fill
                                                             className="object-cover hover:scale-105 transition-transform duration-500"

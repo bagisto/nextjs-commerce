@@ -257,7 +257,6 @@ export interface CreateCustomerAddressInput {
   phone: string;
   vatId?: string;
   defaultAddress?: boolean;
-  useForShipping?: boolean;
 }
 
 

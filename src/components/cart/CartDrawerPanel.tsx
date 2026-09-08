@@ -21,7 +21,7 @@ import { useFormStatus } from "react-dom";
 import { redirectToCheckout } from "@/utils/actions";
 import { EMAIL, getLocalStorage } from "@/store/local-storage";
 import Link from "next/link";
-import { createUrl, isCheckout, safeParse } from "@utils/helper";
+import { createUrl, getCartItemImageUrl, isCheckout, safeParse } from "@utils/helper";
 import MobileNavHeader from "../layout/navbar/MobileNavHeader";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
 import type { CartItemEdge, CartSummaryView } from "@/types/cart/type";
@@ -49,9 +49,7 @@ function CartLineItem({
     `/product/${node?.productUrlKey}`,
     new URLSearchParams({ backUrl: "/cart" }),
   );
-  const baseImage = safeParse(node?.baseImage) as
-    | { small_image_url?: string }
-    | undefined;
+  const imageUrl = getCartItemImageUrl(node?.baseImage);
 
   return (
     <li className="flex w-full flex-col">
@@ -70,7 +68,7 @@ function CartLineItem({
           <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
             <NextImage
               alt={node?.name || ""}
-              src={baseImage?.small_image_url || ""}
+              src={imageUrl}
               width={74}
               height={64}
               sizes="64px"

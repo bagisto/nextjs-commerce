@@ -160,7 +160,10 @@ export interface GetCheckoutShippingRatesOperation {
 
 export interface CheckoutOrder {
   id: string;
-  orderId: string;
+  orderId: string | null;
+  success?: boolean;
+  message?: string;
+  redirectUrl?: string | null;
 }
 export interface CreateCheckoutOrderPayload {
   checkoutOrder: CheckoutOrder;

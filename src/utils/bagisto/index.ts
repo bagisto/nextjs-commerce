@@ -785,7 +785,6 @@ export async function setDefaultAddress(
       postcode: address.postcode,
       phone: address.phone,
       defaultAddress: true,
-      useForShipping: true,
     };
 
     const res = await bagistoFetch<{

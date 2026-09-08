@@ -15,7 +15,7 @@ import { useFormStatus } from "react-dom";
 import { redirectToCheckout } from "@/utils/actions";
 import { EMAIL, getLocalStorage } from "@/store/local-storage";
 import Link from "next/link";
-import { createUrl, isCheckout, safeParse } from "@utils/helper";
+import { createUrl, getCartItemImageUrl, isCheckout, safeParse } from "@utils/helper";
 import { useAddressesFromApi } from "@utils/hooks/getAddress";
 import type { CartSummaryView, CartItemEdge } from "@/types/cart/type";
 import MobileNavHeader from "@/components/layout/navbar/MobileNavHeader";
@@ -84,9 +84,7 @@ export default function CartPage() {
                       `/product/${item?.node.productUrlKey}`,
                       new URLSearchParams(merchandiseSearchParams),
                     );
-                    const baseImage = safeParse<{ small_image_url?: string }>(
-                      item?.node?.baseImage,
-                    );
+                    const imageUrl = getCartItemImageUrl(item?.node?.baseImage);
 
                     return (
                       <li key={i} className="flex w-full flex-col">
@@ -103,13 +101,10 @@ export default function CartPage() {
                           >
                             <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                               <Image
-                                alt={
-                                  item?.node?.baseImage ||
-                                  item?.node?.name
-                                }
+                                alt={item?.node?.name || ""}
                                 className="h-full w-full object-cover"
                                 height={64}
-                                src={baseImage?.small_image_url || ""}
+                                src={imageUrl || NOT_IMAGE}
                                 width={74}
                                 onError={(e) =>
                                   (e.currentTarget.src = NOT_IMAGE)

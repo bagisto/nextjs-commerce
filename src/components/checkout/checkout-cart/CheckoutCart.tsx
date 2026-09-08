@@ -3,7 +3,7 @@ import { GridTileImage } from "@components/theme/ui/grid/Tile";
 import { Price } from "@components/theme/ui/Price";
 import CartItemAccordion from "./CartItemAccordian";
 import Link from "next/link";
-import { createUrl, isShippingRequired, safeParse } from "@utils/helper";
+import { createUrl, getCartItemImageUrl, isShippingRequired, safeParse } from "@utils/helper";
 import type { CartItemEdge, CartSummaryView } from "@/types/cart/type";
 
 
@@ -34,9 +34,7 @@ export default function CheckoutCart({
                 `/product/${node?.productUrlKey}`,
                 new URLSearchParams(),
               );
-              const baseImage = safeParse(node?.baseImage) as
-                | { medium_image_url?: string; small_image_url?: string }
-                | undefined;
+              const imageUrl = getCartItemImageUrl(node?.baseImage);
 
                 return (
                   <li key={i} className="flex w-full flex-col">
@@ -52,7 +50,7 @@ export default function CheckoutCart({
                              className="h-full w-full object-cover"
                              height={200}
                              rounded="rounded-[15.73px]"
-                             src={baseImage?.medium_image_url || baseImage?.small_image_url || ""}
+                             src={imageUrl || NOT_IMAGE}
                              width={200}
                              onError={(e) => (e.currentTarget.src = NOT_IMAGE)}
                            />

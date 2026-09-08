@@ -203,6 +203,16 @@ export function getImageUrl(url?: string, baseUrl?: string, fallback?: string) {
   if (!url) return fallback;
 
   if (url.startsWith("http://") || url.startsWith("https://")) {
+    if (baseUrl) {
+      try {
+        const parsed = new URL(url);
+        const base = new URL(baseUrl);
+        if (parsed.hostname.endsWith("bagisto.com") && parsed.host !== base.host) {
+          return `${base.origin}${parsed.pathname}${parsed.search}`;
+        }
+      } catch {
+      }
+    }
     return url;
   }
 

@@ -30,6 +30,7 @@ interface PlaceOrderCheckoutOrder {
   orderId?: string;
   message?: string;
   success?: boolean;
+  redirectUrl?: string | null;
 }
 
 interface PlaceOrderData {
@@ -143,14 +144,21 @@ export const useCheckout = () => {
     {
       onCompleted: (response) => {
         const responseData = response?.createCheckoutOrder?.checkoutOrder;
-        if (responseData && responseData.orderId) {
+
+        if (responseData?.orderId) {
           showToast("Order placed successfully!", "success");
           setCookie(ORDER_ID, responseData.orderId);
           dispatch(clearCart());
           router.replace("/success");
-        } else {
-          showToast("Failed to place order", "warning");
+          return;
         }
+
+        if (responseData?.redirectUrl) {
+          window.location.href = responseData.redirectUrl;
+          return;
+        }
+
+        showToast(responseData?.message || "Failed to place order", "warning");
       },
       onError: handleMutationError,
     },
@@ -158,15 +166,18 @@ export const useCheckout = () => {
 
   const savePlaceOrder = async () => {
     const token = getCartToken();
-    await placeOrder({
+    const { data } = await placeOrder({
       variables: {
         token: token || "",
       },
     });
 
-    const isGuest = getCookie(IS_GUEST);
-    if (isGuest === "true") {
-      await resetGuestToken();
+    const checkoutOrder = data?.createCheckoutOrder?.checkoutOrder;
+    if (checkoutOrder?.orderId) {
+      const isGuest = getCookie(IS_GUEST);
+      if (isGuest === "true") {
+        await resetGuestToken();
+      }
     }
   };
 

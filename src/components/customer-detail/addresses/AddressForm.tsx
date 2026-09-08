@@ -51,7 +51,6 @@ export default function AddressForm({ initialData }: { initialData?: CustomerAdd
         const input = {
             ...data,
             addressId: data.addressId ? parseInt(String(data.addressId)) : undefined,
-            useForShipping: true,
         };
 
         const result = await createCustomerAddressAction(input);

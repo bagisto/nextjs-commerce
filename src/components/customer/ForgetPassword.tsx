@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -122,11 +121,8 @@ export default function ForgetPasswordForm() {
           fill
           priority
           alt="Forget Password Illustration"
-          className={clsx(
-            "relative h-full w-full object-fill",
-            "transition duration-300 ease-in-out group-hover:scale-105"
-          )}
-          sizes={"(min-width: 768px) 66vw, 100vw"}
+          className="h-full w-full object-cover transition duration-300 ease-in-out group-hover:scale-105"
+          sizes="(min-width: 768px) 66vw, 100vw"
           src={FORGET_PASSWORD_IMG}
         />
       </div>

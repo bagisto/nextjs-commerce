@@ -1,6 +1,5 @@
 "use client";
 
-// import * as React from "react";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { GridTileImage } from "@/components/theme/ui/grid/Tile";
 import { Shimmer } from "@/components/common/Shimmer";

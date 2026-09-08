@@ -370,6 +370,7 @@ export interface CategoryEdge {
   node: {
     id: string;
     position?: number;
+    status?: string;
     logoUrl?: string;
     translation: {
       name: string;

@@ -6,8 +6,6 @@ export const CREATE_CUSTOMER_ADDRESS = `
         _id
         firstName
         lastName
-        # companyName
-        # vatId
         address1
         address2
         city
@@ -17,7 +15,6 @@ export const CREATE_CUSTOMER_ADDRESS = `
         phone
         email
         defaultAddress
-        useForShipping
       }
     }
   }

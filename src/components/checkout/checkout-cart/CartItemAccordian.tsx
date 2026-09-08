@@ -4,7 +4,7 @@ import { Price } from "@components/theme/ui/Price";
 import { NextImage } from "@components/common/NextImage";
 import { Accordion, AccordionItem } from "@heroui/accordion";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import { createUrl, isShippingRequired, safeParse } from "@utils/helper";
+import { createUrl, getCartItemImageUrl, isShippingRequired, safeParse } from "@utils/helper";
 import Link from "next/link";
 import type { CartItemEdge, CartSummaryView } from "@/types/cart/type";
 
@@ -70,9 +70,7 @@ export default function CartItemAccordion({
                   `/product/${node?.productUrlKey}`,
                   new URLSearchParams(),
                 );
-                const baseImage = safeParse(node?.baseImage) as
-                  | { medium_image_url?: string; small_image_url?: string }
-                  | undefined;
+                const imageUrl = getCartItemImageUrl(node?.baseImage);
                 return (
                   <li key={node?.id ?? i} className="flex w-full flex-col">
                     <div className="relative flex w-full flex-row justify-between gap-3 px-1 py-4">
@@ -88,11 +86,7 @@ export default function CartItemAccordion({
                             height={100}
                             sizes="64px"
                             alt={node?.name ?? ""}
-                            src={
-                              baseImage?.medium_image_url ||
-                              baseImage?.small_image_url ||
-                              ""
-                            }
+                            src={imageUrl}
                           />
                         </div>
 

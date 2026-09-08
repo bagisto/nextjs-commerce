@@ -79,18 +79,17 @@ const CategoryCarousel: FC<CategoryCarouselProps> = async ({
       GET_HOME_CATEGORIES,
       {}
     );
-
     const categories =
       data?.categories?.edges?.map((edge) => edge.node) || [];
 
     topCategories = categories
-      .filter((category) => category.id !== "1")
-      .sort((a, b) => (a.position || 0) - (b.position || 0))
-      .slice(1, 4);
+      .filter((category) => category.status === "1")
+      .sort((a, b) => (a.position || 0) - (b.position || 0)).slice(0,3);
+      
   } catch (error) {
     console.error("Error fetching categories:", error);
     return null;
-  }
+  } 
 
   if (!topCategories.length) return null;
 

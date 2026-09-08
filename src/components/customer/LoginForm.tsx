@@ -1,6 +1,5 @@
 "use client";
 
-import clsx from "clsx";
 import { getSession, signIn } from "next-auth/react";
 import { clearSessionCache } from "@/lib/apollo-client";
 import Image from "next/image";
@@ -221,11 +220,8 @@ export default function LoginForm() {
               fill
               priority
               alt="Sign In Image"
-              className={clsx(
-                "relative h-full w-full object-fill",
-                "transition duration-300 ease-in-out group-hover:scale-105"
-              )}
-              sizes={"(min-width: 768px) 66vw, 100vw"}
+              className="h-full w-full object-cover transition duration-300 ease-in-out group-hover:scale-105"
+              sizes="(min-width: 768px) 66vw, 100vw"
               src={SIGNIN_IMG}
             />
           </div>

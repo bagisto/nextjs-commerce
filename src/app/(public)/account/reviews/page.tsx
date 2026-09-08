@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AccountBreadcrumbs from "@/components/layout/AccountBreadcrumbs";
 import MobileNavHeader from "@/components/layout/navbar/MobileNavHeader";
-import { IMAGES } from "@/utils/constants";
+import { IMAGES, baseUrl, getImageUrl } from "@/utils/constants";
 import { HideMainNavOnMobile } from "@/components/common/HideMainNavOnMobile";
 import { ReviewRating } from "@components/customer-detail/review/ReviewRating";
 import ReviewPagination from "@components/customer-detail/review/ReviewPagination";
@@ -72,7 +72,7 @@ export default async function ReviewsPage({
                             const review = edge.node;
                             const product = review.product;
                             const productName = product?.name || "Product Name";
-                            const productImage = product?.baseImageUrl || IMAGES.placeholder;
+                            const productImage = getImageUrl(product?.baseImageUrl ?? undefined, baseUrl, IMAGES.placeholder) || IMAGES.placeholder;
 
                             return (
                                 <div key={review._id} className="flex flex-col lg:flex-row lg:justify-between gap-6 lg:gap-0 p-4 lg:p-6 border-b border-border-muted dark:border-neutral-800 w-full group">
